@@ -254,7 +254,7 @@ cargarGeo("puntos_criticos", "data/puntos_criticos.geojson")
 
         llenarSelectorVeredas(data);
         llenarSelectorRiesgos(data);
-        calcularEstadisticas(data);
+        limpiarEstadisticas();   // el panel estadístico inicia vacío hasta aplicar el filtro
         limpiarTabla();
     })
     .catch(error => {
@@ -452,10 +452,7 @@ function limpiarFiltro() {
     }
 
     limpiarTabla();
-
-    if (puntosData) {
-        calcularEstadisticas(puntosData);
-    }
+    limpiarEstadisticas();   // al limpiar, el panel estadístico vuelve a quedar vacío
 
     if (veredasLayer && veredasLayer.getBounds().isValid()) {
         map.fitBounds(veredasLayer.getBounds(), { padding: [20, 20] });
@@ -545,6 +542,22 @@ function limpiarTabla() {
             <td colspan="5">Aún no se ha aplicado ningún filtro.</td>
         </tr>
     `;
+}
+
+/* 13b. LIMPIAR ESTADÍSTICAS (panel vacío hasta aplicar el filtro) */
+function limpiarEstadisticas() {
+    const te = document.getElementById("totalEventos");
+    const tv = document.getElementById("totalVeredas");
+    const ep = document.getElementById("eventoPredominante");
+    if (te) te.textContent = "—";
+    if (tv) tv.textContent = "—";
+    if (ep) ep.textContent = "—";
+
+    const det = document.getElementById("estadisticasRiesgo");
+    if (det) det.innerHTML = `<div class="item-estadistica"><span>Aplica un filtro para ver las estadísticas</span></div>`;
+
+    if (graficoRiesgos) { graficoRiesgos.destroy(); graficoRiesgos = null; }
+    if (graficoVeredas) { graficoVeredas.destroy(); graficoVeredas = null; }
 }
 
 /* 14. CALCULAR ESTADÍSTICAS (MUCHA CORRECION DE IA -REFORMULADO TOTALMENTE)*/
@@ -723,4 +736,5 @@ function crearGraficoVeredas(conteoVeredas) {
 /* 19. ESTADO INICIAL DEL SISTEMA (AYUDA IA)*/
 document.addEventListener("DOMContentLoaded", function () {
     limpiarTabla();
+    limpiarEstadisticas();
 });

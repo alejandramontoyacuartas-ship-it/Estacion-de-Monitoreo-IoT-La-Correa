@@ -38,6 +38,7 @@ let PUNTOS = [];            // features del KMZ
 let markers = {};          // punto -> marker
 let grafico = null;
 let selPunto = null;
+let statsOn = false;        // el panel estadístico queda vacío hasta aplicar el filtro
 
 // Límites veredales de fondo
 cargarGeo('veredas','data/veredas.geojson').then(gj=>{
@@ -91,7 +92,17 @@ function render(){
       <td>${p.vereda||'—'}</td><td>${p.altitud||'—'}</td>
       <td><button class="btn-ver" onclick="event.stopPropagation();abrirInformePorPunto('${p.punto}')">Ver informe</button></td></tr>`;
   }).join('') : '<tr><td colspan="6">No hay puntos para esta vereda.</td></tr>';
-  renderStats(sel);
+  if(statsOn) renderStats(sel); else limpiarStats();
+}
+
+// Panel estadístico vacío hasta aplicar el filtro
+function limpiarStats(){
+  document.getElementById('totalPuntos').textContent='—';
+  document.getElementById('totalVeredas').textContent='—';
+  document.getElementById('veredaPredominante').textContent='—';
+  if(grafico){ grafico.destroy(); grafico=null; }
+  document.getElementById('estadisticasVereda').innerHTML =
+    '<div class="item-estadistica"><span>Aplica un filtro para ver las estadísticas</span></div>';
 }
 
 function renderStats(sel){
@@ -148,5 +159,5 @@ document.getElementById('rep-modal').addEventListener('click',e=>{ if(e.target.i
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrarInforme(); });
 
 // ---- Filtros ----
-function filtrarDatos(){ render(); }
-function limpiarFiltro(){ document.getElementById('veredaSelect').value=''; selPunto=null; render(); }
+function filtrarDatos(){ statsOn=true; render(); }
+function limpiarFiltro(){ document.getElementById('veredaSelect').value=''; selPunto=null; statsOn=false; render(); }

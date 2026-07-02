@@ -106,6 +106,12 @@ Orden cronológico de lo construido (para entender el punto de avance).
   (`scripts/fill_vereda_por_poligono.py`): P13→El Socorro, P14→San Diego, P15→Portachuelo,
   P16 (Colcerámica, fuera de polígonos)→San Diego (vereda más cercana, 105 m — *validar*). Ya no queda "Sin dato".
 
+## Panel estadístico bajo demanda (2026-07-01)
+- En **`puntos_riesgo.html`** y **`interinstitucionales.html`** el **panel estadístico inicia vacío**
+  ("—" + "Aplica un filtro para ver las estadísticas") y solo se llena al presionar **Filtrar**
+  (`limpiarEstadisticas()` / `limpiarStats()` + bandera `statsOn`). El mapa conserva su comportamiento
+  (puntos_riesgo inicia sin puntos; interinstitucionales muestra los 18 puntos).
+
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
   `RESULTADOS_TECNICOS.md`, `PENDIENTES.md`, este CHANGELOG.
