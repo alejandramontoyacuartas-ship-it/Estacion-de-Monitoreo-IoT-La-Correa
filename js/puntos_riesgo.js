@@ -47,7 +47,7 @@ const capaClaro = L.tileLayer(
     }
 );
 
-capaOSM.addTo(map);  /*capa del geoportal*/
+capaTerreno.addTo(map);  /*capa inicial: Terreno / relieve*/
 
 /*CONTROL DE CAPAS BASE: Permite al usuario escoger el tipo de mapa */
 const mapasBase = {
