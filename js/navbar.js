@@ -21,7 +21,6 @@
       {t:'Puntos de riesgo',        h:'puntos_riesgo.html'},
       {t:'Hidrología — subcuencas', h:'index.html', cuencas:true},
       {t:'Uso del suelo',           h:'index.html', uso:true},
-      {t:'Inspecciones técnicas',   h:'informes.html'},
       {t:'Inspecciones técnicas de campo — Interinstitucionales', h:'interinstitucionales.html'},
       {t:'Escenarios de Riesgo y Cambio Climático', sub:[
         {t:'Escenarios de Riesgos', h:'escenarios.html'},
