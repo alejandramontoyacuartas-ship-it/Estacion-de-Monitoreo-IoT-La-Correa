@@ -29,11 +29,6 @@
     ]},
     {label:'Reducción del riesgo', items:[
       {t:'Obras de mitigación',  h:'#'},
-      {t:'Otras acciones', sub:[
-        {t:'SAT La Correa',          h:'index.html?capa=puntos_sensor_ahp,bocinas'},
-        {t:'Subsidio de arriendo',   h:'#'},
-        {t:'Subsidio de materiales', h:'#'},
-      ]},
       {t:'Cobertura de alertas', h:'index.html?capa=cobertura'},
     ]},
     {label:'Monitoreo y Alertas', items:[
