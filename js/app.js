@@ -311,15 +311,14 @@ function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:10,critico:2
 function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
 function renderCorte(nivelCm){
-  const D=window.CORTE_P1; const box=document.getElementById('sd-corte'); if(!D||!box) return;
-  box.style.display='block';
+  const D=window.CORTE_P1; const cv=document.getElementById('sd-corte-chart'); if(!D||!cv) return;
   const perf=D.perfil.filter(p=>p.z!=null);
   const dd=perf.map(p=>p.d), zz=perf.map(p=>p.z);
   const zmin=Math.min.apply(null,zz), zmax=Math.max.apply(null,zz);
   const cm=parseFloat(nivelCm); const dep=isNaN(cm)?0:cm/100;   // lámina en metros
   const wElev=D.z_min+dep;                                       // cota de la superficie del agua
   const water=zz.map(z=> z<wElev ? wElev : z);                   // techo del agua dentro del cauce
-  const cv=document.getElementById('sd-corte-chart'); if(_corteChart) _corteChart.destroy();
+  if(_corteChart) _corteChart.destroy();
   if(window.Chart) _corteChart=new Chart(cv.getContext('2d'),{type:'line',
     data:{labels:dd,datasets:[
       {label:'Terreno',data:zz,borderColor:'#8d8578',backgroundColor:'rgba(150,142,128,.35)',
@@ -341,27 +340,103 @@ function renderCorte(nivelCm){
   document.getElementById('sd-nleg').innerHTML =
     'Lámina actual: <b>'+(isNaN(cm)?'—':cm.toFixed(1)+' cm')+'</b> · nivel <b style="color:'+N[act].c+'">'+N[act].n+' — '+N[act].tit+'</b>';
 }
+// ---- Contenido de las pestañas de la estación (estilo SIATA) ----
+const _kv=(k,v)=>`<div class="sd-kv"><span>${k}:</span><b>${v}</b></div>`;
+function _tabsHTML(){
+  const T=[['series','Series'],['niveles','Niveles de riesgo'],['descripcion','Descripción'],
+           ['geomorfologia','Geomorfología'],['coberturas','Coberturas'],['perfil','Perfil'],['galeria','Galería']];
+  return T.map((t,i)=>`<button data-t="${t[0]}"${i===0?' class="on"':''}>${t[1]}</button>`).join('');
+}
+function _descripcionMeta(){
+  const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
+  const D=window.CORTE_P1||{}; const alt=D.z_p1?D.z_p1.toFixed(0)+' m s.n.m.':'≈ 1552 m s.n.m.';
+  return _kv('Código','P1')+_kv('Estación',s.nombre)
+    +_kv('Tipo','Hidrometeorológica (nivel · lluvia · temp · humedad)')
+    +_kv('Municipio','Girardota')+_kv('Vereda / sector','San Andrés — corredor La Correa')
+    +_kv('Subcuenca','Q. La Correa')+_kv('Latitud',s.lat)+_kv('Longitud',s.lon)+_kv('Altitud (cauce)',alt);
+}
+function _geomorfologia(){
+  const D=window.CORTE_P1||{};
+  return _kv('Sección','Cauce en "V" · MDT 2 m')
+    +_kv('Thalweg (fondo)',(D.z_min?D.z_min.toFixed(1):'1551,7')+' m s.n.m.')
+    +_kv('Ancho modelado',(D.ancho_total||50)+' m')
+    +_kv('Índice de Melton','0,47 · debris flood (torrencial)')
+    +_kv('Pendiente del cauce','14,6 %')+_kv('Densidad de drenaje','7,12 km/km²')
+    +_kv('Orden de Strahler','5')+_kv('Tiempo de concentración','≈ 43 min (Kirpich)')
+    +_kv('Caudal de diseño (Tr100)','≈ 249 m³/s · provisional');
+}
+function _coberturas(){
+  return _kv('Vegetación (NDVI Sentinel-2)','media 0,68 · 82 % vegetación densa')
+    +_kv('Urbano / suelo desnudo','3,9 %')
+    +_kv('Suelo (OpenLandMap)','99 % Clay Loam → grupo hidrológico C')
+    +_kv('Escorrentía','alta (grupo C)')+_kv('Uso del suelo','coberturas AMVA (6 clases)');
+}
+function sdTab(t){
+  const p=document.getElementById('sensor-detalle'); if(!p) return;
+  p.querySelectorAll('.sd-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+  p.querySelectorAll('.sd-tab').forEach(d=>d.style.display=(d.dataset.tab===t)?'block':'none');
+  if(t==='series' && _detChart) setTimeout(()=>_detChart.resize(),30);
+  if(t==='perfil' && _corteChart) setTimeout(()=>_corteChart.resize(),30);
+}
 function panelDetalle(){
   let p=document.getElementById('sensor-detalle');
   if(!p){ p=document.createElement('div'); p.id='sensor-detalle';
     p.innerHTML='<div class="sd-h"><span class="sd-titulo">Estación de Monitoreo La Correa</span><span class="sd-x" title="Cerrar">✕</span></div>'
-      +'<div class="sd-sub"></div><div class="sd-valor"></div>'
-      +'<div class="sd-serie-tit">Serie de tiempo</div>'
-      +'<div class="sd-chart-wrap"><canvas id="sd-chart"></canvas></div>'
-      +'<div id="sd-corte" style="display:none">'
-      +  '<div class="sd-serie-tit">Sección transversal en P1 · MDT 2 m</div>'
-      +  '<div class="sd-corte-row"><div class="sd-corte-wrap"><canvas id="sd-corte-chart"></canvas></div>'
-      +    '<div class="sd-nbar" id="sd-nbar"></div></div>'
-      +  '<div class="sd-nleg" id="sd-nleg"></div></div>'
+      +'<div class="sd-tabs">'+_tabsHTML()+'</div>'
+      +'<div class="sd-body">'
+      +  '<div class="sd-tab" data-tab="series"><div class="sd-sub"></div><div class="sd-valor"></div>'
+      +    '<div class="sd-serie-tit">Serie de tiempo</div><div class="sd-chart-wrap"><canvas id="sd-chart"></canvas></div></div>'
+      +  '<div class="sd-tab" data-tab="niveles" style="display:none"><div class="sd-serie-tit">Niveles de riesgo (por lámina)</div>'
+      +    '<div class="sd-niv-cur" id="sd-niv-cur"></div><div id="sd-niv-list"></div>'
+      +    '<div class="sd-note2">Umbrales derivados de CONFIG.UMBRALES · calibración oficial pendiente.</div></div>'
+      +  '<div class="sd-tab" data-tab="descripcion" style="display:none"><div class="sd-serie-tit">Descripción de la estación</div>'
+      +    _descripcionMeta()+'<div class="sd-serie-tit" style="margin-top:8px">Últimas lecturas</div><div id="sd-lect"></div></div>'
+      +  '<div class="sd-tab" data-tab="geomorfologia" style="display:none"><div class="sd-serie-tit">Geomorfología del cauce y la cuenca</div>'+_geomorfologia()+'</div>'
+      +  '<div class="sd-tab" data-tab="coberturas" style="display:none"><div class="sd-serie-tit">Coberturas de la cuenca</div>'+_coberturas()+'</div>'
+      +  '<div class="sd-tab" data-tab="perfil" style="display:none"><div class="sd-serie-tit">Sección transversal en P1 · MDT 2 m</div>'
+      +    '<div class="sd-corte-row"><div class="sd-corte-wrap"><canvas id="sd-corte-chart"></canvas></div><div class="sd-nbar" id="sd-nbar"></div></div>'
+      +    '<div class="sd-nleg" id="sd-nleg"></div></div>'
+      +  '<div class="sd-tab sd-gal" data-tab="galeria" style="display:none"><div class="sd-serie-tit">Galería</div>'
+      +    '<img src="docs/06_SAT_sensor_sirenas.png" onclick="window.open(this.src)" alt="Productos SAT: estación + sirenas">'
+      +    '<img src="docs/01_sistema_hidrico.png" onclick="window.open(this.src)" alt="Sistema hídrico"></div>'
+      +'</div>'
       +'<div class="sd-note">Estación P1 · lecturas de la API</div>';
     document.body.appendChild(p);
     p.querySelector('.sd-x').addEventListener('click',()=>{ p.style.display='none'; });
+    p.querySelectorAll('.sd-tabs button').forEach(b=>b.addEventListener('click',()=>sdTab(b.dataset.t)));
   }
   return p;
 }
+function renderNiveles(cm){
+  const N=nivelesN(), act=nivelActual(isNaN(cm)?0:cm);
+  const cur=document.getElementById('sd-niv-cur');
+  if(cur) cur.innerHTML='Lámina actual: <b>'+(isNaN(cm)?'—':cm.toFixed(1)+' cm')+'</b> · <b style="color:'+N[act].c+'">'+N[act].n+' — '+N[act].tit+'</b>';
+  const rango=['< '+N[0].tope+' cm', N[0].tope+'–'+N[1].tope+' cm', N[1].tope+'–'+N[2].tope+' cm', '≥ '+N[2].tope+' cm'];
+  const desc=['No se registran cambios asociados a crecientes.','Aumento del nivel; primer estado de alerta ante posibles crecientes.',
+    'Afectaciones menores a calles y estructuras cercanas al canal.','Inundación extensiva; evacuación de la población en la zona de influencia.'];
+  const list=document.getElementById('sd-niv-list');
+  if(list) list.innerHTML=N.map((x,i)=>`<div class="sd-niv-item${i===act?' on':''}"><span class="sd-niv-badge" style="background:${x.c}">${x.n}</span>`
+    +`<div><b>${x.tit}</b> <span style="color:#999">(${rango[i]})</span><br><span style="font-size:10.5px;color:#666">${desc[i]}</span></div></div>`).join('');
+}
+function renderLecturas(lista, info){
+  const el=document.getElementById('sd-lect'); if(!el) return;
+  const last=lista.length?lista[lista.length-1]:null;
+  const t=last&&last.fecha_hora?String(last.fecha_hora).replace('T',' ').slice(0,16):'—';
+  if(info.bool){
+    const n=lista.length, si=lista.filter(m=>m[info.campo]).length;
+    el.innerHTML=_kv('Última',(last&&last[info.campo]?'Lloviendo':'Sin lluvia')+' · '+t)
+      +_kv('% con lluvia',(n?Math.round(si/n*100):0)+' %')+_kv('N.º lecturas',n); return;
+  }
+  const vals=lista.map(m=>parseFloat(m[info.campo])).filter(v=>!isNaN(v));
+  const max=vals.length?Math.max.apply(null,vals):NaN, min=vals.length?Math.min.apply(null,vals):NaN,
+        prom=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:NaN;
+  const u=info.unidad?' '+info.unidad:'';
+  el.innerHTML=_kv('Última',fmtNum(last&&last[info.campo])+u+' · '+t)+_kv('Máximo',fmtNum(max)+u)
+    +_kv('Mínimo',fmtNum(min)+u)+_kv('Promedio',fmtNum(prom)+u)+_kv('N.º lecturas',vals.length);
+}
 async function abrirPanelSensor(key){
   const info=SENSOR_INFO[key]; if(!info) return;
-  const p=panelDetalle(); p.style.display='block';
+  const p=panelDetalle(); p.style.display='block'; sdTab('series');
   p.querySelector('.sd-sub').textContent=info.label+(info.unidad?' ('+info.unidad+')':'');
   p.querySelector('.sd-h').style.background=info.color;
   p.querySelector('.sd-valor').textContent='cargando…';
@@ -388,10 +463,12 @@ async function abrirPanelSensor(key){
       backgroundColor:'rgba(46,139,87,.12)',fill:true,tension:.3,pointRadius:1.6,stepped:!!info.bool}]},
     options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:!!info.bool,
       ticks:info.bool?{stepSize:1,callback:v=>v?'Sí':'No'}:{}}},responsive:true,maintainAspectRatio:false}});
-  // Corte del cauce: solo para el sensor de nivel
-  const corte=document.getElementById('sd-corte');
-  if(key==='nivel'){ renderCorte(parseFloat(actual)); }
-  else if(corte){ corte.style.display='none'; if(_corteChart){_corteChart.destroy();_corteChart=null;} }
+  // Descripción (últimas lecturas del sensor abierto)
+  renderLecturas(lista, info);
+  // Niveles de riesgo y Perfil usan el NIVEL de agua de la última lectura (aunque se abra otro sensor)
+  const nivelCm = ult.length?parseFloat(ult[ult.length-1].nivel_agua):NaN;
+  renderNiveles(nivelCm);
+  renderCorte(nivelCm);
 }
 const hist={labels:[],data:[]};let chart;
 function initChart(){const ctx=document.getElementById('sensor-chart');if(!ctx||!window.Chart)return;
