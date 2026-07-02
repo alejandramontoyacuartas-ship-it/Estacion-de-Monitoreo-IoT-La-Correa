@@ -29,7 +29,7 @@
     ]},
     {label:'Reducción del riesgo', items:[
       {t:'Monitoreo y Alertas', grupo:true, items:[
-        {t:'Estaciones de monitoreo (SIATA)', sub:[
+        {t:'Estaciones de monitoreo', sub:[
           {t:'Sensores de nivel',   h:'index.html?capa=siata_nivel'},
           {t:'Red sismológica',      h:'https://geoportal.siata.gov.co/', ext:true},
           {t:'Red pluviométrica',    h:'https://geoportal.siata.gov.co/', ext:true},
