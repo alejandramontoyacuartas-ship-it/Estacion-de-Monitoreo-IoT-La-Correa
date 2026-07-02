@@ -425,7 +425,11 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
   const nv=parseFloat(d[C.nivel]);if(!isNaN(nv)){hist.labels.push(new Date().toLocaleTimeString());hist.data.push(nv);if(hist.data.length>20){hist.labels.shift();hist.data.shift();}if(chart)chart.update();}
  }catch(e){setEstado('SIN DATO');document.getElementById('sensor-update').textContent='API no disponible (revisa endpoint/CORS). '+e.message;
    try{ sensorMarker.setPopupContent('<b>📡 '+CONFIG.SENSOR.nombre+'</b><br>Sin datos (API no disponible)'); }catch(_){} }}
-window.addEventListener('load',()=>{initChart();leerSensor();setInterval(leerSensor,CONFIG.REFRESH_MS);});
+// El panel "Estación de monitoreo" (#panel-sensor) NO aparece al inicio del geoportal;
+// se muestra al hacer clic en el submenú "Estación de Monitoreo La Correa" y se oculta
+// al pasar a los menús Conocimiento o Manejo (lógica en navbar.js).
+window.mostrarPanelEstacion=function(on){ const p=document.getElementById('panel-sensor'); if(p) p.style.display=on?'block':'none'; };
+window.addEventListener('load',()=>{ window.mostrarPanelEstacion(false); initChart(); leerSensor(); setInterval(leerSensor,CONFIG.REFRESH_MS); });
 
 // ---------- Leyenda dinámica (según capas activas) ----------
 const SW=c=>`<i style="background:${c}"></i>`;

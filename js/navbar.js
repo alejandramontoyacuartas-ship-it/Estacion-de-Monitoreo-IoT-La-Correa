@@ -95,7 +95,7 @@
               + `<ul class="sat-sensores" id="nav-uso"><li style="padding:9px 18px;color:#cfeede;font-size:11px">Coberturas — abre con Live Server (http)…</li></ul></li>`;
       } else if(it.estacion){
         // Estación de monitoreo Quebrada La Correa: descripción + sensores (P1)
-        html += `<li class="sat-grp"><div class="sat-head"><span class="sat-ic">📡</span><span style="flex:1">${it.t}</span><span class="sat-caret">▾</span></div><ul class="sat-sensores">`
+        html += `<li class="sat-grp"><div class="sat-head est-panel-head"><span class="sat-ic">📡</span><span style="flex:1">${it.t}</span><span class="sat-caret">▾</span></div><ul class="sat-sensores">`
               +   `<li class="sat-note">Estación P1 — mide nivel, lluvia, temperatura y humedad de la quebrada. Activa cada sensor para ver su ícono sobre P1.</li>`;
         SENS.forEach(s=>{
           html += `<li class="sat-it"><span class="sat-ic">${s.ic}</span><span class="sat-tx">${s.t}</span>`
@@ -107,7 +107,7 @@
         html += `<li class="sat-grp"><div class="sat-head">${it.t}<span class="sat-caret">▾</span></div><ul class="sat-sensores">`;
         it.items.forEach(s=>{
           if(s.estacion){
-            html += `<li class="sat-grp sat-sub"><div class="sat-head sat-head2"><span class="sat-ic">📡</span><span style="flex:1">${s.t}</span><span class="sat-caret">▾</span></div><ul class="sat-sensores">`
+            html += `<li class="sat-grp sat-sub"><div class="sat-head sat-head2 est-panel-head"><span class="sat-ic">📡</span><span style="flex:1">${s.t}</span><span class="sat-caret">▾</span></div><ul class="sat-sensores">`
                   +   `<li class="sat-note">Estación P1 — mide nivel, lluvia, temperatura y humedad de la quebrada. Activa cada sensor para ver su ícono sobre P1.</li>`;
             SENS.forEach(se=>{
               html += `<li class="sat-it"><span class="sat-ic">${se.ic}</span><span class="sat-tx">${se.t}</span>`
@@ -159,6 +159,19 @@
       inp.addEventListener('change', e=>{ e.stopPropagation(); aplicar(inp); });
       inp.parentElement.addEventListener('click', e=>e.stopPropagation());
       aplicar(inp); // estado inicial (todos activos => íconos visibles)
+    });
+    // Panel "Estación de monitoreo" (#panel-sensor del visor): aparece al hacer clic en
+    // "Estación de Monitoreo La Correa"; se oculta al pasar a Conocimiento o Manejo.
+    document.querySelectorAll('.est-panel-head').forEach(h=>{
+      h.addEventListener('click', ()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true); });
+    });
+    document.querySelectorAll('.nav-menu > .nav-item').forEach(li=>{
+      const lk=li.querySelector(':scope > .nav-link'); if(!lk) return;
+      if(/Conocimiento|Manejo/i.test(lk.textContent)){
+        const cerrar=()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(false); };
+        li.addEventListener('mouseenter', cerrar);
+        lk.addEventListener('click', cerrar);
+      }
     });
   }
   function inject(){ const r=document.getElementById('navbar-root'); if(r){ r.outerHTML=html; wire(); } }
