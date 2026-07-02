@@ -229,6 +229,9 @@ const CAPAS_KEYS=['curvas_nivel','veredas','red_hidrica_muni','red_oficial_coran
   }
   // capas lazy solicitadas por ?capa= (se cargan bajo demanda)
   for(const k of wantCapa){ const d=DEFBYK[k]; if(d&&d.lazy&&!d.layer) window.geoToggle(k,true); }
+  // Refresco limpio: una vez activadas, se quita ?capa= de la URL para que un F5 NO
+  // vuelva a activar los sensores/capas del menú (el geoportal inicia en su vista por defecto).
+  if(wantCapa.length){ try{ history.replaceState(null,'',location.pathname); }catch(e){} }
   // poblar el panel "Capas" solo con las capas de referencia
   const list=document.getElementById('cp-list');
   CAPAS_KEYS.forEach(k=>{
@@ -284,8 +287,9 @@ window.setSensorIcon=function(key,on){
     }
   }else if(sensorIcons[key]){ map.removeLayer(sensorIcons[key]); delete sensorIcons[key]; }
 };
-// mostrar los 4 sensores por defecto (todos activos)
-['nivel','lluvia','temp','humedad'].forEach(k=>window.setSensorIcon(k,true));
+// Los 4 íconos de sensor inician APAGADOS; se activan desde los interruptores del navbar
+// ("Estación de Monitoreo La Correa"). No se fuerzan al cargar (evita que queden activos al refrescar).
+['nivel','lluvia','temp','humedad'].forEach(k=>window.setSensorIcon(k,false));
 
 // ===== Panel de detalle por sensor (clic en el ícono activo sobre P1) =====
 const SENSOR_INFO={
