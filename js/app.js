@@ -159,11 +159,20 @@ const DEF=[
  {k:'puntos_sensor_ahp',label:'Puntos candidatos AHP',sub:'3 · análisis multicriterio (P1 óptimo)',icon:'🎯',color:'#3949ab',def:false,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:7,fillColor:(String(f.properties.Punto||f.properties.Prioridad).indexOf('1')>=0?'#1b5e20':'#3949ab'),color:'#fff',weight:2,fillOpacity:.95}),
      onEachFeature:(f,l)=>l.bindPopup(pop({Punto:f.properties.Punto,Prioridad:f.properties.Prioridad,Cauce:f.properties.Cauce,Score:f.properties.Score,Lead_min:f.properties.Lead_min},'Candidato AHP'))})},
- {k:'siata_nivel',label:'Sensores de nivel (SIATA)',sub:'Estaciones de nivel · red SIATA · Girardota',icon:'🌊',color:'#0277bd',def:false,lazy:true,
-   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconNivel('#0277bd')}),
-     onEachFeature:(f,l)=>{ const p=f.properties;
-       l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
-       l.bindPopup(popupSiata(p),{maxWidth:270}); }})},
+ {k:'siata_nivel',label:'Sensores de nivel',sub:'Estación La Correa (propia) + red SIATA',icon:'🌊',color:'#0277bd',def:false,lazy:true,
+   build:j=>{
+     // Estaciones SIATA (azul) → clic abre el geoportal SIATA
+     const siata=L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconNivel('#0277bd')}),
+       onEachFeature:(f,l)=>{ const p=f.properties;
+         l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
+         l.bindPopup(popupSiata(p),{maxWidth:270}); }});
+     // Estación PROPIA del proyecto (P1) — NO es SIATA: clic abre el panel con la info trabajada
+     const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
+     const p1=L.marker([s.lat,s.lon],{icon:iconNivel('#1b7a3a'),zIndexOffset:1000})
+       .bindTooltip(s.nombre+' · estación propia',{direction:'top'})
+       .on('click',()=>{ if(typeof abrirPanelSensor==='function') abrirPanelSensor('nivel'); });
+     return L.layerGroup([siata,p1]);
+   }},
  // --- Capas de referencia municipal (panel "Capas"); se cargan bajo demanda (lazy) ---
  {k:'curvas_nivel',label:'Curvas de Nivel 5 m',sub:'Topografía · 1285–2715 m',icon:'⛰️',color:'#8d6e63',def:false,capas:true,lazy:true,
    build:j=>L.geoJSON(j,{style:f=>({color:(f.properties.Indice?'#6d4c41':'#bcaaa4'),weight:(f.properties.Indice?1.1:.5),opacity:.8}),

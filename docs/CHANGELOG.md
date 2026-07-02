@@ -126,6 +126,9 @@ Orden cronológico de lo construido (para entender el punto de avance).
   script `scripts/crear_siata_nivel.py`. Coordenadas de las fichas de SIATA.
 - ArcGIS: capa **`siata_nivel_1`** (4 pts) en `GIRARDOTA.gdb`. app.js v37, navbar v28.
   *(Los enlaces abren el geoportal general de SIATA; si hay URL por estación se pueden afinar.)*
+- La capa "Sensores de nivel" **también incluye la estación PROPIA del proyecto (P1)** en **verde**
+  (`CONFIG.SENSOR`): NO es SIATA → al hacer clic abre el **panel propio** (lectura en vivo + serie de
+  tiempo + sección transversal), no enlaza a SIATA. app.js v38.
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
