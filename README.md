@@ -96,6 +96,7 @@ GeoportalGRDGirardota/
 | **[docs/MENUS.md](docs/MENUS.md)** | Mapa completo de menús y a dónde lleva cada opción (sitemap + comportamiento). |
 | **[docs/DICCIONARIO_CAPAS.md](docs/DICCIONARIO_CAPAS.md)** | Las 32 capas GeoJSON: qué son, geometría, campos, origen. |
 | **[docs/RESULTADOS_TECNICOS.md](docs/RESULTADOS_TECNICOS.md)** | Resultados del análisis SIG: morfometría, caudales, GEE/CHIRPS, exposición, AHP, sirenas. |
+| **[docs/OBSERVACIONES_INFORME.md](docs/OBSERVACIONES_INFORME.md)** | Salvedades/limitaciones que van en el informe final (OBS-1: caudal provisional → modelar por otro medio). |
 | **[docs/PENDIENTES.md](docs/PENDIENTES.md)** | Qué falta, marcadores `#`, cómo regenerar `data.js`, cómo continuar en VS Code, publicar. |
 | **[docs/CHANGELOG.md](docs/CHANGELOG.md)** | Historial de lo construido (orden de avance). |
 

@@ -13,6 +13,8 @@ Proyecto fuente: ArcGIS `N_CORREA` (MDE LiDAR 2 m, EPSG:9377; export a 4326 para
   Potrerito / Cedral (2,25 km, donde están los puntos de campo).
 - **Caudal de diseño:** **Q(Tr100) ≈ 249 m³/s** con abultamiento (bulking) por sedimentos/bloques.
   (Valor en `js/config.js` → `CAUDAL_DISENO_M3S: 249`.)
+  ⚠️ **PROVISIONAL** — lluvia CHIRPS ×1,39; debe validarse con lluvia local (IDEAM/SIATA) y modelación
+  hidráulica (HEC-RAS/IBER). Ver **`docs/OBSERVACIONES_INFORME.md` → OBS-1** (limitación para el informe).
 - **Zonificación de riesgo:** ALTO 39,7 ha · MEDIO 61,3 ha · BAJO 97,5 ha.
 - **Elementos expuestos:** 61 puntos validados en campo (clasificados por nivel de riesgo).
 
