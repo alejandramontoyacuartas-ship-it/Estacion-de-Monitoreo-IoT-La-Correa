@@ -89,12 +89,15 @@ Orden cronológico de lo construido (para entender el punto de avance).
   (base Terreno), panel estadístico por vereda, tabla, y **modal** que muestra/descarga el informe
   técnico al hacer clic en un punto. En el menú **Conocimiento del riesgo → "Inspecciones técnicas de
   campo — Interinstitucionales"** (navbar v22).
-- Datos: **`data/pt_inter.geojson`** (10 puntos del KMZ "puntos 1-10 · Corantioquia jun 2023";
-  San Andrés 3, Mercedes Ábrego 2, Potreritos 2, La Matica 2, El Socorro 1) + embebido `js/pt_inter.js`.
-- Informe: **`informes/IT2307-8323_Girardota_p1-10_mayo2023.pdf`** (los 10 puntos apuntan al mismo
-  informe, según la convención de nombre "1-10…"). *Pendiente: punto 11 (DAGRAN Socorro Rancho Alegre)
-  no está en este KMZ.*
-- ArcGIS: capa **`pt_inter_1`** creada en `GIRARDOTA.gdb` (10 puntos, 4326) y añadida al mapa de N_CORREA.
+- Datos: **`data/pt_inter.geojson`** — **actualizado a 18 puntos** (KML `puntos_grd_girardota_P1_P18`);
+  embebido en `js/pt_inter.js`. Veredas: San Andrés 3, Mercedes Ábrego 2, El Socorro 2, Potreritos 2,
+  La Matica 2, El Totumo 1, San Esteban 1, Manga Arriba 1, Sin dato 4.
+- **8 informes** en `informes/`, cada punto apunta al suyo según el prefijo del número del archivo
+  (convención "1-10…", "11.", "12.", "13.", "14-15", "16.", "17.", "18."): p1-10 IT2307-8323 ·
+  p11 DAGRAN Socorro Rancho Alegre · p12 160AN-IT2602-1057 Totumo · p13 160AN-COI2410-24668 ·
+  p14-15 160AN-COI2610-28891 · p16 AMVA Colcerámica · p17 AMVA San Esteban · p18 AMVA Manga Arriba.
+- ArcGIS: capa **`pt_inter_1`** en `GIRARDOTA.gdb` (18 puntos, 4326) añadida al mapa de N_CORREA.
+- Parser reproducible: `scripts/parse_kml_interinstitucionales.py` (KML→GeoJSON + copia de PDF + mapeo punto→informe).
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,

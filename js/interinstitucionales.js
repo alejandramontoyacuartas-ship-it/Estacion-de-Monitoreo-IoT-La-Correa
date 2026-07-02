@@ -84,9 +84,10 @@ function renderStats(sel){
   const conteo={};
   sel.forEach(f=>{const v=f.properties.vereda||'Sin dato'; conteo[v]=(conteo[v]||0)+1;});
   const veredas=Object.keys(conteo).sort((a,b)=>conteo[b]-conteo[a]);
+  const reales=veredas.filter(v=>v!=='Sin dato');
   document.getElementById('totalPuntos').textContent=sel.length;
-  document.getElementById('totalVeredas').textContent=veredas.length;
-  document.getElementById('veredaPredominante').textContent=veredas[0]||'—';
+  document.getElementById('totalVeredas').textContent=reales.length;
+  document.getElementById('veredaPredominante').textContent=reales[0]||'—';
   // gráfico (paleta verde institucional)
   const VERDES=['#1f5a43','#2f7a57','#4f9a6a','#8ccf4d','#b7e08a','#d9edc4'];
   if(grafico) grafico.destroy();
