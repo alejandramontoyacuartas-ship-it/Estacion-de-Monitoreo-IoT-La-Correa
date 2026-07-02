@@ -15,7 +15,8 @@ EST = [
      "vereda":"Jamundi","municipio":"Girardota","lat":6.364524,"lon":-75.436203},
     {"codigo":"88","nombre":"CUIDA Juan Cojo","subcuenca":"Q. La Ferreria",
      "vereda":"Juan Cojo","municipio":"Girardota","lat":6.356780,"lon":-75.450971},
-    # {"codigo":"???","nombre":"...","subcuenca":"...","vereda":"...","municipio":"Girardota","lat":..,"lon":..},  # 6ª pendiente
+    {"codigo":"389","nombre":"Manga Arriba - Pluviometro","subcuenca":"Q. Juan Cojo",
+     "vereda":"Manga Arriba","municipio":"Girardota","lat":6.351598,"lon":-75.458963},
 ]
 
 feats = []
