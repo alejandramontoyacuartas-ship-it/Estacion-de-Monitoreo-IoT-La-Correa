@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "geoportal",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["scripts/servidor_proxy.py"],
+      "port": 8080
+    }
+  ]
+}
