@@ -28,13 +28,18 @@
       ]},
     ]},
     {label:'Reducción del riesgo', items:[
-      {t:'Obras de mitigación',  h:'#'},
-      {t:'Cobertura de alertas', h:'index.html?capa=cobertura'},
       {t:'Monitoreo y Alertas', grupo:true, items:[
-        {t:'Estaciones de monitoreo (SIATA)', h:'https://geoportal.siata.gov.co/', ext:true},
-        {t:'Estación de Monitoreo La Correa', estacion:true},
+        {t:'Estaciones de monitoreo (SIATA)', sub:[
+          {t:'Niveles de quebradas', h:'https://geoportal.siata.gov.co/', ext:true},
+          {t:'Red sismológica',      h:'https://geoportal.siata.gov.co/', ext:true},
+          {t:'Red pluviométrica',    h:'https://geoportal.siata.gov.co/', ext:true},
+        ]},
+        {t:'Estación de Monitoreo La Correa', estacion:true, extra:[
+          {t:'Cobertura de alertas', h:'index.html?capa=cobertura'},
+        ]},
         {t:'Tablero de lectura', h:'dashboard.html'},
       ]},
+      {t:'Obras de mitigación', h:'#'},
     ]},
     {label:'Manejo de desastres', items:[
       {t:'Emergencias atendidas', h:'index.html?capa=antecedentes'},
@@ -107,6 +112,16 @@
             SENS.forEach(se=>{
               html += `<li class="sat-it"><span class="sat-ic">${se.ic}</span><span class="sat-tx">${se.t}</span>`
                     + `<label class="sat-sw" title="Activar/ocultar ${se.t}"><input type="checkbox" data-row="${se.row}" data-key="${se.k}"><span class="sat-kn"></span></label></li>`;
+            });
+            (s.extra||[]).forEach(x=>{
+              html += `<li class="sat-it"><a class="sat-link" href="${x.h||'#'}"${x.ext?' target="_blank" rel="noopener"':''}>${x.t}${x.ext?' ↗':''}</a></li>`;
+            });
+            html += `</ul></li>`;
+          } else if(s.sub){
+            // Submenú anidado de enlaces (p. ej. Estaciones SIATA)
+            html += `<li class="sat-grp sat-sub"><div class="sat-head sat-head2">${s.t}<span class="sat-caret">▾</span></div><ul class="sat-sensores">`;
+            s.sub.forEach(x=>{
+              html += `<li class="sat-it"><a class="sat-link" href="${x.h||'#'}"${x.ext?' target="_blank" rel="noopener"':''}>${x.t}${x.ext?' ↗':''}</a></li>`;
             });
             html += `</ul></li>`;
           } else {
