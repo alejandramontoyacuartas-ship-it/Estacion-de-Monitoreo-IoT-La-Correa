@@ -102,6 +102,9 @@ Orden cronológico de lo construido (para entender el punto de avance).
 - **Marcadores por institución** (en vez de número): campo `institucion` (Corantioquia 14 · AMVA 3 · DAGRAN 1);
   color verde/azul/naranja + **leyenda** en el mapa y columna Institución en la tabla. La institución se
   deriva del informe de cada punto (P16-18 AMVA, P11 DAGRAN, resto Corantioquia).
+- **Veredas de los puntos "Sin dato" completadas por point-in-polygon** contra `veredas.geojson`
+  (`scripts/fill_vereda_por_poligono.py`): P13→El Socorro, P14→San Diego, P15→Portachuelo,
+  P16 (Colcerámica, fuera de polígonos)→San Diego (vereda más cercana, 105 m — *validar*). Ya no queda "Sin dato".
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
