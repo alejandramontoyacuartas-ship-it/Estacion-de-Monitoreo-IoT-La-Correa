@@ -73,6 +73,17 @@ Orden cronológico de lo construido (para entender el punto de avance).
   (nivel/temp/humedad/lluvia + histórico + CSV), sirenas activadas por estado CRÍTICO real,
   umbrales de `CONFIG.UMBRALES` (PREVENCIÓN ≥10 · CRÍTICO ≥20). Eliminada la simulación.
 
+## Tablero (dashboard) — datos y cartografía de N_CORREA (2026-07-01)
+- Menú: nuevo ítem **"Tablero de lectura"** en Monitoreo y Alertas → `dashboard.html` (navbar v21).
+- Quitada la sección "Flujo metodológico".
+- **Datos corregidos al análisis real de La Correa:** lluvia de diseño **CHIRPS ×1,39 = 98,4 mm**
+  (antes tenía 80,2 mm, que es de El Salado) · SCS CN III 77,5 · Qp 249 m³/s · Producto A capta ~89 %.
+  Morfometría (Kc 2,27 · Dd 7,12 · Lc 8,32 km · pend. cauce 14,6% · Melton 0,472 · Tc 43 min) verificada
+  contra el modelo DTM12 corregido.
+- **Cartografía del análisis:** galería reemplazada por los mapas reales `docs/01–06`
+  (sistema hídrico, amenaza, exposición, riesgo, susceptibilidad, productos SAT); antes usaba
+  mapas de `img/` del proyecto viejo (12,5 m).
+
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
   `RESULTADOS_TECNICOS.md`, `PENDIENTES.md`, este CHANGELOG.
