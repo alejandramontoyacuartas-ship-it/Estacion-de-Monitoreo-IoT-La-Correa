@@ -30,11 +30,11 @@
     {label:'Reducción del riesgo', items:[
       {t:'Obras de mitigación',  h:'#'},
       {t:'Cobertura de alertas', h:'index.html?capa=cobertura'},
-    ]},
-    {label:'Monitoreo y Alertas', items:[
-      {t:'Estaciones de monitoreo (SIATA)', h:'https://geoportal.siata.gov.co/', ext:true},
-      {t:'Estación de Monitoreo La Correa', estacion:true},
-      {t:'Tablero de lectura', h:'dashboard.html'},
+      {t:'Monitoreo y Alertas', grupo:true, items:[
+        {t:'Estaciones de monitoreo (SIATA)', h:'https://geoportal.siata.gov.co/', ext:true},
+        {t:'Estación de Monitoreo La Correa', estacion:true},
+        {t:'Tablero de lectura', h:'dashboard.html'},
+      ]},
     ]},
     {label:'Manejo de desastres', items:[
       {t:'Emergencias atendidas', h:'index.html?capa=antecedentes'},
@@ -42,7 +42,9 @@
     ]},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;
-  const active = cat => cat.items.some(it => esta(it.h) || (it.sub && it.sub.some(s => esta(s.h))));
+  const active = cat => cat.items.some(it => esta(it.h)
+    || (it.sub   && it.sub.some(s => esta(s.h)))
+    || (it.items && it.items.some(s => esta(s.h))));
 
   const css = `<style>
     .sat-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:13px;font-weight:700;padding:11px 20px;cursor:pointer;border-top:1px solid rgba(255,255,255,.08);user-select:none}
@@ -93,6 +95,23 @@
         SENS.forEach(s=>{
           html += `<li class="sat-it"><span class="sat-ic">${s.ic}</span><span class="sat-tx">${s.t}</span>`
                 + `<label class="sat-sw" title="Activar/ocultar ${s.t}"><input type="checkbox" data-row="${s.row}" data-key="${s.k}"><span class="sat-kn"></span></label></li>`;
+        });
+        html += `</ul></li>`;
+      } else if(it.grupo){
+        // Submenú anidado con ítems especiales (p. ej. "Monitoreo y Alertas": SIATA + Estación + Tablero)
+        html += `<li class="sat-grp"><div class="sat-head">${it.t}<span class="sat-caret">▾</span></div><ul class="sat-sensores">`;
+        it.items.forEach(s=>{
+          if(s.estacion){
+            html += `<li class="sat-grp sat-sub"><div class="sat-head sat-head2"><span class="sat-ic">📡</span><span style="flex:1">${s.t}</span><span class="sat-caret">▾</span></div><ul class="sat-sensores">`
+                  +   `<li class="sat-note">Estación P1 — mide nivel, lluvia, temperatura y humedad de la quebrada. Activa cada sensor para ver su ícono sobre P1.</li>`;
+            SENS.forEach(se=>{
+              html += `<li class="sat-it"><span class="sat-ic">${se.ic}</span><span class="sat-tx">${se.t}</span>`
+                    + `<label class="sat-sw" title="Activar/ocultar ${se.t}"><input type="checkbox" data-row="${se.row}" data-key="${se.k}"><span class="sat-kn"></span></label></li>`;
+            });
+            html += `</ul></li>`;
+          } else {
+            html += `<li class="sat-it"><a class="sat-link" href="${s.h||'#'}"${s.ext?' target="_blank" rel="noopener"':''}>${s.t}${s.ext?' ↗':''}</a></li>`;
+          }
         });
         html += `</ul></li>`;
       } else if(it.sub){
