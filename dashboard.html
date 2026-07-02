@@ -25,6 +25,10 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
 @keyframes pulse{0%{opacity:1}50%{opacity:.5}100%{opacity:1}}
 .live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2e9e57;animation:pulse 1.4s infinite;margin-right:5px}
 .chart-box{height:260px;position:relative}
+/* Tarjeta de gráfico con cabecera verde institucional (formato del geoportal) */
+.chart-card{background:#fff;border:1px solid #d9e5da;border-radius:12px;box-shadow:0 2px 8px rgba(31,90,67,.08);overflow:hidden;display:flex;flex-direction:column}
+.chart-card .ch-tit{background:linear-gradient(135deg,#1f5a43,#2f7a57);color:#fff;font-size:13.5px;font-weight:700;padding:10px 14px}
+.chart-card .ch-body{padding:12px 14px 14px}
 .prod h3{color:#1f5a43;font-size:15px;margin-bottom:8px}
 .prod ul{list-style:none;font-size:13px;margin:0;padding:0}
 .prod li{padding:4px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
@@ -92,9 +96,9 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
   <!-- Graficas -->
   <h2 class="sec">Resultados del análisis</h2>
   <div class="grid cards3">
-    <div class="card"><h3 style="font-size:14px;color:#1f5a43;margin-bottom:8px">Elementos por nivel de riesgo</h3><div class="chart-box"><canvas id="cRiesgo"></canvas></div></div>
-    <div class="card"><h3 style="font-size:14px;color:#1f5a43;margin-bottom:8px">Elementos por categoría</h3><div class="chart-box"><canvas id="cExpo"></canvas></div></div>
-    <div class="card"><h3 style="font-size:14px;color:#1f5a43;margin-bottom:8px">Zonificación del riesgo (ha)</h3><div class="chart-box"><canvas id="cZona"></canvas></div></div>
+    <div class="chart-card"><div class="ch-tit">Elementos por nivel de riesgo</div><div class="ch-body"><div class="chart-box"><canvas id="cRiesgo"></canvas></div></div></div>
+    <div class="chart-card"><div class="ch-tit">Elementos por categoría</div><div class="ch-body"><div class="chart-box"><canvas id="cExpo"></canvas></div></div></div>
+    <div class="chart-card"><div class="ch-tit">Zonificación del riesgo (ha)</div><div class="ch-body"><div class="chart-box"><canvas id="cZona"></canvas></div></div></div>
   </div>
 
   <!-- Morfometria -->
