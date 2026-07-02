@@ -22,6 +22,7 @@
       {t:'Hidrología — subcuencas', h:'index.html', cuencas:true},
       {t:'Uso del suelo',           h:'index.html', uso:true},
       {t:'Inspecciones técnicas',   h:'informes.html'},
+      {t:'Inspecciones técnicas de campo — Interinstitucionales', h:'interinstitucionales.html'},
     ]},
     {label:'Escenarios de Riesgo y Cambio Climático', items:[
       {t:'Escenarios de Riesgos', h:'escenarios.html'},

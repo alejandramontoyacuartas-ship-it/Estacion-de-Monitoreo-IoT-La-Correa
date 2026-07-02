@@ -3,6 +3,7 @@
 # Se conservan en disco pero NO se publican en el repo (mantienen el repo liviano).
 INFORMACION DE PUNTOS EN RIESGO/
 imegenes puntos criticos/
+Inspecciones tecnicas inter/
 
 # Sistema / editores
 .DS_Store

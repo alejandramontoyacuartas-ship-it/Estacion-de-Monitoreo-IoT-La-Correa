@@ -84,6 +84,18 @@ Orden cronológico de lo construido (para entender el punto de avance).
   (sistema hídrico, amenaza, exposición, riesgo, susceptibilidad, productos SAT); antes usaba
   mapas de `img/` del proyecto viejo (12,5 m).
 
+## Inspecciones técnicas Interinstitucionales (2026-07-01)
+- Nueva página **`interinstitucionales.html`** (clon del modelo de `puntos_riesgo`): mapa de visitas
+  (base Terreno), panel estadístico por vereda, tabla, y **modal** que muestra/descarga el informe
+  técnico al hacer clic en un punto. En el menú **Conocimiento del riesgo → "Inspecciones técnicas de
+  campo — Interinstitucionales"** (navbar v22).
+- Datos: **`data/pt_inter.geojson`** (10 puntos del KMZ "puntos 1-10 · Corantioquia jun 2023";
+  San Andrés 3, Mercedes Ábrego 2, Potreritos 2, La Matica 2, El Socorro 1) + embebido `js/pt_inter.js`.
+- Informe: **`informes/IT2307-8323_Girardota_p1-10_mayo2023.pdf`** (los 10 puntos apuntan al mismo
+  informe, según la convención de nombre "1-10…"). *Pendiente: punto 11 (DAGRAN Socorro Rancho Alegre)
+  no está en este KMZ.*
+- ArcGIS: capa **`pt_inter_1`** creada en `GIRARDOTA.gdb` (10 puntos, 4326) y añadida al mapa de N_CORREA.
+
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
   `RESULTADOS_TECNICOS.md`, `PENDIENTES.md`, este CHANGELOG.
