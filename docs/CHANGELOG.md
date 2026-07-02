@@ -96,8 +96,12 @@ Orden cronológico de lo construido (para entender el punto de avance).
   (convención "1-10…", "11.", "12.", "13.", "14-15", "16.", "17.", "18."): p1-10 IT2307-8323 ·
   p11 DAGRAN Socorro Rancho Alegre · p12 160AN-IT2602-1057 Totumo · p13 160AN-COI2410-24668 ·
   p14-15 160AN-COI2610-28891 · p16 AMVA Colcerámica · p17 AMVA San Esteban · p18 AMVA Manga Arriba.
-- ArcGIS: capa **`pt_inter_1`** en `GIRARDOTA.gdb` (18 puntos, 4326) añadida al mapa de N_CORREA.
+- ArcGIS: capa **`pt_inter_1`** en `GIRARDOTA.gdb` (18 puntos, 4326) añadida al mapa de N_CORREA,
+  **simbolizada por institución** (unique value).
 - Parser reproducible: `scripts/parse_kml_interinstitucionales.py` (KML→GeoJSON + copia de PDF + mapeo punto→informe).
+- **Marcadores por institución** (en vez de número): campo `institucion` (Corantioquia 14 · AMVA 3 · DAGRAN 1);
+  color verde/azul/naranja + **leyenda** en el mapa y columna Institución en la tabla. La institución se
+  deriva del informe de cada punto (P16-18 AMVA, P11 DAGRAN, resto Corantioquia).
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,

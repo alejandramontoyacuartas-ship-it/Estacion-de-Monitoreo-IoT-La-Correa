@@ -19,6 +19,21 @@ const capaClaro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{
 capaTerreno.addTo(map);
 L.control.layers({'Mapa base':capaOSM,'Satelital':capaSat,'Terreno':capaTerreno,'Mapa claro':capaClaro}, null, {collapsed:false}).addTo(map);
 
+// Color del punto según la institución que hizo la visita
+const COLOR_INST = {'Corantioquia':'#2e8b57','AMVA':'#1c6fb5','DAGRAN':'#e67e22','Sin dato':'#9a9a92'};
+
+// Leyenda de instituciones (abajo a la derecha del mapa)
+const leyendaInst = L.control({position:'bottomright'});
+leyendaInst.onAdd = function(){
+  const d = L.DomUtil.create('div');
+  d.style.cssText = 'background:#fff;padding:8px 11px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.28);font-size:12px;line-height:1.5';
+  d.innerHTML = '<div style="font-weight:700;color:#1f5a43;margin-bottom:3px">Institución</div>' +
+    ['Corantioquia','AMVA','DAGRAN'].map(k =>
+      `<div style="display:flex;align-items:center;gap:7px"><span style="width:13px;height:13px;border-radius:50%;background:${COLOR_INST[k]};display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px #999"></span>${k}</div>`).join('');
+  return d;
+};
+leyendaInst.addTo(map);
+
 let PUNTOS = [];            // features del KMZ
 let markers = {};          // punto -> marker
 let grafico = null;
@@ -51,32 +66,31 @@ function seleccionados(){
   return PUNTOS.filter(f=>!v || f.properties.vereda===v);
 }
 
-function markerIcon(num, sel){
-  return L.divIcon({className:'', html:`<div class="pt-badge${sel?' sel':''}">${num}</div>`, iconSize:[26,26], iconAnchor:[13,13]});
-}
-
 function render(){
   // limpiar marcadores
   Object.values(markers).forEach(m=>map.removeLayer(m)); markers={};
   const sel=seleccionados();
-  // marcadores
+  // marcadores: color por institución (sin número)
   sel.forEach(f=>{
     const p=f.properties, c=f.geometry.coordinates;
-    const num=(p.punto||'').replace(/\D/g,'')||'•';
-    const m=L.marker([c[1],c[0]],{icon:markerIcon(num, selPunto===p.punto)})
-      .bindTooltip(`${p.punto} — ${p.vereda}`,{direction:'top'})
+    const col=COLOR_INST[p.institucion]||'#9a9a92';
+    const isSel=selPunto===p.punto;
+    const m=L.circleMarker([c[1],c[0]],{radius:isSel?10:7, color:isSel?'#1f5a43':'#fff',
+        weight:isSel?3:2, fillColor:col, fillOpacity:1})
+      .bindTooltip(`${p.punto} · ${p.institucion} · ${p.vereda}`,{direction:'top'})
       .on('click',()=>abrirInforme(p));
     m.addTo(map); markers[p.punto]=m;
   });
   // tabla
   document.getElementById('cuenta').textContent=sel.length;
   document.getElementById('tablaResultados').innerHTML = sel.length ? sel.map(f=>{
-    const p=f.properties;
+    const p=f.properties, col=COLOR_INST[p.institucion]||'#9a9a92';
     return `<tr onclick="irAPunto('${p.punto}')">
       <td>${(p.punto||'').replace(/\D/g,'')}</td><td>${p.punto||'—'}</td>
+      <td><span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${col};border:1px solid #999;vertical-align:middle;margin-right:6px"></span>${p.institucion||'—'}</td>
       <td>${p.vereda||'—'}</td><td>${p.altitud||'—'}</td>
       <td><button class="btn-ver" onclick="event.stopPropagation();abrirInformePorPunto('${p.punto}')">Ver informe</button></td></tr>`;
-  }).join('') : '<tr><td colspan="5">No hay puntos para esta vereda.</td></tr>';
+  }).join('') : '<tr><td colspan="6">No hay puntos para esta vereda.</td></tr>';
   renderStats(sel);
 }
 
@@ -115,8 +129,9 @@ function abrirInformePorPunto(punto){
 function abrirInforme(p){
   selPunto=p.punto; render();
   document.getElementById('rep-tit').textContent = 'Informe técnico · '+(p.punto||'');
+  const col=COLOR_INST[p.institucion]||'#9a9a92';
   document.getElementById('rep-sub').innerHTML =
-    `<b>Punto:</b> ${p.punto} &nbsp;·&nbsp; <b>Vereda:</b> ${p.vereda} &nbsp;·&nbsp; `
+    `<b>Punto:</b> ${p.punto} &nbsp;·&nbsp; <b>Institución:</b> <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:${col};border:1px solid #999;vertical-align:middle;margin:0 3px"></span>${p.institucion} &nbsp;·&nbsp; <b>Vereda:</b> ${p.vereda}<br>`
     +`<b>Ubicación:</b> ${p.ubicacion||'—'} &nbsp;·&nbsp; <b>Altitud:</b> ${p.altitud||'—'}<br>`
     +`<span style="color:#777">${p.informe_nombre||''}</span>`;
   document.getElementById('rep-frame').src = p.informe;
