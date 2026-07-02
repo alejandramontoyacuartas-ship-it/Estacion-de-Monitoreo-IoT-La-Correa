@@ -30,6 +30,13 @@ Punto de avance actual y lo que falta. **Continúa desde aquí; no repitas lo ya
 - **Fix permanente (para producción/GitHub Pages):** habilitar CORS en la API FastAPI (CORSMiddleware, allow_origins). Ver bloque abajo.
 
 ### Alta prioridad
+0. **⭐ Dejar FIJA/robusta la conexión con `/mapa` — CRÍTICO para publicar en GitHub Pages** (pedido de la usuaria, 2026-07-02):
+   - El geoportal (panel en vivo `leerSensor`) y el dashboard leen de `https://iot-trabajo.onrender.com/mapa`.
+     En local funciona por el **proxy** (`.claude/launch.json` / `scripts/servidor_proxy.py`, puerto 8080).
+   - **En GitHub Pages NO hay proxy → fallará por CORS.** Solución de fondo: **habilitar CORSMiddleware
+     (allow_origins) en la API FastAPI de Render** (tarea del equipo). Alternativa: proxy/servicio externo con CORS.
+   - Mantener SIEMPRE embebidas/activables: **Hidrología (subcuencas)**, **Uso del suelo** (ya en `data.js`) y la conexión **/mapa**.
+   - Ver memoria `feedback-geoportal-conexiones`.
 1. **Definir destinos de los marcadores `#`** del menú (hoy no llevan a ningún lado):
    - `Obras de mitigación`, `Subsidio de arriendo`, `Subsidio de materiales`, `CBVG`.
    - Decidir: página propia, PDF, o enlace externo de la Alcaldía. Editar en `js/navbar.js` (array `NAV`).
