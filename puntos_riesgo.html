@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puntos de riesgo | Girardota</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/navbar.css?v=2"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=1"/>
+  <style>
+    body{overflow:auto}
+    #map{height:460px;border-radius:10px}
+  </style>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=20"></script>
+
+<div class="container">
+
+  <header class="header">
+    <h1>Puntos críticos de riesgo — Girardota</h1>
+    <p>Análisis espacial y estadístico de eventos de riesgo · consulta por vereda y tipo de riesgo</p>
+  </header>
+
+  <!-- PANEL DE FILTROS -->
+  <section class="filtros-panel">
+    <h2>Filtros de consulta</h2>
+    <div class="filtros-grid">
+      <label for="veredaSelect">Seleccione la vereda:</label>
+      <select id="veredaSelect"><option value="">Seleccione vereda</option></select>
+
+      <label for="riesgoSelect">Tipo de riesgo:</label>
+      <select id="riesgoSelect"><option value="">Todos los riesgos</option></select>
+
+      <button class="btn-filtrar" onclick="filtrarDatos()">Filtrar</button>
+      <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
+    </div>
+    <p class="info-text">El mapa inicia sin mostrar puntos críticos. El registro y análisis se evidencian cuando el usuario aplica un filtro.</p>
+  </section>
+
+  <main class="main-grid">
+    <div class="left-column">
+
+      <section class="map-panel">
+        <h2>Mapa de puntos críticos</h2>
+        <div id="map"></div>
+      </section>
+
+      <section class="table-panel">
+        <h2>Resultados de consulta</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Vereda</th><th>Sector</th><th>Riesgo</th><th>Descripción</th></tr>
+            </thead>
+            <tbody id="tablaResultados">
+              <tr><td colspan="5">Aún no se ha aplicado ningún filtro.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <aside class="dashboard-panel">
+      <h2>Panel estadístico SIG</h2>
+      <div class="cards-resumen">
+        <div class="card-resumen"><h3>Total de eventos</h3><p id="totalEventos">18</p></div>
+        <div class="card-resumen"><h3>Total de veredas</h3><p id="totalVeredas">10</p></div>
+        <div class="card-resumen"><h3>Evento predominante</h3><p id="eventoPredominante">—</p></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Eventos de riesgo</h3>
+        <div class="grafico-container"><canvas id="graficoRiesgos"></canvas></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Distribución por vereda</h3>
+        <div class="grafico-container"><canvas id="graficoVeredas"></canvas></div>
+      </div>
+
+      <div class="panel-estadisticas">
+        <h3>Detalle estadístico</h3>
+        <div id="estadisticasRiesgo"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Leyenda temática -->
+  <div class="leyenda-panel">
+    <h3>Leyenda temática</h3>
+    <div class="item-leyenda"><span class="color-leyenda color-avenida"></span><span>Avenida torrencial</span></div>
+    <div class="item-leyenda"><span class="color-leyenda color-inundacion"></span><span>Inundación</span></div>
+    <div class="item-leyenda"><span class="color-leyenda color-estructural"></span><span>Estructural</span></div>
+    <div class="item-leyenda"><span class="color-leyenda color-socavacion"></span><span>Socavación / Hundimiento</span></div>
+    <div class="item-leyenda"><span class="color-leyenda color-movmasa"></span><span>Movimiento en masa</span></div>
+  </div>
+
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script src="js/data.js?v=5"></script>
+<script src="js/puntos_riesgo.js?v=1"></script>
+</body>
+</html>

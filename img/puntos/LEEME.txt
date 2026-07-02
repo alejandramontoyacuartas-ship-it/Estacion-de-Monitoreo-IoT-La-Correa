@@ -1,0 +1,19 @@
+FOTOS DE LOS PUNTOS DE RIESGO
+=============================
+
+Coloca aquí las fotos de cada punto, nombradas por su número de orden:
+
+   1.jpg, 2.jpg, 3.jpg, ... , 50.jpg
+
+El número corresponde a la columna "#" del archivo:
+   ..\..\plantilla_puntos_riesgo.csv
+
+- Formatos: .jpg (recomendado). Si usas .png/.jpeg, cambia la columna "foto" del CSV.
+- Tamaño sugerido: máx. ~1200 px de ancho (para que el popup cargue rápido).
+- Si un punto no tiene foto, el popup mostrará "Foto pendiente" automáticamente.
+
+Para rellenar Evento / Vereda / Sector / Descripción:
+1) Abre  plantilla_puntos_riesgo.csv  (en Excel) y completa las columnas.
+2) Guárdalo (manteniendo el formato CSV).
+3) Avísame y corro el script  scripts\aplicar_puntos.py  que vuelca esos datos
+   al geoportal (data\puntos_riesgo.geojson) y regenera data.js.

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambio Climático | Girardota</title>
+  <link rel="stylesheet" href="css/estilos.css?v=6"/>
+  <link rel="stylesheet" href="css/navbar.css?v=2"/>
+  <style>
+    body{overflow:auto;background:#fff}
+    .esc-head{background:#fff;padding:16px 26px 4px}
+    .esc-breadcrumb{font-size:13px;color:#3a6ea5}
+    .esc-breadcrumb b{color:#2e6b3f}
+    .esc-title{margin-top:8px;font-size:28px;font-weight:800;color:#2e6b3f}
+    .esc-intro{max-width:1180px;margin:6px 26px 0;color:#444;font-size:14px;line-height:1.55}
+    .esc-wrap{background:#eef5ea;padding:30px 26px 48px;flex:1}
+    .esc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px 26px;max-width:1180px;margin:0 auto}
+    .esc-card{background:#fff;border-radius:16px;padding:24px 16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.07);
+      display:flex;flex-direction:column;align-items:center;gap:12px}
+    .esc-card svg{width:70px;height:70px}
+    .esc-card .esc-t{color:#2e6b3f;font-weight:700;font-size:15px;line-height:1.2}
+    .esc-card .esc-s{color:#7a7a7a;font-size:11.5px;line-height:1.35}
+    .esc-nota{max-width:1180px;margin:26px auto 0;background:#fff;border-left:4px solid #2e8b57;border-radius:8px;
+      padding:14px 18px;font-size:13px;color:#444;line-height:1.55}
+    .esc-nota a{color:#2e8b57;font-weight:700}
+    @media(max-width:1000px){.esc-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.esc-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=14"></script>
+
+<div class="esc-head">
+  <div class="esc-breadcrumb">Escenarios de Riesgo y Cambio Climático &nbsp;›&nbsp; <b>Cambio Climático</b></div>
+  <h1 class="esc-title">Cambio Climático</h1>
+  <p class="esc-intro">El cambio climático intensifica las amenazas hidrometeorológicas en Girardota. Las proyecciones
+  regionales (IDEAM · POMCA río Aburrá) indican lluvias más intensas y concentradas, lo que aumenta la probabilidad de
+  <b>avenidas torrenciales</b> en quebradas como La Correa y El Salado — el escenario central de este Sistema de Alerta Temprana.</p>
+</div>
+
+<div class="esc-wrap">
+  <div class="esc-grid" id="cc-grid"></div>
+  <div class="esc-nota">
+    <b>Vínculo con el SAT:</b> el aumento de la precipitación máxima en 24 h (análisis CHIRPS 1981–2024, ajuste GEV)
+    eleva los caudales de diseño y la frecuencia de crecientes. Por eso el monitoreo en tiempo real y los umbrales de
+    alerta del <a href="index.html">visor de la Quebrada La Correa</a> son la principal medida de adaptación.
+  </div>
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script>
+const CC = [
+ {t:'Precipitación extrema', s:'Lluvias más intensas en 24 h', icon:
+   '<path d="M18 34a9 9 0 0 1 1-18 11 11 0 0 1 21 3 8 8 0 0 1-2 15z" fill="#cfd8dc" stroke="#1f2937"/><path d="M20 40l-2 6M28 40l-2 6M36 40l-2 6M44 40l-2 6" stroke="#1e88e5"/>'},
+ {t:'Olas de calor', s:'Aumento de temperatura', icon:
+   '<circle cx="32" cy="34" r="10" fill="#f5a623" stroke="#1f2937"/><path d="M32 14v6M32 48v2M14 34h6M44 34h6M19 21l4 4M45 47l-4-4M45 21l-4 4M19 47l4-4" stroke="#f5a623"/>'},
+ {t:'Sequías', s:'Déficit hídrico estacional', icon:
+   '<path d="M14 30c0-9 8-16 18-16s18 7 18 16-8 14-18 14-18-5-18-14z" fill="#f3e2b0" stroke="#1f2937"/><path d="M22 44v6M32 44v8M42 44v6" stroke="#a9772a"/><path d="M32 22v8M28 26l4-4 4 4" stroke="#a9772a"/>'},
+ {t:'Más avenidas torrenciales', s:'Mayor frecuencia de crecientes', icon:
+   '<path d="M8 38V28l8-6 8 6v10z"/><path d="M6 44q5-4 9 0t9 0 9 0 9 0 9 0" stroke="#3e9b54"/><path d="M6 51q5-4 9 0t9 0 9 0 9 0 9 0" stroke="#3e9b54"/><path d="M46 16l8 14H38z" fill="#f5a623" stroke="#1f2937"/><path d="M46 21v4"/><circle cx="46" cy="28" r="1" fill="#1f2937" stroke="none"/>'},
+];
+const g=document.getElementById('cc-grid');
+const SVG=ic=>`<svg viewBox="0 0 64 64" fill="none" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>`;
+CC.forEach(e=>{ const d=document.createElement('div'); d.className='esc-card';
+  d.innerHTML=`${SVG(e.icon)}<div class="esc-t">${e.t}</div><div class="esc-s">${e.s}</div>`; g.appendChild(d); });
+</script>
+</body>
+</html>

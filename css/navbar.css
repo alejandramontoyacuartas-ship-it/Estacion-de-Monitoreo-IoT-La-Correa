@@ -1,0 +1,20 @@
+/* ===== Barra de navegación institucional (verde) ===== */
+.navbar{background:#1e6b3f;display:flex;align-items:stretch;font-family:Arial,Helvetica,sans-serif;
+  position:relative;z-index:3000;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.nav-brand{color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;gap:10px;padding:0 16px;
+  background:#155233;letter-spacing:.3px;white-space:nowrap;text-decoration:none}
+.nav-brand .brand-escudo{height:38px;width:auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.nav-brand span{display:flex;flex-direction:column;line-height:1.1}
+.nav-brand small{font-weight:400;font-size:10px;opacity:.85;letter-spacing:0}
+.nav-menu{list-style:none;display:flex;margin:0;padding:0;flex:1}
+.nav-item{position:relative;border-left:1px solid rgba(255,255,255,.14)}
+.nav-link{display:flex;align-items:center;gap:7px;color:#fff;font-size:13px;font-weight:700;
+  padding:14px 20px;cursor:pointer;text-decoration:none;white-space:nowrap;outline:none}
+.nav-link:hover,.nav-item:hover>.nav-link,.nav-item:focus-within>.nav-link{background:#2e8b57}
+.nav-item.active>.nav-link{box-shadow:inset 0 -3px 0 #a5d6a7}
+.dropdown{list-style:none;margin:0;padding:6px 0;position:absolute;top:100%;left:0;min-width:240px;
+  background:#27764a;box-shadow:0 6px 16px rgba(0,0,0,.3);display:none}
+.nav-item:hover .dropdown,.nav-item:focus-within .dropdown,.nav-item.fly-open>.dropdown{display:block}
+.dropdown li a{display:block;color:#fff;font-size:13px;font-weight:700;padding:11px 20px;text-decoration:none;border-top:1px solid rgba(255,255,255,.08)}
+.dropdown li a:hover{background:#3a9e63}
+@media(max-width:700px){.nav-brand{display:none}.nav-link{padding:12px 12px;font-size:12px}}

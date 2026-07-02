@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escenarios de Riesgos | Girardota</title>
+  <link rel="stylesheet" href="css/estilos.css?v=6"/>
+  <link rel="stylesheet" href="css/navbar.css?v=2"/>
+  <style>
+    body{overflow:auto;background:#fff}
+    .esc-head{background:#fff;padding:16px 26px 4px}
+    .esc-breadcrumb{font-size:13px;color:#3a6ea5}
+    .esc-breadcrumb b{color:#2e6b3f}
+    .esc-title{margin-top:8px;font-size:28px;font-weight:800;color:#2e6b3f}
+    .esc-wrap{background:#eef5ea;padding:18px 26px 50px;flex:1}
+    .cat-head{display:flex;align-items:center;gap:11px;max-width:1180px;margin:30px auto 16px;
+      font-size:21px;font-weight:800;color:#333;border-bottom:2px solid #d6e3d2;padding-bottom:9px}
+    .cat-ic{flex:none;display:inline-flex;align-items:center;line-height:0}
+    .cat-ic svg{width:1.3em;height:1.3em}
+    /* Formato Alcaldía de Girardota: icono grande + etiqueta en negrita mayúscula */
+    .esc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1180px;margin:0 auto}
+    .esc-card{background:#fff;border-radius:16px;padding:26px 16px 20px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.08);
+      display:flex;flex-direction:column;align-items:center;gap:14px;border:2px solid transparent;transition:.16s;min-height:150px}
+    .esc-card svg{width:66px;height:66px}
+    .esc-card .esc-t{color:#3f4b5b;font-weight:800;font-size:12.5px;line-height:1.25;text-transform:uppercase;letter-spacing:.3px}
+    a.esc-card{cursor:pointer;text-decoration:none}
+    a.esc-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.16);border-color:#2e8b57}
+    a.esc-card .esc-link{font-size:10px;color:#2e8b57;font-weight:700;text-transform:none;letter-spacing:0}
+    @media(max-width:1000px){.esc-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:680px){.esc-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=14"></script>
+
+<div class="esc-head">
+  <div class="esc-breadcrumb">Escenarios de Riesgo y Cambio Climático &nbsp;›&nbsp; <b>Escenarios de Riesgos</b></div>
+  <h1 class="esc-title">Escenarios de Riesgos</h1>
+</div>
+
+<div class="esc-wrap" id="esc-wrap"></div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script>
+const CATS = [
+ {cat:'Geológicos', color:'#8d6e63', hi:'<path d="M2 20l6.5-10 4 5.5 3-4.5 6.5 9z"/><path d="M8.5 11l2.5 3.5"/>', items:[
+   {t:'Movimientos en masa', icon:'<path d="M6 52 C18 49 30 40 42 18 L58 18 L58 52 Z" fill="currentColor" fill-opacity=".15"/><path d="M45 18v-5"/><circle cx="45" cy="9" r="4" fill="currentColor" fill-opacity=".3"/><path d="M53 18v-6"/><circle cx="53" cy="8" r="4.5" fill="currentColor" fill-opacity=".3"/><circle cx="29" cy="40" r="3" fill="currentColor" fill-opacity=".35"/><circle cx="19" cy="46" r="3.8" fill="currentColor" fill-opacity=".35"/><circle cx="35" cy="34" r="2.4" fill="currentColor" fill-opacity=".35"/><circle cx="12" cy="50" r="2.6" fill="currentColor" fill-opacity=".35"/>'},
+   {t:'Caída de rocas', icon:'<path d="M10 54V16l6 7 5-7 6 10 5-4v32z" fill="currentColor" fill-opacity=".15"/><circle cx="40" cy="16" r="3.4" fill="currentColor" fill-opacity=".3"/><circle cx="49" cy="24" r="4.4" fill="currentColor" fill-opacity=".3"/><circle cx="42" cy="33" r="3" fill="currentColor" fill-opacity=".3"/><circle cx="51" cy="40" r="3.8" fill="currentColor" fill-opacity=".3"/><circle cx="44" cy="48" r="2.8" fill="currentColor" fill-opacity=".3"/>'},
+   {t:'Erosión', icon:'<path d="M5 22h54"/><path d="M14 22c0 10-3 17-7 28"/><path d="M28 22c0 10-3 17-7 28"/><path d="M42 22c0 10-3 17-7 28"/><path d="M54 22c0 9-2 14-5 22"/>'},
+   {t:'Sismos', icon:'<path d="M20 50 L17 18 L25 16 L29 49 Z" fill="currentColor" fill-opacity=".12"/><path d="M35 49 L39 16 L47 18 L44 50 Z" fill="currentColor" fill-opacity=".12"/><path d="M20 27l6-.7M21 35l6-.7M40 27l6 .7M41 35l6 .7"/><path d="M6 52h52"/><path d="M32 52l3-6-4-2 3-5"/>'},
+ ]},
+ {cat:'Hidrológicos', color:'#1e88e5', hi:'<path d="M2 7c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>', items:[
+   {t:'Inundaciones', icon:'<path d="M15 32l17-13 17 13v7H15z" fill="currentColor" fill-opacity=".15"/><path d="M22 39v-2M42 39v-2"/><path d="M5 44q6-4 11 0t11 0 11 0 11 0"/><path d="M5 51q6-4 11 0t11 0 11 0 11 0"/>'},
+   {t:'Avenidas torrenciales', href:'index.html', sub:'SAT La Correa', icon:'<path d="M16 8l-4 9M27 8l-4 9M38 8l-4 9M49 8l-4 9"/><path d="M5 34q7-5 13 0t13 0 13 0 13 0"/><path d="M5 43q7-5 13 0t13 0 13 0 13 0"/><path d="M5 52q7-5 13 0t13 0 13 0 13 0"/>'},
+   {t:'Socavación', icon:'<path d="M6 24h26c0 9-7 13-15 13H6z" fill="currentColor" fill-opacity=".12"/><path d="M34 24h24v24"/><path d="M6 45q7-3 12 0t12 0 12 0 12 0"/>'},
+ ]},
+ {cat:'Climáticos', color:'#2e9e57', hi:'<circle cx="8" cy="8" r="3.2"/><path d="M8 2v1.6M8 12.4V14M2 8h1.6M12.4 8H14M4.2 4.2l1.1 1.1M11.6 11.6l-1.1-1.1M11.8 4.2l-1.1 1.1"/><path d="M10 19a4 4 0 0 1 .6-8 5 5 0 0 1 9 1.6 3.5 3.5 0 0 1-1 6.4z" fill="currentColor" fill-opacity=".15"/>', items:[
+   {t:'Incendios de cobertura vegetal', icon:'<path d="M6 52h52"/><path d="M14 52v-7"/><path d="M14 45c-5 0-8-4-8-9 0-6 4-10 8-10s8 4 8 10c0 5-3 9-8 9z" fill="currentColor" fill-opacity=".15"/><path d="M50 52v-7"/><path d="M50 45c-5 0-8-4-8-9 0-6 4-10 8-10s8 4 8 10c0 5-3 9-8 9z" fill="currentColor" fill-opacity=".15"/><path d="M32 52c-6 0-10-4-10-10 0-6 6-9 5-15 4 2 7 5 8 9 1-2 1-4 1-6 5 3 8 8 8 12 0 6-5 10-11 10z" fill="currentColor" fill-opacity=".3"/>'},
+   {t:'Sequía', icon:'<circle cx="45" cy="17" r="7" fill="currentColor" fill-opacity=".18"/><path d="M45 5v3M45 26v3M33 17h3M54 17h3M37 9l2 2M53 9l-2 2"/><path d="M5 47h54M18 47v-8M30 47v-10M42 47v-7M52 47v-6"/><path d="M16 39c0-5 3-7 7-7"/>'},
+   {t:'Fenómeno de El Niño', icon:'<circle cx="17" cy="16" r="6" fill="currentColor" fill-opacity=".22"/><path d="M17 5v2.5M6 16h2.5M9 8l1.6 1.6M9 24l1.6-1.6M25 8l-1.6 1.6"/><path d="M44 12a3 3 0 0 1 6 0v16a5 5 0 1 1-6 0z" fill="currentColor" fill-opacity=".22"/><path d="M47 16v13"/><path d="M5 47q7-4 12 0t12 0 12 0 12 0"/><path d="M5 54q7-4 12 0t12 0 12 0 12 0"/>'},
+   {t:'Fenómeno de La Niña', icon:'<path d="M16 28a8 8 0 0 1 1-16 11 11 0 0 1 20 3 7 7 0 0 1-2 13z" fill="currentColor" fill-opacity=".12"/><path d="M18 36l-2 7M27 36l-2 7M36 36l-2 7"/><path d="M48 32v16M41 36l7 4 7-4M41 44l7-4 7 4"/>'},
+   {t:'Vendavales', icon:'<path d="M10 50V31l13-10 13 10v19z" fill="currentColor" fill-opacity=".12"/><path d="M7 32l16-12 16 12"/><path d="M20 50v-9h6v9"/><path d="M41 24h9a4 4 0 1 0-4-4"/><path d="M41 33h13a4.5 4.5 0 1 1-4.5 4.5"/><path d="M41 42h7a3.5 3.5 0 1 1-3.5 3.5"/>'},
+ ]},
+ {cat:'Ambientales', color:'#8e44ad', hi:'<path d="M4 20c-1-10 6-17 16-17 1 10-6 17-16 17z" fill="currentColor" fill-opacity=".15"/><path d="M8 16c3-4 7-7 11-9"/>', items:[
+   {t:'Calidad del aire', icon:'<path d="M16 34c0-12 9-21 26-21 0 13-10 22-26 21z" fill="currentColor" fill-opacity=".12"/><path d="M22 30c7-5 13-7 18-8"/><path d="M28 44q10 0 10-5"/><path d="M26 52q14 0 14-6"/>'},
+   {t:'Calidad del agua', icon:'<path d="M32 7C23 18 17 27 17 35a15 15 0 0 0 30 0C47 27 41 18 32 7z" fill="currentColor" fill-opacity=".15"/><path d="M25 36a7 7 0 0 0 7 7"/>'},
+   {t:'Árboles en riesgo', icon:'<path d="M26 7 L34 20 L29 20 L36 31 L31 31 L38 40 L14 40 L21 31 L16 31 L23 20 L18 20 Z" fill="currentColor" fill-opacity=".15"/><path d="M24 40h4v8h-4z"/><path d="M11 48h30"/><path d="M50 11l7 12H43z" fill="currentColor" fill-opacity=".25"/><path d="M50 15v5"/><circle cx="50" cy="23" r="1.1" fill="currentColor" stroke="none"/>'},
+   {t:'Abejas y avispas', icon:'<ellipse cx="32" cy="38" rx="9" ry="12" fill="currentColor" fill-opacity=".15"/><path d="M24 33h16M24 40h16M27 46h10"/><circle cx="32" cy="19" r="4.5"/><path d="M30 16l-3-5M34 16l3-5"/><ellipse cx="20" cy="28" rx="7" ry="4.5"/><ellipse cx="44" cy="28" rx="7" ry="4.5"/><circle cx="51" cy="14" r="1.4" fill="currentColor" stroke="none"/><circle cx="55" cy="20" r="1.8" fill="currentColor" stroke="none"/><circle cx="52" cy="25" r="1.1" fill="currentColor" stroke="none"/>'},
+   {t:'Ruido ambiental', icon:'<path d="M12 26v12h8l12 10V16l-12 10z" fill="currentColor" fill-opacity=".15"/><path d="M40 24a10 10 0 0 1 0 16M47 18a17 17 0 0 1 0 28"/>'},
+   {t:'Cambio climático', href:'cambio_climatico.html', icon:'<circle cx="32" cy="32" r="14" fill="currentColor" fill-opacity=".12"/><path d="M21 27a13 13 0 0 1 19 1"/><path d="M40 21v7h-7"/><path d="M43 37a13 13 0 0 1-19-1"/><path d="M24 43v-7h7"/><path d="M29 33c0-4 3-7 7-7"/>'},
+ ]},
+ {cat:'Tecnológicos', color:'#e74c3c', hi:'<circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/>', items:[
+   {t:'Incendios estructurales', icon:'<path d="M20 30c-6-5-5-15 1-20 0 4 3 6 3 10 1-3 0-8-2-11 8 4 13 12 12 19" fill="currentColor" fill-opacity=".25"/><path d="M44 28c-4-4-3-11 1-15 0 3 2 5 2 8 1-3 0-7-1-9 6 3 9 9 9 14" fill="currentColor" fill-opacity=".25"/><path d="M15 52V34l15-11 15 11v18z" fill="#fff"/><path d="M12 35l18-13 18 13"/><path d="M25 52v-10h10v10"/><path d="M21 40h5M34 40h5"/>'},
+   {t:'Derrames de sustancias peligrosas', icon:'<path d="M22 12h16v22H22z" fill="currentColor" fill-opacity=".1"/><path d="M22 19h16M22 27h16"/><path d="M38 30c5 2 7 6 7 11M45 41q4 0 4 6"/><path d="M8 50q12-6 26 0t20-2" fill="currentColor" fill-opacity=".18"/>'},
+   {t:'Explosiones', icon:'<path d="M32 5l5 13 13-6-5 14 13 5-13 5 4 14-13-6-5 13-5-13-13 6 4-14-13-5 13-5-5-14 13 6z" fill="currentColor" fill-opacity=".2"/>'},
+   {t:'Transporte de materiales peligrosos', icon:'<rect x="5" y="24" width="27" height="15" rx="1"/><path d="M32 28h11l8 8v3H32z"/><circle cx="15" cy="42" r="3.6"/><circle cx="43" cy="42" r="3.6"/><path d="M17 8l8 8-8 8-8-8z" fill="currentColor" fill-opacity=".25"/><path d="M17 12v5"/><circle cx="17" cy="20" r="1" fill="currentColor" stroke="none"/>'},
+ ]},
+ {cat:'Salud Pública', color:'#00897b', hi:'<rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="currentColor" fill-opacity=".12"/><path d="M12 8v8M8 12h8"/>', items:[
+   {t:'Pandemias', icon:'<circle cx="25" cy="29" r="12" fill="currentColor" fill-opacity=".1"/><path d="M13 29h24M25 17v24M16 21h18M16 37h18"/><circle cx="47" cy="46" r="6.5"/><path d="M47 36v-3M47 56v3M37 46h-3M57 46h-3M40 39l-2-2M54 53l2 2M54 39l2-2M40 53l-2 2"/>'},
+   {t:'Epidemias', icon:'<circle cx="32" cy="32" r="10" fill="currentColor" fill-opacity=".15"/><circle cx="32" cy="32" r="4"/><path d="M32 22v-7M32 42v7M22 32h-7M42 32h7M24 24l-5-5M40 40l5 5M40 24l5-5M24 40l-5 5"/><circle cx="32" cy="13" r="1.6" fill="currentColor" stroke="none"/><circle cx="51" cy="32" r="1.6" fill="currentColor" stroke="none"/>'},
+   {t:'Enfermedades por vectores', icon:'<ellipse cx="32" cy="37" rx="4.5" ry="10" fill="currentColor" fill-opacity=".2"/><path d="M32 27l-12-10M32 27l12-10"/><path d="M28 30l-16-4M36 30l16-4"/><path d="M30 47l-6 7M34 47l6 7"/><circle cx="32" cy="24" r="2.4"/>'},
+   {t:'Intoxicaciones alimentarias (ETA)', icon:'<circle cx="27" cy="35" r="14"/><circle cx="27" cy="35" r="7"/><path d="M49 12l8 15H41z" fill="currentColor" fill-opacity=".22"/><path d="M49 17v5"/><circle cx="49" cy="25" r="1.1" fill="currentColor" stroke="none"/>'},
+ ]},
+];
+
+const wrap=document.getElementById('esc-wrap');
+const SVG=(ic,color)=>`<svg viewBox="0 0 64 64" style="color:${color}" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none">${ic}</svg>`;
+CATS.forEach(C=>{
+  const h=document.createElement('div'); h.className='cat-head';
+  h.innerHTML=`<span class="cat-ic" style="color:${C.color}">${SVG(C.hi,C.color)}</span>${C.cat}`;
+  wrap.appendChild(h);
+  const g=document.createElement('div'); g.className='esc-grid';
+  C.items.forEach(it=>{
+    const inner=`${SVG(it.icon,C.color)}<div class="esc-t">${it.t}</div>`+(it.href?`<div class="esc-link">${it.sub?it.sub+' · ':''}Abrir ▸</div>`:'');
+    let el;
+    if(it.href){ el=document.createElement('a'); el.href=it.href; el.className='esc-card'; }
+    else { el=document.createElement('div'); el.className='esc-card'; }
+    el.innerHTML=inner; g.appendChild(el);
+  });
+  wrap.appendChild(g);
+});
+</script>
+</body>
+</html>

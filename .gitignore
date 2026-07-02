@@ -1,0 +1,13 @@
+# ===== Geoportal La Correa — .gitignore =====
+# Carpetas FUENTE (material de trabajo, no necesario para que el geoportal funcione).
+# Se conservan en disco pero NO se publican en el repo (mantienen el repo liviano).
+INFORMACION DE PUNTOS EN RIESGO/
+imegenes puntos criticos/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+*.tmp
+~$*
+
+# Nota: js/data.js SÍ se versiona (es necesario para el modo offline / GitHub Pages).

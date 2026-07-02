@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard SAT — Quebrada La Correa</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--azul:#1e6b3f;--azul2:#2e8b57;--gris:#5F5E5A;--bg:#eef2f1;--card:#fff;
+--critico:#8B0000;--alto:#E24B4A;--medio:#EF9F27;--bajo:#FFE13C;--marg:#9a9a92;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#222;line-height:1.45}
+header{background:linear-gradient(100deg,#1e6b3f,#3a9e63);color:#fff;padding:20px 28px}
+header h1{font-size:22px}header p{font-size:13px;opacity:.9;margin-top:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+h2{color:var(--azul);font-size:18px;margin:24px 0 12px;border-bottom:2px solid #d8e2ec;padding-bottom:5px}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(4,1fr)}
+.cards3{grid-template-columns:repeat(3,1fr)}
+.cards2{grid-template-columns:repeat(2,1fr)}
+.morf{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.08);padding:16px}
+.kpi{text-align:center}
+.kpi .val{font-size:30px;font-weight:800;color:var(--azul2)}
+.kpi .lab{font-size:12px;color:var(--gris);margin-top:4px}
+.kpi .sub{font-size:11px;color:#9a9a92}
+.m{background:#fff;border-radius:10px;padding:10px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.m b{display:block;font-size:18px;color:var(--azul)}
+.m span{font-size:11px;color:var(--gris)}
+@keyframes pulse{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+.live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#2e9e57;animation:pulse 1.4s infinite;margin-right:5px}
+.chart-box{height:260px;position:relative}
+.prod h3{color:var(--azul);font-size:15px;margin-bottom:8px}
+.prod ul{list-style:none;font-size:13px}
+.prod li{padding:4px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;gap:8px}
+.prod li b{color:var(--azul2);text-align:right}
+.tag{display:inline-block;padding:2px 9px;border-radius:11px;color:#fff;font-size:11px;font-weight:700}
+.gal{grid-template-columns:repeat(3,1fr)}
+.gal figure{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.gal img{width:100%;display:block;cursor:pointer;transition:.2s}.gal img:hover{opacity:.85}
+.gal figcaption{font-size:12px;color:var(--gris);padding:7px 10px}
+.banner{background:#fff;border-radius:12px;box-shadow:0 1px 6px rgba(0,0,0,.08);padding:16px;text-align:center}
+.banner img{max-width:100%;height:auto}
+.btn{display:inline-block;background:var(--azul2);color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:700;margin-top:6px}
+.note{font-size:12px;color:var(--gris);font-style:italic;margin-top:8px}
+footer{text-align:center;color:var(--gris);font-size:12px;padding:24px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.cards3,.cards2,.gal,.morf{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="stylesheet" href="css/navbar.css"/>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js"></script>
+<header>
+  <h1>Sistema de Alerta Temprana · Quebrada La Correa</h1>
+  <p>Avenida torrencial — Girardota (Antioquia) · Tablero resumen del análisis geoespacial</p>
+</header>
+
+<div class="wrap">
+
+  <!-- KPIs -->
+  <div class="grid kpis">
+    <div class="card kpi"><div class="val">851</div><div class="lab">Área de la cuenca</div><div class="sub">ha · perímetro 23,4 km</div></div>
+    <div class="card kpi"><div class="val">249</div><div class="lab">Caudal de diseño (Tr100)</div><div class="sub">m³/s · rango 216–332</div></div>
+    <div class="card kpi"><div class="val">43</div><div class="lab">Ventana de alerta (Tc)</div><div class="sub">min · Kirpich</div></div>
+    <div class="card kpi"><div class="val">0,47</div><div class="lab">Índice de Melton</div><div class="sub">debris flood (torrencial)</div></div>
+    <div class="card kpi"><div class="val">44</div><div class="lab">Elementos expuestos</div><div class="sub">inventario de campo</div></div>
+    <div class="card kpi"><div class="val" style="color:var(--critico)">31</div><div class="lab">Elementos en riesgo crítico</div><div class="sub">9 alto · 1 bajo · 3 marginal</div></div>
+    <div class="card kpi"><div class="val">1</div><div class="lab">Estación de monitoreo</div><div class="sub">Producto A (AHP)</div></div>
+    <div class="card kpi"><div class="val">3</div><div class="lab">Bocinas de alerta</div><div class="sub">Producto B (MCLP)</div></div>
+  </div>
+
+  <!-- Monitoreo en tiempo real (simulado) -->
+  <h2><span class="live"></span>Monitoreo en tiempo real
+    <span style="font-size:11px;background:#EF9F27;color:#fff;padding:2px 9px;border-radius:10px;vertical-align:middle">DATOS SIMULADOS · DEMO</span>
+  </h2>
+  <div class="grid" style="grid-template-columns:1fr 1.6fr;gap:14px">
+    <div class="card">
+      <div style="text-align:center;margin-bottom:12px">
+        <span style="font-size:12px;color:var(--gris)">Estado de la quebrada</span><br>
+        <span id="sim-estado" class="tag" style="font-size:17px;padding:6px 20px;margin-top:4px;background:#2e9e57">NORMAL</span>
+      </div>
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
+        <div class="m"><b id="s-nivel">—</b><span>Nivel del agua (cm)</span></div>
+        <div class="m"><b id="s-caudal">—</b><span>Caudal estim. (m³/s)</span></div>
+        <div class="m"><b id="s-temp">—</b><span>Temperatura (°C)</span></div>
+        <div class="m"><b id="s-hum">—</b><span>Humedad (%)</span></div>
+        <div class="m"><b id="s-lluvia">—</b><span>¿Lloviendo?</span></div>
+        <div class="m"><b id="s-hora" style="font-size:13px">—</b><span>Última lectura</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="chart-box" style="height:300px"><canvas id="cSim"></canvas></div></div>
+  </div>
+  <p class="note">Simulación con fines de demostración (crecientes, recesión y alertas). Umbrales: ALERTA ≥55 cm · EMERGENCIA ≥85 cm. Al conectar la API real (Render) en el geoportal, estos valores se reemplazan por las lecturas del sensor C2.</p>
+
+  <!-- Graficas -->
+  <h2>Resultados del análisis</h2>
+  <div class="grid cards3">
+    <div class="card"><h3 style="font-size:14px;color:var(--azul);margin-bottom:8px">Riesgo por elemento</h3><div class="chart-box"><canvas id="cRiesgo"></canvas></div></div>
+    <div class="card"><h3 style="font-size:14px;color:var(--azul);margin-bottom:8px">Población expuesta por banda</h3><div class="chart-box"><canvas id="cExpo"></canvas></div></div>
+    <div class="card"><h3 style="font-size:14px;color:var(--azul);margin-bottom:8px">Riesgo — zonificación (ha)</h3><div class="chart-box"><canvas id="cZona"></canvas></div></div>
+  </div>
+
+  <!-- Morfometria -->
+  <h2>Caracterización morfométrica</h2>
+  <div class="grid morf">
+    <div class="m"><b>2,27</b><span>Coef. compacidad (Kc)</span></div>
+    <div class="m"><b>7,12</b><span>Densidad drenaje (km/km²)</span></div>
+    <div class="m"><b>5</b><span>Orden de Strahler</span></div>
+    <div class="m"><b>14,6%</b><span>Pendiente del cauce</span></div>
+    <div class="m"><b>38,4%</b><span>Pendiente media cuenca</span></div>
+    <div class="m"><b>1.378 m</b><span>Relieve</span></div>
+    <div class="m"><b>8,32 km</b><span>Longitud del cauce</span></div>
+    <div class="m"><b>1,36</b><span>Sinuosidad</span></div>
+  </div>
+
+  <!-- Caudal + Productos -->
+  <h2>Caudal de diseño y productos del SAT</h2>
+  <div class="grid cards3">
+    <div class="card prod">
+      <h3>💧 Caudal de diseño</h3>
+      <ul>
+        <li>Lluvia Tr100 (CHIRPS+Gumbel ×1,39)<b>98,4 mm</b></li>
+        <li>Método<b>SCS · CN III</b></li>
+        <li>Bulking de sedimentos<b>×1,5</b></li>
+        <li>Caudal pico (Qp)<b>≈ 249 m³/s</b></li>
+      </ul>
+    </div>
+    <div class="card prod">
+      <h3>📡 Producto A — Sensor (C2)</h3>
+      <ul>
+        <li>Coordenadas<b>6,40663 / −75,44659</b></li>
+        <li>Método<b>AHP (CR 0,019)</b></li>
+        <li>Área aportante captada<b>91 %</b></li>
+        <li>Sección / ventana<b>8 % · 1.109 m</b></li>
+      </ul>
+    </div>
+    <div class="card prod">
+      <h3>🔊 Producto B — Bocinas</h3>
+      <ul>
+        <li>Número (MCLP)<b>3</b></li>
+        <li>Cobertura elementos críticos<b>~95 %</b></li>
+        <li>Población cubierta<b>~573 hab</b></li>
+        <li>Ubicación<b>puente · Sta Clara · medio</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Metodologia -->
+  <h2>Flujo metodológico</h2>
+  <div class="banner"><img src="img/Flujo_Metodologico_SAT_LaCorrea.png" alt="Flujo metodológico"></div>
+
+  <!-- Mapas -->
+  <h2>Cartografía del análisis</h2>
+  <div class="grid gal">
+    <figure><img src="img/Fase1_Cuenca_MDE.png" onclick="window.open(this.src)"><figcaption>1. Delimitación de la cuenca sobre el MDE</figcaption></figure>
+    <figure><img src="img/map_red_hidrica.png" onclick="window.open(this.src)"><figcaption>2. Red hídrica, cauce y afluente crítico</figcaption></figure>
+    <figure><img src="img/map_amenaza.png" onclick="window.open(this.src)"><figcaption>3. Amenaza por avenida torrencial</figcaption></figure>
+    <figure><img src="img/Corredor_Exposicion_FINAL.png" onclick="window.open(this.src)"><figcaption>4. Corredor de exposición (30/60/100 m)</figcaption></figure>
+    <figure><img src="img/map_riesgo.png" onclick="window.open(this.src)"><figcaption>5. Zonificación del riesgo</figcaption></figure>
+    <figure><img src="img/map_productos_AB.png" onclick="window.open(this.src)"><figcaption>6. Productos A y B (sensor + bocinas)</figcaption></figure>
+  </div>
+
+  <!-- Enlace geoportal -->
+  <h2>Geoportal interactivo</h2>
+  <div class="banner">
+    <p>Mapa interactivo con todas las capas y la lectura del sensor en tiempo real.</p>
+    <a class="btn" href="index.html">Abrir geoportal →</a>
+    <p class="note">La microcuenca abastecedora oficial (CORANTIOQUIA) = 172 ha; la cuenca hidrográfica completa analizada = 851 ha.</p>
+  </div>
+
+</div>
+
+<footer>
+  Elaborado por María Alejandra Montoya Cuartas · Especialización en SIG — USB Medellín · Junio 2026<br>
+  Valores de riesgo y caudal provisionales — pendiente calibración hidrológica (IDEAM/SIATA) y modelación hidráulica (HEC-RAS/IBER).
+</footer>
+
+<script>
+const RZ={Critico:'#8B0000',Alto:'#E24B4A',Bajo:'#FFE13C',Marginal:'#9a9a92'};
+new Chart(document.getElementById('cRiesgo'),{type:'doughnut',
+  data:{labels:['Crítico (31)','Alto (9)','Bajo (1)','Marginal (3)'],
+    datasets:[{data:[31,9,1,3],backgroundColor:[RZ.Critico,RZ.Alto,RZ.Bajo,RZ.Marginal]}]},
+  options:{plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},maintainAspectRatio:false}});
+
+new Chart(document.getElementById('cExpo'),{type:'bar',
+  data:{labels:['ALTA ≤30 m','MEDIA 30–60','BAJA 60–100'],
+    datasets:[{label:'Población (hab)',data:[254,265,185],backgroundColor:['#E24B4A','#EF9F27','#FFE13C']}]},
+  options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:false}});
+
+new Chart(document.getElementById('cZona'),{type:'doughnut',
+  data:{labels:['Crítico 58,9','Alto 23,8','Medio 13,0','Bajo 20,4'],
+    datasets:[{data:[58.9,23.8,13.0,20.4],backgroundColor:['#8B0000','#E24B4A','#EF9F27','#FFE13C']}]},
+  options:{plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},maintainAspectRatio:false}});
+
+// ---- Simulador de monitoreo en tiempo real ----
+(function(){
+ let nivel=28, lluvia=false, evento=0;
+ const labels=[], data=[];
+ const chart=new Chart(document.getElementById('cSim'),{type:'line',
+   data:{labels,datasets:[{label:'Nivel (cm)',data,borderColor:'#2E75B6',
+     backgroundColor:'rgba(46,117,182,.15)',fill:true,tension:.35,pointRadius:0}]},
+   options:{animation:false,plugins:{legend:{display:false}},
+     scales:{y:{beginAtZero:true,suggestedMax:120,title:{display:true,text:'Nivel (cm)'}}},
+     maintainAspectRatio:false}});
+ const rnd=(a,b)=>a+Math.random()*(b-a);
+ function paso(){
+   if(evento<=0 && Math.random()<0.05) evento=Math.floor(rnd(7,15));   // dispara creciente
+   if(evento>0){ nivel+=rnd(3,9); evento--; }                          // sube
+   else { nivel+=rnd(-2.5,2.5); if(nivel>40) nivel-=rnd(1,4); }        // recesión
+   nivel=Math.max(18,Math.min(118,nivel));
+   lluvia = evento>0 ? true : (Math.random()<0.25 ? !lluvia : lluvia);
+   const temp=rnd(16,22).toFixed(1);
+   const hum=Math.round(lluvia?rnd(85,98):rnd(60,80));
+   const caudal=Math.round(8+Math.pow(Math.max(0,nivel-20)/10,1.9)*9);
+   let est='NORMAL',col='#2e9e57';
+   if(nivel>=85){est='EMERGENCIA';col='#c0392b';} else if(nivel>=55){est='ALERTA';col='#EF9F27';}
+   const set=(id,v)=>document.getElementById(id).textContent=v;
+   set('s-nivel',nivel.toFixed(0)); set('s-caudal',caudal); set('s-temp',temp);
+   set('s-hum',hum); set('s-lluvia',lluvia?'Sí':'No'); set('s-hora',new Date().toLocaleTimeString());
+   const b=document.getElementById('sim-estado'); b.textContent=est; b.style.background=col;
+   labels.push(''); data.push(+nivel.toFixed(0)); if(data.length>40){labels.shift();data.shift();}
+   chart.update();
+ }
+ paso(); setInterval(paso,2500);
+})();
+</script>
+</body>
+</html>

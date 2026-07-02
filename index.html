@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geoportal Gestión del Riesgo | Girardota</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <link rel="stylesheet" href="css/estilos.css?v=10"/>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=20"></script>
+
+<div id="header">
+  <h1>Geoportal Gestión del Riesgo — Girardota</h1>
+  <span>Sistema de Alerta Temprana por avenida torrencial · Quebrada La Correa</span>
+</div>
+
+<div id="map">
+  <!-- Menú de capas -->
+  <button id="capas-btn">☰ Capas</button>
+  <div id="capas-panel">
+    <div class="cp-head"><h3>Capas del SAT</h3><button class="x" id="cp-close">✕</button></div>
+    <div class="cp-sub">Activa o desactiva las capas</div>
+    <div class="cp-list" id="cp-list"></div>
+  </div>
+
+  <!-- Panel del sensor en tiempo real -->
+  <div id="panel-sensor">
+    <h2>📡 Estación de monitoreo</h2>
+    <span id="estado-badge" class="estado-SINDATO">SIN DATO</span>
+    <div class="dato"><span>Nivel del agua</span><b><span id="v-nivel">—</span> cm</b></div>
+    <div class="dato"><span>Temperatura</span><b><span id="v-temp">—</span> °C</b></div>
+    <div class="dato"><span>Humedad</span><b><span id="v-humedad">—</span> %</b></div>
+    <div class="dato"><span>¿Lloviendo?</span><b><span id="v-lluvia">—</span></b></div>
+    <div style="height:90px;margin-top:6px"><canvas id="sensor-chart"></canvas></div>
+    <div id="sensor-update">Conectando con la API…</div>
+  </div>
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script src="js/config.js?v=3"></script>
+<script src="js/data.js?v=5"></script>
+<script src="js/corte_p1.js?v=1"></script>
+<script src="js/app.js?v=36"></script>
+<script src="js/medicion.js?v=1"></script>
+</body>
+</html>

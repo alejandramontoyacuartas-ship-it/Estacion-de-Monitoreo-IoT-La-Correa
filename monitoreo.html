@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Red de Monitoreo — SAT Quebrada La Correa</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{--azul:#1e6b3f;--azul2:#2e8b57;--verde:#2e9e57;--amar:#EF9F27;--rojo:#c0392b;--gris:#6b6b6b;--bg:#eef2f1}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#222;height:100vh;overflow:hidden}
+#top{height:54px;background:linear-gradient(100deg,#1e6b3f,#3a9e63);color:#fff;display:flex;align-items:center;
+  gap:14px;padding:0 18px}
+#top h1{font-size:16px;font-weight:700}#top .sub{font-size:11px;opacity:.85}
+#top .right{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:12px}
+.badge-sim{background:var(--amar);color:#fff;padding:3px 9px;border-radius:10px;font-weight:700;font-size:11px}
+#clock{font-variant-numeric:tabular-nums}
+#main{display:flex;height:calc(100vh - 100px)}
+#sidebar{width:320px;background:#fff;border-right:1px solid #dde3e9;overflow-y:auto;flex-shrink:0}
+#map{flex:1}
+#detail{width:380px;background:#fff;border-left:1px solid #dde3e9;overflow-y:auto;flex-shrink:0}
+.panel-h{background:#f4f7fa;padding:10px 14px;font-weight:700;color:var(--azul);font-size:13px;border-bottom:1px solid #e3e9ef;position:sticky;top:0}
+.tabs{display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid #eee}
+.tabs button{flex:1;border:1px solid #cdd7e0;background:#fff;border-radius:14px;padding:4px;font-size:11px;cursor:pointer;color:var(--gris)}
+.tabs button.on{background:var(--azul2);color:#fff;border-color:var(--azul2)}
+.est{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.est:hover{background:#f6f9fc}.est.sel{background:#e8f3fb;border-left:4px solid var(--azul2)}
+.est .ic{font-size:18px;width:24px;text-align:center}
+.est .nm{flex:1;font-size:12.5px;line-height:1.25}
+.est .nm small{color:var(--gris);font-size:10.5px}
+.est .vl{font-size:13px;font-weight:700;text-align:right}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;border:1px solid #0003}
+.d-content{padding:14px}
+.bignum{font-size:42px;font-weight:800;color:var(--azul);line-height:1}
+.estbadge{display:inline-block;padding:4px 14px;border-radius:13px;color:#fff;font-weight:700;font-size:13px;margin-top:6px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.kv div{background:#f5f8fb;border-radius:8px;padding:8px;text-align:center}
+.kv b{display:block;font-size:16px;color:var(--azul2)}.kv span{font-size:10.5px;color:var(--gris)}
+.chartbox{height:160px;margin:8px 0}
+table{width:100%;border-collapse:collapse;font-size:11px;margin-top:6px}
+th,td{border-bottom:1px solid #eee;padding:4px 5px;text-align:center}
+th{background:#f4f7fa;color:var(--azul)}
+.btn{display:inline-block;background:var(--azul2);color:#fff;border:none;border-radius:7px;padding:7px 12px;
+  font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
+.gal{display:flex;gap:6px;margin-top:8px}.gal img{width:50%;border-radius:6px;cursor:pointer}
+.nav a{color:#fff;text-decoration:none;font-size:12px;opacity:.9}.nav a:hover{opacity:1;text-decoration:underline}
+.empty{padding:30px 16px;color:var(--gris);font-size:13px;text-align:center}
+.leg{padding:10px 14px;font-size:11px;color:var(--gris);border-top:1px solid #eee}
+.leg i{width:10px;height:10px;border-radius:50%;display:inline-block;margin:0 4px 0 8px;vertical-align:middle}
+.leaflet-tooltip.vereda-label{background:rgba(255,255,255,.93);border:1px solid #a9c9a9;border-radius:6px;padding:2px 8px;color:#1b5e20;font-weight:700;font-size:11px;box-shadow:0 1px 3px rgba(0,0,0,.28);white-space:nowrap}
+.leaflet-tooltip.vereda-label:before{display:none}
+</style>
+<link rel="stylesheet" href="css/navbar.css"/>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=2"></script>
+
+<div id="top">
+  <div>
+    <h1>Red de Monitoreo · SAT Quebrada La Correa</h1>
+    <div class="sub">Girardota (Antioquia) — estaciones de nivel y sirenas de alerta</div>
+  </div>
+  <div class="right">
+    <span class="nav"><a href="dashboard.html">Dashboard</a> · <a href="index.html">Geoportal</a></span>
+    <span class="badge-sim">DATOS SIMULADOS</span>
+    <span id="clock">--:--:--</span>
+  </div>
+</div>
+
+<div id="main">
+  <!-- Lista de estaciones -->
+  <div id="sidebar">
+    <div class="panel-h">Estaciones</div>
+    <div class="tabs">
+      <button data-f="todas" class="on">Todas</button>
+      <button data-f="nivel">Nivel</button>
+      <button data-f="sirena">Sirenas</button>
+    </div>
+    <div id="lista"></div>
+    <div class="leg">Estado:<i style="background:#2e9e57"></i>Normal<i style="background:#EF9F27"></i>Alerta<i style="background:#c0392b"></i>Emergencia</div>
+  </div>
+
+  <!-- Mapa -->
+  <div id="map"></div>
+
+  <!-- Detalle estación -->
+  <div id="detail">
+    <div class="panel-h" id="d-title">Detalle de la estación</div>
+    <div id="d-body"><div class="empty">Selecciona una estación en el mapa o en la lista para ver sus datos en tiempo real.</div></div>
+  </div>
+</div>
+
+<script>
+// ---------------- Estaciones ----------------
+const ESTACIONES=[
+ {id:'P1', nombre:'Estación P1 — Quebrada La Correa', sitio:'Bajo confluencia · capta 2 cauces · reacción 3,4–7,9 min', tipo:'nivel', lat:6.407003, lon:-75.446880, op:'Operativa'},
+ {id:'S1', nombre:'Sirena 1 — Hogar Santa Clara', sitio:'Núcleo San Andrés', tipo:'sirena', lat:6.399833, lon:-75.439026},
+ {id:'S2', nombre:'Sirena 2 — Vía baja', sitio:'Boca / vía', tipo:'sirena', lat:6.397220, lon:-75.436563},
+ {id:'S3', nombre:'Sirena 3 — Puente', sitio:'Tramo intermedio', tipo:'sirena', lat:6.403203, lon:-75.441245},
+];
+const COL={NORMAL:'#2e9e57',ALERTA:'#EF9F27',EMERGENCIA:'#c0392b',REPOSO:'#6b6b6b',ACTIVADA:'#c0392b'};
+const estado={}; let filtro='todas', sel=null, chart=null;
+ESTACIONES.forEach(e=>{ estado[e.id]= e.tipo==='nivel'
+  ? {nivel:rnd(24,32),temp:18,hum:70,lluvia:false,evento:0,est:'NORMAL',hist:[]}
+  : {activa:false,ultima:null,est:'REPOSO'} ; });
+
+function rnd(a,b){return a+Math.random()*(b-a);}
+
+// ---------------- Mapa ----------------
+const map=L.map('map').setView([6.408,-75.448],13);
+const baseOSM=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19});
+const baseSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri',maxZoom:19});
+const baseTerreno=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{attribution:'© OpenTopoMap',maxZoom:17,subdomains:'abc'});
+const baseClaro=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{attribution:'© CARTO',maxZoom:19,subdomains:'abcd'});
+baseOSM.addTo(map);
+L.control.layers({'Mapa base':baseOSM,'Satelital':baseSat,'Terreno':baseTerreno,'Mapa claro':baseClaro},null,{position:'topright',collapsed:false}).addTo(map);
+fetch('data/veredas.geojson').then(r=>r.json()).then(j=>L.geoJSON(j,{style:{color:'#2e7d32',weight:2,fillColor:'#a5d6a7',fillOpacity:.12},onEachFeature:(f,l)=>{const nm=f.properties.Vereda||'—';l.bindTooltip(nm,{sticky:true,direction:'top',className:'vereda-label'});l.bindPopup('<b>Vereda:</b> '+nm);
+  l.on('mouseover',e=>e.target.setStyle({weight:3,fillOpacity:.28}));l.on('mouseout',e=>e.target.setStyle({weight:2,fillOpacity:.12}));}}).addTo(map)).catch(()=>{});
+fetch('data/cuenca.geojson').then(r=>r.json()).then(j=>{const l=L.geoJSON(j,{style:{color:'#FFD400',weight:2.5,fill:false}}).addTo(map);map.fitBounds(l.getBounds(),{padding:[30,30]});}).catch(()=>{});
+fetch('data/red_hidrica.geojson').then(r=>r.json()).then(j=>L.geoJSON(j,{style:{color:'#3aa0ff',weight:1,opacity:.7}}).addTo(map)).catch(()=>{});
+
+const markers={};
+ESTACIONES.forEach(e=>{
+  const m = e.tipo==='nivel'
+    ? L.circleMarker([e.lat,e.lon],{radius:9,color:'#111',weight:2,fillColor:COL.NORMAL,fillOpacity:1})
+    : L.marker([e.lat,e.lon],{icon:L.divIcon({className:'',html:'🔊',iconSize:[24,24]})});
+  m.addTo(map).on('click',()=>selectEst(e.id)); markers[e.id]=m;
+});
+
+// ---------------- Simulador ----------------
+function pasoNivel(s){
+  if(s.evento<=0 && Math.random()<0.05) s.evento=Math.floor(rnd(7,15));
+  if(s.evento>0){s.nivel+=rnd(3,9);s.evento--;} else {s.nivel+=rnd(-2.5,2.5); if(s.nivel>40)s.nivel-=rnd(1,4);}
+  s.nivel=Math.max(18,Math.min(118,s.nivel));
+  s.lluvia = s.evento>0 ? true : (Math.random()<0.25 ? !s.lluvia : s.lluvia);
+  s.temp=+rnd(16,22).toFixed(1); s.hum=Math.round(s.lluvia?rnd(85,98):rnd(60,80));
+  s.caudal=Math.round(8+Math.pow(Math.max(0,s.nivel-20)/10,1.9)*9);
+  s.est = s.nivel>=85?'EMERGENCIA':s.nivel>=55?'ALERTA':'NORMAL';
+  s.hist.push({t:new Date(),nivel:Math.round(s.nivel),est:s.est}); if(s.hist.length>60)s.hist.shift();
+}
+function tick(){
+  document.getElementById('clock').textContent=new Date().toLocaleTimeString();
+  ESTACIONES.filter(e=>e.tipo==='nivel').forEach(e=>pasoNivel(estado[e.id]));
+  // sirenas: se activan si alguna estación de nivel está en EMERGENCIA
+  const emergencia = ESTACIONES.some(e=>e.tipo==='nivel' && estado[e.id].est==='EMERGENCIA');
+  ESTACIONES.filter(e=>e.tipo==='sirena').forEach(e=>{
+    const s=estado[e.id]; s.activa=emergencia; s.est=emergencia?'ACTIVADA':'REPOSO'; if(emergencia)s.ultima=new Date();
+  });
+  // actualizar marcadores
+  ESTACIONES.forEach(e=>{ const s=estado[e.id];
+    if(e.tipo==='nivel') markers[e.id].setStyle({fillColor:COL[s.est]});
+  });
+  renderLista();
+  if(sel) renderDetalle(sel,true);
+}
+
+// ---------------- UI ----------------
+function renderLista(){
+  const cont=document.getElementById('lista'); let html='';
+  ESTACIONES.filter(e=>filtro==='todas'||e.tipo===filtro).forEach(e=>{
+    const s=estado[e.id];
+    const val = e.tipo==='nivel' ? s.nivel.toFixed(0)+' cm' : (s.activa?'ACTIVA':'reposo');
+    const c = COL[s.est]||'#6b6b6b';
+    html+=`<div class="est ${sel===e.id?'sel':''}" onclick="selectEst('${e.id}')">
+      <div class="ic">${e.tipo==='nivel'?'📟':'🔊'}</div>
+      <div class="nm">${e.nombre}<br><small>${e.sitio}</small></div>
+      <div class="vl">${val}<br><span class="dot" style="background:${c}"></span></div></div>`;
+  });
+  cont.innerHTML=html;
+}
+function selectEst(id){ sel=id; renderLista(); renderDetalle(id,false); const e=ESTACIONES.find(x=>x.id===id); map.panTo([e.lat,e.lon]); }
+
+function renderDetalle(id,soloDatos){
+  const e=ESTACIONES.find(x=>x.id===id), s=estado[id];
+  document.getElementById('d-title').textContent=e.nombre;
+  const body=document.getElementById('d-body');
+  if(e.tipo==='sirena'){
+    body.innerHTML=`<div class="d-content">
+      <div class="bignum" style="font-size:26px">${s.activa?'🔴 ACTIVADA':'⚪ En reposo'}</div>
+      <span class="estbadge" style="background:${COL[s.est]}">${s.est}</span>
+      <div class="kv"><div><b>${e.sitio}</b><span>Ubicación</span></div>
+        <div><b>${s.ultima?s.ultima.toLocaleTimeString():'—'}</b><span>Última activación</span></div></div>
+      <p style="font-size:12px;color:#6b6b6b">La sirena se activa automáticamente cuando una estación de nivel entra en estado de EMERGENCIA (la onda viaja aguas abajo).</p>
+      <div class="gal"><img src="docs/06_SAT_sensor_sirenas.png" onclick="window.open(this.src)"></div></div>`;
+    return;
+  }
+  if(!soloDatos || !document.getElementById('cEst')){
+    body.innerHTML=`<div class="d-content">
+      <div class="bignum"><span id="v-niv">${s.nivel.toFixed(0)}</span> <span style="font-size:18px">cm</span></div>
+      <span class="estbadge" id="v-est" style="background:${COL[s.est]}">${s.est}</span>
+      ${e.op?'<span style="font-size:11px;color:#6b6b6b;margin-left:8px">'+e.op+'</span>':''}
+      <div class="kv">
+        <div><b id="v-cau">${s.caudal||'—'}</b><span>Caudal estim. (m³/s)</span></div>
+        <div><b id="v-tmp">${s.temp}</b><span>Temperatura (°C)</span></div>
+        <div><b id="v-hum">${s.hum}</b><span>Humedad (%)</span></div>
+        <div><b id="v-llu">${s.lluvia?'Sí':'No'}</b><span>¿Lloviendo?</span></div>
+      </div>
+      <div class="chartbox"><canvas id="cEst"></canvas></div>
+      <button class="btn" onclick="descargarCSV('${id}')">⬇ Descargar CSV</button>
+      <table><thead><tr><th>Hora</th><th>Nivel (cm)</th><th>Estado</th></tr></thead><tbody id="tb"></tbody></table>
+      <div class="gal"><img src="docs/04_riesgo.png" onclick="window.open(this.src)"><img src="docs/03_exposicion.png" onclick="window.open(this.src)"></div>
+      </div>`;
+    chart=new Chart(document.getElementById('cEst'),{type:'line',
+      data:{labels:[],datasets:[{label:'Nivel',data:[],borderColor:'#1B7FB5',backgroundColor:'rgba(27,127,181,.15)',fill:true,tension:.3,pointRadius:0}]},
+      options:{animation:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,suggestedMax:120}},maintainAspectRatio:false}});
+  }
+  // actualizar valores
+  const set=(i,v)=>{const el=document.getElementById(i); if(el)el.textContent=v;};
+  set('v-niv',s.nivel.toFixed(0)); set('v-cau',s.caudal); set('v-tmp',s.temp); set('v-hum',s.hum); set('v-llu',s.lluvia?'Sí':'No');
+  const eb=document.getElementById('v-est'); if(eb){eb.textContent=s.est;eb.style.background=COL[s.est];}
+  if(chart){chart.data.labels=s.hist.map(h=>h.t.toLocaleTimeString().slice(0,5));
+    chart.data.datasets[0].data=s.hist.map(h=>h.nivel); chart.update();}
+  const tb=document.getElementById('tb'); if(tb){tb.innerHTML=s.hist.slice(-8).reverse().map(h=>
+    `<tr><td>${h.t.toLocaleTimeString()}</td><td>${h.nivel}</td><td style="color:${COL[h.est]};font-weight:700">${h.est}</td></tr>`).join('');}
+}
+function descargarCSV(id){
+  const s=estado[id]; let csv='fecha_hora,nivel_cm,estado\n';
+  s.hist.forEach(h=>csv+=`${h.t.toISOString()},${h.nivel},${h.est}\n`);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='mediciones_'+id+'.csv'; a.click();
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); filtro=b.dataset.f; renderLista();});
+
+// init
+for(let i=0;i<6;i++) ESTACIONES.filter(e=>e.tipo==='nivel').forEach(e=>pasoNivel(estado[e.id]));
+renderLista(); tick(); setInterval(tick,2500);
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Informes de visitas — SAT Quebrada La Correa</title>
+  <link rel="stylesheet" href="css/estilos.css"/>
+  <link rel="stylesheet" href="css/navbar.css"/>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js"></script>
+
+<div class="container">
+  <header class="header">
+    <h1>Informes de visitas de campo — SAT La Correa</h1>
+    <p>Registros de inspección técnica de los puntos críticos de la microcuenca</p>
+  </header>
+
+  <section class="filtros-panel">
+    <h2>Filtro</h2>
+    <div class="filtros-grid">
+      <div>
+        <label for="fVereda">Vereda:</label>
+        <select id="fVereda"><option value="">Todas las veredas</option></select>
+      </div>
+      <button class="btn-filtrar" onclick="render()">Filtrar</button>
+      <button class="btn-limpiar" onclick="document.getElementById('fVereda').value='';render()">Limpiar</button>
+    </div>
+    <p class="info-text">Registros derivados del trabajo de campo del SAT. Las columnas <b>Fecha</b>, <b>Responsable</b> y fotos se completan con los informes de la Secretaría de Infraestructura (GRD).</p>
+  </section>
+
+  <section class="table-panel">
+    <h2>Registros de inspección (<span id="cuenta">0</span>)</h2>
+    <div class="table-wrapper" style="max-height:520px">
+      <table>
+        <thead><tr><th>#</th><th>Fecha</th><th>Vereda</th><th>Sector</th><th>Tipo de riesgo</th><th>Nivel</th><th>Observación</th><th>Responsable</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="8">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<script>
+const C_RIESGO={Critico:'#8B0000',Alto:'#E24B4A',Medio:'#EF9F27',Bajo:'#FFE13C',Marginal:'#9a9a92'};
+let REG=[];
+async function init(){
+  try{
+    const gj=await (await fetch('data/elementos.geojson')).json();
+    REG=gj.features.map(f=>f.properties);
+    const vs=document.getElementById('fVereda');
+    [...new Set(REG.map(p=>p.Vereda).filter(Boolean))].sort().forEach(v=>vs.add(new Option(v,v)));
+    render();
+  }catch(e){ document.getElementById('tbody').innerHTML='<tr><td colspan="8">No se pudieron cargar los registros.</td></tr>'; }
+}
+function render(){
+  const v=document.getElementById('fVereda').value;
+  const sel=REG.filter(p=>!v||p.Vereda===v);
+  document.getElementById('cuenta').textContent=sel.length;
+  document.getElementById('tbody').innerHTML = sel.length ? sel.map((p,i)=>
+    `<tr><td>${i+1}</td><td style="color:#999">Por registrar</td><td>${p.Vereda||'—'}</td>
+     <td>${p.Sector||'—'}</td><td>${p.Tipo_riesgo||'—'}</td>
+     <td><span class="pill" style="background:${C_RIESGO[p.RiesgoFinal]||'#888'}">${p.RiesgoFinal||'—'}</span></td>
+     <td>${(p.Descripcion||p.Nombre||'').slice(0,120)}</td><td style="color:#999">Por registrar</td></tr>`).join('')
+    : '<tr><td colspan="8">No hay registros para esta vereda.</td></tr>';
+}
+init();
+</script>
+</body>
+</html>
