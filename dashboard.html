@@ -171,21 +171,25 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
 <script src="js/config.js?v=3"></script>
 <script>
 // ---- Gráficos del análisis (datos verificados del proyecto) ----
-const C_NIV={1:'#8B0000',2:'#E24B4A',3:'#EF9F27',4:'#F4C430',5:'#66bb6a'};
+// Paleta armónica con el geoportal: rampa de riesgo suave (crítico→bajo) + verdes institucionales.
+const C_NIV={1:'#c0392b',2:'#e07b3c',3:'#eeb04a',4:'#f4d06a',5:'#6cb98f'}; // riesgo: crítico→bajo
+const C_CAT=['#1f5a43','#2f7a57','#4f9a6a','#8ccf4d'];                       // categorías (verdes geoportal)
+const dOpt={plugins:{legend:{position:'bottom',labels:{font:{size:10},usePointStyle:true,padding:10}}},
+  cutout:'58%',maintainAspectRatio:false};
 new Chart(document.getElementById('cRiesgo'),{type:'doughnut',
   data:{labels:['Crítico (13)','Alto (4)','Medio-alto (17)','Medio (24)','Bajo (3)'],
-    datasets:[{data:[13,4,17,24,3],backgroundColor:[C_NIV[1],C_NIV[2],C_NIV[3],C_NIV[4],C_NIV[5]]}]},
-  options:{plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},maintainAspectRatio:false}});
+    datasets:[{data:[13,4,17,24,3],backgroundColor:[C_NIV[1],C_NIV[2],C_NIV[3],C_NIV[4],C_NIV[5]],borderColor:'#fff',borderWidth:2}]},
+  options:dOpt});
 
 new Chart(document.getElementById('cExpo'),{type:'bar',
   data:{labels:['Exposición/otro','Represamiento','Mov. en masa','Salto/roca'],
-    datasets:[{label:'Elementos',data:[26,15,13,7],backgroundColor:['#4f9a6a','#EF9F27','#8B0000','#E24B4A']}]},
+    datasets:[{label:'Elementos',data:[26,15,13,7],backgroundColor:C_CAT,borderRadius:5,maxBarThickness:48}]},
   options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:false}});
 
 new Chart(document.getElementById('cZona'),{type:'doughnut',
   data:{labels:['Alto 39,7','Medio 61,3','Bajo 97,5'],
-    datasets:[{data:[39.7,61.3,97.5],backgroundColor:['#E24B4A','#EF9F27','#FFE13C']}]},
-  options:{plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},maintainAspectRatio:false}});
+    datasets:[{data:[39.7,61.3,97.5],backgroundColor:[C_NIV[2],C_NIV[4],C_NIV[5]],borderColor:'#fff',borderWidth:2}]},
+  options:dOpt});
 
 // ---- Monitoreo en tiempo real desde la API (sensor P1) ----
 (function(){
