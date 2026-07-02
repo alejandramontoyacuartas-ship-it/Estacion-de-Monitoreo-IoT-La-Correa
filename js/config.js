@@ -13,6 +13,7 @@ const CONFIG = {
                      ? "/api"
                      : "https://iot-trabajo.onrender.com",
   ENDPOINT_ULTIMA: "/mediciones/ultima",        // ruta REAL confirmada (FastAPI)
+  ENDPOINT_MAPA:   "/mapa",                      // GeoJSON con TODAS las mediciones (punto P1) — fuente del tablero
   REFRESH_MS:      10000,                        // cada cuántos ms se relee la API
 
   // ---- Umbrales de alerta (cm de nivel_agua) ----

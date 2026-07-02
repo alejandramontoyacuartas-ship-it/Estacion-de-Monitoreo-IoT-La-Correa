@@ -168,7 +168,7 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
 
 <footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
 
-<script src="js/config.js?v=3"></script>
+<script src="js/config.js?v=4"></script>
 <script>
 // ---- Gráficos del análisis (datos verificados del proyecto) ----
 // Paleta armónica con el geoportal: rampa de riesgo suave (crítico→bajo) + verdes institucionales.
@@ -205,30 +205,29 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
    if(nv>=U.preventivo) return {t:'PREVENCIÓN',c:'#EF9F27'};
    return {t:'NORMAL',c:'#2e9e57'}; }
  const set=(id,v)=>{const e=document.getElementById(id); if(e)e.textContent=v;};
- async function ultima(){
+ // Fuente única: /mapa (GeoJSON con todas las mediciones del punto P1)
+ async function refrescar(){
    try{
-     const r=await fetch(CONFIG.API_BASE+CONFIG.ENDPOINT_ULTIMA,{cache:'no-store'}); if(!r.ok)throw 0;
-     let d=await r.json(); if(Array.isArray(d))d=d[0]||{};
+     const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(!r.ok)throw 0;
+     const gj=await r.json();
+     let feats=((gj&&gj.features)||[]).map(f=>f.properties||{}).filter(m=>m[C.fecha]);
+     if(!feats.length) throw 0;
+     feats.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // cronológico
+     const d=feats[feats.length-1];                               // más reciente
      const nv=parseFloat(d[C.nivel]);
      set('s-nivel',isNaN(nv)?'—':nv.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
      set('s-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':(d[C.lluvia]??'—'));
      set('s-hora',d[C.fecha]?String(d[C.fecha]).replace('T',' ').slice(0,16):'—');
      const e=estado(nv); const b=document.getElementById('sim-estado'); b.textContent=e.t; b.style.background=e.c;
      const lb=document.getElementById('live-badge'); lb.textContent='EN VIVO'; lb.style.background='#2e9e57';
+     const ult=feats.slice(-40);                                  // histórico del gráfico
+     labels.length=0; data.length=0;
+     ult.forEach(m=>{labels.push(String(m[C.fecha]).slice(11,16)); data.push(parseFloat(m[C.nivel]));});
+     chart.update();
    }catch(err){ const lb=document.getElementById('live-badge'); lb.textContent='API no disponible'; lb.style.background='#c0392b'; }
  }
- async function serie(){
-   try{
-     const r=await fetch(CONFIG.API_BASE+'/mediciones',{cache:'no-store'}); if(!r.ok)throw 0;
-     let l=await r.json(); if(!Array.isArray(l))return;
-     l=l.filter(m=>m[C.fecha]).sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0)).slice(-40);
-     labels.length=0; data.length=0;
-     l.forEach(m=>{labels.push(String(m[C.fecha]).slice(11,16)); data.push(parseFloat(m[C.nivel]));});
-     chart.update();
-   }catch(err){}
- }
- ultima(); serie();
- setInterval(ultima, CONFIG.REFRESH_MS); setInterval(serie, CONFIG.REFRESH_MS*3);
+ refrescar();
+ setInterval(refrescar, CONFIG.REFRESH_MS);
 })();
 </script>
 </body>
