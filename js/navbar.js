@@ -39,6 +39,7 @@
     {label:'Monitoreo y Alertas', items:[
       {t:'Estaciones de monitoreo (SIATA)', h:'https://geoportal.siata.gov.co/', ext:true},
       {t:'Estación de Monitoreo La Correa', estacion:true},
+      {t:'Tablero de lectura', h:'dashboard.html'},
     ]},
     {label:'Manejo de desastres', items:[
       {t:'Emergencias atendidas', h:'index.html?capa=antecedentes'},
