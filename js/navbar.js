@@ -31,8 +31,8 @@
       {t:'Monitoreo y Alertas', grupo:true, items:[
         {t:'Estaciones de monitoreo', sub:[
           {t:'Sensores de nivel',   h:'index.html?capa=siata_nivel'},
+          {t:'Red pluviométrica',    h:'index.html?capa=siata_pluvio'},
           {t:'Red sismológica',      h:'https://geoportal.siata.gov.co/', ext:true},
-          {t:'Red pluviométrica',    h:'https://geoportal.siata.gov.co/', ext:true},
         ]},
         {t:'Estación de Monitoreo La Correa', estacion:true, extra:[
           {t:'Cobertura de alertas', h:'index.html?capa=cobertura'},

@@ -129,6 +129,12 @@ Orden cronológico de lo construido (para entender el punto de avance).
 - La capa "Sensores de nivel" **también incluye la estación PROPIA del proyecto (P1)** en **verde**
   (`CONFIG.SENSOR`): NO es SIATA → al hacer clic abre el **panel propio** (lectura en vivo + serie de
   tiempo + sección transversal), no enlaza a SIATA. app.js v38.
+- **Red pluviométrica SIATA**: capa `siata_pluvio` con **5 estaciones** de lluvia (127, 66, 31, 324, 88)
+  con ícono de gota morado → clic enlaza al geoportal SIATA. Menú Red pluviométrica → `?capa=siata_pluvio`.
+  Datos `data/siata_pluvio.geojson`/`.kmz`/`js/siata_pluvio.js`; script `scripts/crear_siata_pluvio.py`;
+  ArcGIS `siata_pluvio_1`. *(Falta la 6ª estación — pendiente de imagen.)*
+- **Monitoreos mutuamente excluyentes**: al activar un monitoreo (nivel/pluvio) se apagan los demás
+  (`MONITOREO_KEYS` en `geoToggle`). app.js v39, navbar v30.
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,

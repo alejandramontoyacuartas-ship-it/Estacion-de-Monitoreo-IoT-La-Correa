@@ -17,6 +17,12 @@ const iconNivel=(color='#2e9e57')=>L.divIcon({className:'',iconSize:[34,34],icon
     <path d="M7 24 q2.5 -3 5 0 t5 0 t5 0 t5 0" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/>
   </svg>`});
 const ICON_NIVEL=iconNivel();
+// Ícono estación pluviométrica (gota en círculo) — color por defecto morado
+const iconLluvia=(color='#5e35b1')=>L.divIcon({className:'',iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-14],
+  html:`<svg width="32" height="32" viewBox="0 0 32 32" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))">
+    <circle cx="16" cy="16" r="13" fill="${color}" stroke="#ffffff" stroke-width="2.4"/>
+    <path d="M16 7 C12 12.5 10 15.2 10 18 a6 6 0 0 0 12 0 C22 15.2 20 12.5 16 7 Z" fill="#ffffff"/>
+  </svg>`});
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
 // Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
 function popupSiata(p){
@@ -173,6 +179,11 @@ const DEF=[
        .on('click',()=>{ if(typeof abrirPanelSensor==='function') abrirPanelSensor('nivel'); });
      return L.layerGroup([siata,p1]);
    }},
+ {k:'siata_pluvio',label:'Red pluviométrica (SIATA)',sub:'Estaciones de lluvia · red SIATA · Girardota',icon:'🌧️',color:'#5e35b1',def:false,lazy:true,
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconLluvia('#5e35b1')}),
+     onEachFeature:(f,l)=>{ const p=f.properties;
+       l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
+       l.bindPopup(popupSiata(p),{maxWidth:270}); }})},
  // --- Capas de referencia municipal (panel "Capas"); se cargan bajo demanda (lazy) ---
  {k:'curvas_nivel',label:'Curvas de Nivel 5 m',sub:'Topografía · 1285–2715 m',icon:'⛰️',color:'#8d6e63',def:false,capas:true,lazy:true,
    build:j=>L.geoJSON(j,{style:f=>({color:(f.properties.Indice?'#6d4c41':'#bcaaa4'),weight:(f.properties.Indice?1.1:.5),opacity:.8}),
@@ -188,8 +199,13 @@ DEF.find(d=>d.k==='puntos_sensor_ahp').file='sensor';
 // Controlador único de capas: sincroniza el panel "Capas" y el submenú "Productos La Correa".
 // Carga bajo demanda: las capas lazy se descargan solo al activarse por primera vez.
 const DEFBYK={};
+// Capas de monitoreo mutuamente excluyentes: al activar una, se apagan las demás
+const MONITOREO_KEYS=['siata_nivel','siata_pluvio'];
 window.geoToggle=async function(k,on){
   const d=DEFBYK[k]; if(!d) return;
+  if(on && MONITOREO_KEYS.includes(k)){
+    MONITOREO_KEYS.forEach(x=>{ if(x!==k){ const dd=DEFBYK[x]; if(dd&&dd.layer&&map.hasLayer(dd.layer)) window.geoToggle(x,false); } });
+  }
   if(on && !d.layer && d.build){
     try{ d.layer=d.build(await cargar('data/'+(d.file||d.k)+'.geojson')); }catch(e){ console.warn('no cargó',k,e); return; }
   }
