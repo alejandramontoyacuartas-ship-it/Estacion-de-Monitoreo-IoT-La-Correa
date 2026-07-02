@@ -18,6 +18,17 @@ const iconNivel=(color='#2e9e57')=>L.divIcon({className:'',iconSize:[34,34],icon
   </svg>`});
 const ICON_NIVEL=iconNivel();
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
+// Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
+function popupSiata(p){
+  return `<div style="min-width:210px;font-size:12.5px;line-height:1.5">
+    <b style="color:#0277bd">Estación ${p.codigo} · SIATA</b><br>
+    <b>${p.nombre}</b><br>
+    <b>Subcuenca:</b> ${p.subcuenca||'—'}<br>
+    <b>Vereda:</b> ${p.vereda||'—'} · ${p.municipio||''}<br>
+    <b>Coordenadas:</b> ${p.lat}, ${p.lon}
+    <a href="${p.url}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;background:#0277bd;color:#fff;padding:7px 10px;border-radius:7px;text-decoration:none;font-weight:700">Ver en el geoportal SIATA ↗</a>
+  </div>`;
+}
 const nivelDe=z=>z&&z.startsWith('ALTA')?'ALTA':z&&z.startsWith('MEDIA')?'MEDIA':'BAJA';
 // Carga una capa: primero busca los datos incrustados (window.GEO, para abrir por doble clic / file://),
 // y si no existen hace fetch http (Live Server / servidor).
@@ -148,6 +159,11 @@ const DEF=[
  {k:'puntos_sensor_ahp',label:'Puntos candidatos AHP',sub:'3 · análisis multicriterio (P1 óptimo)',icon:'🎯',color:'#3949ab',def:false,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:7,fillColor:(String(f.properties.Punto||f.properties.Prioridad).indexOf('1')>=0?'#1b5e20':'#3949ab'),color:'#fff',weight:2,fillOpacity:.95}),
      onEachFeature:(f,l)=>l.bindPopup(pop({Punto:f.properties.Punto,Prioridad:f.properties.Prioridad,Cauce:f.properties.Cauce,Score:f.properties.Score,Lead_min:f.properties.Lead_min},'Candidato AHP'))})},
+ {k:'siata_nivel',label:'Sensores de nivel (SIATA)',sub:'Estaciones de nivel · red SIATA · Girardota',icon:'🌊',color:'#0277bd',def:false,lazy:true,
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconNivel('#0277bd')}),
+     onEachFeature:(f,l)=>{ const p=f.properties;
+       l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
+       l.bindPopup(popupSiata(p),{maxWidth:270}); }})},
  // --- Capas de referencia municipal (panel "Capas"); se cargan bajo demanda (lazy) ---
  {k:'curvas_nivel',label:'Curvas de Nivel 5 m',sub:'Topografía · 1285–2715 m',icon:'⛰️',color:'#8d6e63',def:false,capas:true,lazy:true,
    build:j=>L.geoJSON(j,{style:f=>({color:(f.properties.Indice?'#6d4c41':'#bcaaa4'),weight:(f.properties.Indice?1.1:.5),opacity:.8}),

@@ -116,6 +116,17 @@ Orden cronológico de lo construido (para entender el punto de avance).
   panel estadístico en "—". Al presionar **Filtrar** aparecen puntos + tabla + estadísticas; **Limpiar**
   vuelve al estado vacío (bandera `statsOn` + `limpiarStats()` / `limpiarEstadisticas()`).
 
+## Sensores de nivel SIATA (2026-07-01)
+- Nueva capa **`siata_nivel`** con las 4 estaciones de nivel de **SIATA** en Girardota
+  (471… → 671 Q. Telesfora / 821 Q. El Limonar / 472 R. Medellín-Puente / 272 Q. El Salado),
+  con **ícono de nivel** (círculo de olas). Clic en el ícono → **popup con enlace al geoportal SIATA**.
+- Se activa desde **Reducción → Monitoreo y Alertas → Estaciones SIATA → "Sensores de nivel"**
+  (antes "Niveles de quebradas"; ahora `index.html?capa=siata_nivel`).
+- Datos: `data/siata_nivel.geojson` + **`data/siata_nivel.kmz`** + embebido `js/siata_nivel.js`;
+  script `scripts/crear_siata_nivel.py`. Coordenadas de las fichas de SIATA.
+- ArcGIS: capa **`siata_nivel_1`** (4 pts) en `GIRARDOTA.gdb`. app.js v37, navbar v28.
+  *(Los enlaces abren el geoportal general de SIATA; si hay URL por estación se pueden afinar.)*
+
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
   `RESULTADOS_TECNICOS.md`, `PENDIENTES.md`, este CHANGELOG.
