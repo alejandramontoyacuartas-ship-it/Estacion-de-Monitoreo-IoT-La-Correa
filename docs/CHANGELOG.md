@@ -31,6 +31,8 @@ Orden cronológico de lo construido (para entender el punto de avance).
 
 ## Menús (reorganización según diagrama de la usuaria)
 - 5 menús: Conocimiento · Escenarios de Riesgo y Cambio Climático · Reducción · Monitoreo · Manejo.
+  *(2026-07-01: "Escenarios de Riesgo y Cambio Climático" pasó a ser **submenú dentro de Conocimiento**
+  → quedan 4 menús superiores.)*
 - **Escenarios de Riesgos** (`escenarios.html`): 26 tarjetas en 6 categorías (Geológicos,
   Hidrológicos, Climáticos, Ambientales, Tecnológicos, Salud Pública) con iconos por categoría.
 - **Cambio Climático** (`cambio_climatico.html`).

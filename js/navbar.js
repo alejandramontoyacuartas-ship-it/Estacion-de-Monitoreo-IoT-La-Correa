@@ -23,10 +23,10 @@
       {t:'Uso del suelo',           h:'index.html', uso:true},
       {t:'Inspecciones técnicas',   h:'informes.html'},
       {t:'Inspecciones técnicas de campo — Interinstitucionales', h:'interinstitucionales.html'},
-    ]},
-    {label:'Escenarios de Riesgo y Cambio Climático', items:[
-      {t:'Escenarios de Riesgos', h:'escenarios.html'},
-      {t:'Cambio Climático',      h:'cambio_climatico.html'},
+      {t:'Escenarios de Riesgo y Cambio Climático', sub:[
+        {t:'Escenarios de Riesgos', h:'escenarios.html'},
+        {t:'Cambio Climático',      h:'cambio_climatico.html'},
+      ]},
     ]},
     {label:'Reducción del riesgo', items:[
       {t:'Obras de mitigación',  h:'#'},
@@ -47,7 +47,8 @@
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'#'},
     ]},
   ];
-  const active = cat => cat.items.some(it => it.h && it.h.split('?')[0].toLowerCase() === page);
+  const esta = h => h && h.split('?')[0].toLowerCase() === page;
+  const active = cat => cat.items.some(it => esta(it.h) || (it.sub && it.sub.some(s => esta(s.h))));
 
   const css = `<style>
     .sat-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#fff;font-size:13px;font-weight:700;padding:11px 20px;cursor:pointer;border-top:1px solid rgba(255,255,255,.08);user-select:none}
