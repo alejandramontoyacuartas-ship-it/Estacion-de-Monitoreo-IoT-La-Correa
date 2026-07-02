@@ -176,7 +176,8 @@ const DEF=[
      const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
      const p1=L.marker([s.lat,s.lon],{icon:iconNivel('#1b7a3a'),zIndexOffset:1000})
        .bindTooltip(s.nombre+' · estación propia',{direction:'top'})
-       .on('click',()=>{ if(typeof abrirPanelSensor==='function') abrirPanelSensor('nivel'); });
+       .on('click',()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // panel de lectura en vivo
+         if(typeof abrirPanelSensor==='function') abrirPanelSensor('nivel'); });
      return L.layerGroup([siata,p1]);
    }},
  {k:'siata_pluvio',label:'Red pluviométrica (SIATA)',sub:'Estaciones de lluvia · red SIATA · Girardota',icon:'🌧️',color:'#5e35b1',def:false,lazy:true,
@@ -265,7 +266,8 @@ document.getElementById('cp-close').onclick=()=>document.getElementById('capas-p
 // P1 NO se añade al mapa por defecto: aparece al activar la cuenca La Correa
 const sensorMarker=L.marker([CONFIG.SENSOR.lat,CONFIG.SENSOR.lon],{icon:iconNivel('#2e9e57'),zIndexOffset:1000})
   .bindTooltip('P1',{permanent:true,direction:'right',offset:[14,0],className:'vereda-label'})
-  .bindPopup('<b>'+CONFIG.SENSOR.nombre+'</b><br>Estación de nivel · punto óptimo (P1)');
+  .bindPopup('<b>'+CONFIG.SENSOR.nombre+'</b><br>Estación de nivel · punto óptimo (P1)')
+  .on('click',()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true); }); // clic en P1 → panel de lectura en vivo
 
 // ----- Íconos de los sensores de la estación P1 (activables desde el navbar) -----
 const SENS_IC={
@@ -283,7 +285,9 @@ window.setSensorIcon=function(key,on){
       const ic=L.divIcon({className:'',iconSize:[24,24],iconAnchor:[12-SENS_DX[key],58],
         html:`<div title="Ver lectura de ${key}" style="cursor:pointer;font-size:14px;background:#fff;border:1.6px solid #2e8b57;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.35)">${SENS_IC[key]}</div>`});
       sensorIcons[key]=L.marker([CONFIG.SENSOR.lat,CONFIG.SENSOR.lon],{icon:ic,interactive:true,zIndexOffset:1100,bubblingMouseEvents:false}).addTo(map);
-      sensorIcons[key].on('click',function(e){ if(e&&e.originalEvent&&e.originalEvent.stopPropagation)e.originalEvent.stopPropagation(); abrirPanelSensor(key); });
+      sensorIcons[key].on('click',function(e){ if(e&&e.originalEvent&&e.originalEvent.stopPropagation)e.originalEvent.stopPropagation();
+        if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // también el panel de lectura en vivo
+        abrirPanelSensor(key); });
     }
   }else if(sensorIcons[key]){ map.removeLayer(sensorIcons[key]); delete sensorIcons[key]; }
 };
@@ -482,8 +486,12 @@ function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:10,cr
   return {txt:'NORMAL',col:'#2e9e57'};}
 function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
 async function leerSensor(){const C=CONFIG.CAMPOS;try{
-  const r=await fetch(CONFIG.API_BASE+CONFIG.ENDPOINT_ULTIMA,{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
-  let d=await r.json();if(Array.isArray(d))d=d[0]||{};
+  // Conexión con la API por /mapa (GeoJSON con todas las mediciones del punto P1)
+  const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+  const gj=await r.json(); let d={};
+  if(gj&&gj.features){ let f=gj.features.map(x=>x.properties||{}).filter(m=>m[C.fecha]);
+    f.sort((a,b)=>(b.id_medicion||0)-(a.id_medicion||0)); d=f[0]||{}; }   // más reciente primero
+  else if(Array.isArray(gj)) d=gj[0]||{}; else d=gj||{};
   fila('v-nivel',d[C.nivel]);fila('v-temp',d[C.temp]);fila('v-humedad',d[C.humedad]);
   fila('v-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':d[C.lluvia]);
   // Estado derivado del NIVEL real vs umbrales (el campo estado_alerta del prototipo es inconsistente)
@@ -510,6 +518,15 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
 // se muestra al hacer clic en el submenú "Estación de Monitoreo La Correa" y se oculta
 // al pasar a los menús Conocimiento o Manejo (lógica en navbar.js).
 window.mostrarPanelEstacion=function(on){ const p=document.getElementById('panel-sensor'); if(p) p.style.display=on?'block':'none'; };
+// Cualquier clic FUERA del panel (y que no sea un marcador o el menú) lo oculta.
+document.addEventListener('click',function(e){
+  const p=document.getElementById('panel-sensor');
+  if(!p || getComputedStyle(p).display==='none') return;    // ya está oculto
+  if(p.contains(e.target)) return;                           // clic dentro del panel
+  if(e.target.closest('.leaflet-marker-icon')||e.target.closest('.leaflet-control')||e.target.closest('.navbar')
+     ||e.target.closest('#capas-panel')||e.target.closest('#capas-btn')||e.target.closest('#sensor-detalle')) return;
+  window.mostrarPanelEstacion(false);
+},true);
 window.addEventListener('load',()=>{ window.mostrarPanelEstacion(false); initChart(); leerSensor(); setInterval(leerSensor,CONFIG.REFRESH_MS); });
 
 // ---------- Leyenda dinámica (según capas activas) ----------
