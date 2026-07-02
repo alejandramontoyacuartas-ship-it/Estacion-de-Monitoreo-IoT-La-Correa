@@ -38,23 +38,23 @@ let PUNTOS = [];            // features del KMZ
 let markers = {};          // punto -> marker
 let grafico = null;
 let selPunto = null;
-let statsOn = false;        // el panel estadístico queda vacío hasta aplicar el filtro
+let statsOn = false;        // nada (tabla, puntos, panel) se muestra hasta aplicar el filtro
+let veredasLayerRef = null; // capa de veredas (para encuadre)
 
 // Límites veredales de fondo
 cargarGeo('veredas','data/veredas.geojson').then(gj=>{
-  L.geoJSON(gj,{style:{color:'#2e7d32',weight:1.5,fillColor:'#a5d6a7',fillOpacity:.10},
+  veredasLayerRef = L.geoJSON(gj,{style:{color:'#2e7d32',weight:1.5,fillColor:'#a5d6a7',fillOpacity:.10},
     onEachFeature:(f,l)=>{const nm=f.properties.Vereda||'—';
       l.bindTooltip(nm,{sticky:true,direction:'top',className:'vereda-label'});}}).addTo(map);
+  if(veredasLayerRef.getBounds().isValid()) map.fitBounds(veredasLayerRef.getBounds(),{padding:[20,20]});
 }).catch(()=>{});
 
-// Puntos de la visita
+// Puntos de la visita (no se dibujan hasta aplicar el filtro)
 cargarGeo('pt_inter','data/pt_inter.geojson').then(gj=>{
   PUNTOS = gj.features||[];
   poblarFiltro();
   render();
-  const grp = L.featureGroup(Object.values(markers));
-  if(grp.getLayers().length) map.fitBounds(grp.getBounds(),{padding:[40,40]});
-}).catch(e=>{ document.getElementById('tablaResultados').innerHTML='<tr><td colspan="5">No se pudieron cargar los puntos.</td></tr>'; });
+}).catch(e=>{ document.getElementById('tablaResultados').innerHTML='<tr><td colspan="6">No se pudieron cargar los puntos.</td></tr>'; });
 
 function poblarFiltro(){
   const sel=document.getElementById('veredaSelect');
@@ -70,6 +70,13 @@ function seleccionados(){
 function render(){
   // limpiar marcadores
   Object.values(markers).forEach(m=>map.removeLayer(m)); markers={};
+  // Sin filtro aplicado: no se muestra información (igual que Puntos de riesgo)
+  if(!statsOn){
+    document.getElementById('cuenta').textContent='0';
+    document.getElementById('tablaResultados').innerHTML='<tr><td colspan="6">Aún no se ha aplicado ningún filtro.</td></tr>';
+    limpiarStats();
+    return;
+  }
   const sel=seleccionados();
   // marcadores: color por institución (sin número)
   sel.forEach(f=>{
@@ -92,7 +99,7 @@ function render(){
       <td>${p.vereda||'—'}</td><td>${p.altitud||'—'}</td>
       <td><button class="btn-ver" onclick="event.stopPropagation();abrirInformePorPunto('${p.punto}')">Ver informe</button></td></tr>`;
   }).join('') : '<tr><td colspan="6">No hay puntos para esta vereda.</td></tr>';
-  if(statsOn) renderStats(sel); else limpiarStats();
+  renderStats(sel);
 }
 
 // Panel estadístico vacío hasta aplicar el filtro
@@ -159,5 +166,12 @@ document.getElementById('rep-modal').addEventListener('click',e=>{ if(e.target.i
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrarInforme(); });
 
 // ---- Filtros ----
-function filtrarDatos(){ statsOn=true; render(); }
-function limpiarFiltro(){ document.getElementById('veredaSelect').value=''; selPunto=null; statsOn=false; render(); }
+function filtrarDatos(){
+  statsOn=true; render();
+  const grp=L.featureGroup(Object.values(markers));
+  if(grp.getLayers().length) map.fitBounds(grp.getBounds(),{padding:[40,40]});
+}
+function limpiarFiltro(){
+  document.getElementById('veredaSelect').value=''; selPunto=null; statsOn=false; render();
+  if(veredasLayerRef && veredasLayerRef.getBounds().isValid()) map.fitBounds(veredasLayerRef.getBounds(),{padding:[20,20]});
+}

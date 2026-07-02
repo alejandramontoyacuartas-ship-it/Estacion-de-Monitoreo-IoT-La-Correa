@@ -107,10 +107,10 @@ Orden cronológico de lo construido (para entender el punto de avance).
   P16 (Colcerámica, fuera de polígonos)→San Diego (vereda más cercana, 105 m — *validar*). Ya no queda "Sin dato".
 
 ## Panel estadístico bajo demanda (2026-07-01)
-- En **`puntos_riesgo.html`** y **`interinstitucionales.html`** el **panel estadístico inicia vacío**
-  ("—" + "Aplica un filtro para ver las estadísticas") y solo se llena al presionar **Filtrar**
-  (`limpiarEstadisticas()` / `limpiarStats()` + bandera `statsOn`). El mapa conserva su comportamiento
-  (puntos_riesgo inicia sin puntos; interinstitucionales muestra los 18 puntos).
+- En **`puntos_riesgo.html`** y **`interinstitucionales.html`** **nada se muestra hasta aplicar el filtro**
+  (igual que Puntos de riesgo): mapa solo con veredas de fondo, tabla "Aún no se ha aplicado ningún filtro",
+  panel estadístico en "—". Al presionar **Filtrar** aparecen puntos + tabla + estadísticas; **Limpiar**
+  vuelve al estado vacío (bandera `statsOn` + `limpiarStats()` / `limpiarEstadisticas()`).
 
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
