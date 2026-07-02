@@ -33,8 +33,10 @@ Punto de avance actual y lo que falta. **Continúa desde aquí; no repitas lo ya
 1. **Definir destinos de los marcadores `#`** del menú (hoy no llevan a ningún lado):
    - `Obras de mitigación`, `Subsidio de arriendo`, `Subsidio de materiales`, `CBVG`.
    - Decidir: página propia, PDF, o enlace externo de la Alcaldía. Editar en `js/navbar.js` (array `NAV`).
-2. **Actualizar las páginas heredadas** (aún con contenido del proyecto viejo 12,5 m):
-   `dashboard.html`, `monitoreo.html`, `informes.html`.
+2. ~~**Actualizar las páginas heredadas**: `dashboard.html`, `monitoreo.html`, `informes.html`.~~
+   ✅ HECHO (2026-07-01): formato uniforme con el geoportal (navbar v20 + CSS institucional + pie),
+   cifras verificadas y conexión a la **API real (P1)** en dashboard y monitoreo. `informes.html`
+   ahora usa los campos reales de `elementos.geojson`.
 3. **API del sensor:** confirmar `ENDPOINT_ULTIMA` real en `js/config.js` y CORS habilitado.
 
 ### Media

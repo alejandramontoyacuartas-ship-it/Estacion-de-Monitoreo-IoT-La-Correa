@@ -3,51 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Informes de visitas — SAT Quebrada La Correa</title>
-  <link rel="stylesheet" href="css/estilos.css"/>
-  <link rel="stylesheet" href="css/navbar.css"/>
+  <title>Inspecciones técnicas — SAT Quebrada La Correa</title>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=1"/>
+  <style>
+    body{overflow:auto}
+    .pill{display:inline-block;padding:3px 10px;border-radius:12px;color:#fff;font-weight:700;font-size:12.5px}
+    .table-wrapper{max-height:560px;overflow:auto}
+  </style>
 </head>
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js"></script>
+<script src="js/navbar.js?v=20"></script>
 
 <div class="container">
+
   <header class="header">
-    <h1>Informes de visitas de campo — SAT La Correa</h1>
-    <p>Registros de inspección técnica de los puntos críticos de la microcuenca</p>
+    <h1>Inspecciones técnicas de campo — SAT La Correa</h1>
+    <p>Registros de inspección de los puntos críticos de la microcuenca · consulta por vereda</p>
   </header>
 
   <section class="filtros-panel">
-    <h2>Filtro</h2>
+    <h2>Filtro de consulta</h2>
     <div class="filtros-grid">
-      <div>
-        <label for="fVereda">Vereda:</label>
-        <select id="fVereda"><option value="">Todas las veredas</option></select>
-      </div>
+      <label for="fVereda">Seleccione la vereda:</label>
+      <select id="fVereda"><option value="">Todas las veredas</option></select>
       <button class="btn-filtrar" onclick="render()">Filtrar</button>
       <button class="btn-limpiar" onclick="document.getElementById('fVereda').value='';render()">Limpiar</button>
     </div>
-    <p class="info-text">Registros derivados del trabajo de campo del SAT. Las columnas <b>Fecha</b>, <b>Responsable</b> y fotos se completan con los informes de la Secretaría de Infraestructura (GRD).</p>
+    <p class="info-text">Registros derivados del trabajo de campo del SAT. Las columnas <b>Fecha</b>,
+    <b>Responsable</b> y las fotografías se completan con los informes de la Secretaría de Infraestructura (GRD).</p>
   </section>
 
   <section class="table-panel">
     <h2>Registros de inspección (<span id="cuenta">0</span>)</h2>
-    <div class="table-wrapper" style="max-height:520px">
+    <div class="table-wrapper">
       <table>
-        <thead><tr><th>#</th><th>Fecha</th><th>Vereda</th><th>Sector</th><th>Tipo de riesgo</th><th>Nivel</th><th>Observación</th><th>Responsable</th></tr></thead>
+        <thead><tr><th>#</th><th>Vereda</th><th>Elemento expuesto</th><th>Categoría</th><th>Amenaza</th><th>Nivel de riesgo</th><th>Corredor</th><th>Observación</th></tr></thead>
         <tbody id="tbody"><tr><td colspan="8">Cargando…</td></tr></tbody>
       </table>
     </div>
   </section>
 </div>
 
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script src="js/data.js?v=5"></script>
 <script>
-const C_RIESGO={Critico:'#8B0000',Alto:'#E24B4A',Medio:'#EF9F27',Bajo:'#FFE13C',Marginal:'#9a9a92'};
+// Color por nivel numérico (Niv_num): 1 crítico … 5 bajo
+const C_NIV={1:'#8B0000',2:'#E24B4A',3:'#EF9F27',4:'#F4C430',5:'#66bb6a'};
+const bonito=v=>String(v||'').replace(/^\d+_/,'').replace(/_/g,' ');
+const AMZ={ALTA:'#E24B4A',BAJA:'#EF9F27',Fuera:'#9a9a92'};
 let REG=[];
+// GEO-first (modo offline) con respaldo a fetch
+async function cargar(url){
+  if(window.GEO){ const m=url.match(/([^/]+)\.geojson$/); if(m&&GEO[m[1]]) return GEO[m[1]]; }
+  return (await (await fetch(url)).json());
+}
 async function init(){
   try{
-    const gj=await (await fetch('data/elementos.geojson')).json();
+    const gj=await cargar('data/elementos.geojson');
     REG=gj.features.map(f=>f.properties);
     const vs=document.getElementById('fVereda');
     [...new Set(REG.map(p=>p.Vereda).filter(Boolean))].sort().forEach(v=>vs.add(new Option(v,v)));
@@ -59,10 +75,12 @@ function render(){
   const sel=REG.filter(p=>!v||p.Vereda===v);
   document.getElementById('cuenta').textContent=sel.length;
   document.getElementById('tbody').innerHTML = sel.length ? sel.map((p,i)=>
-    `<tr><td>${i+1}</td><td style="color:#999">Por registrar</td><td>${p.Vereda||'—'}</td>
-     <td>${p.Sector||'—'}</td><td>${p.Tipo_riesgo||'—'}</td>
-     <td><span class="pill" style="background:${C_RIESGO[p.RiesgoFinal]||'#888'}">${p.RiesgoFinal||'—'}</span></td>
-     <td>${(p.Descripcion||p.Nombre||'').slice(0,120)}</td><td style="color:#999">Por registrar</td></tr>`).join('')
+    `<tr><td>${i+1}</td><td>${p.Vereda||'—'}</td>
+     <td>${p.Tipo_elem||'—'}</td><td>${p.Categoria||'—'}</td>
+     <td><span class="pill" style="background:${AMZ[p.Amenaza_sitio]||'#9a9a92'}">${p.Amenaza_sitio||'—'}</span></td>
+     <td><span class="pill" style="background:${C_NIV[p.Niv_num]||'#888'}">${bonito(p.Nivel_riesgo)||'—'}</span></td>
+     <td>${p.Corredor||'—'}</td>
+     <td>${p.Nombre||'—'}</td></tr>`).join('')
     : '<tr><td colspan="8">No hay registros para esta vereda.</td></tr>';
 }
 init();

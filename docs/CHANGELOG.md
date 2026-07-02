@@ -61,6 +61,18 @@ Orden cronológico de lo construido (para entender el punto de avance).
     → N1<10, N2 10–20, N3 20–40, N4 >40 cm; *pendiente calibración oficial del equipo*).
   - Dato embebido en **`js/corte_p1.js`** (funciona offline / file://); fuente `data/corte_p1.json`.
 
+## Uniformidad de páginas heredadas (2026-07-01)
+- **`informes.html`** (Inspecciones técnicas): reformateado con `puntos_riesgo.css` (formato
+  institucional), navbar v20 + pie. Tabla reescrita con los **campos reales** de `elementos.geojson`
+  (Elemento, Categoría, Amenaza, Nivel de riesgo por `Niv_num`, Corredor) — antes usaba columnas
+  inexistentes y se veía sin estilo.
+- **`dashboard.html`**: modernizado al formato del geoportal + **monitoreo en vivo desde la API (P1)**;
+  cifras corregidas (856,4 ha, 61 elementos, sensor P1 CR 0,008, zonificación 39,7/61,3/97,5 ha,
+  elementos por nivel 13/4/17/24/3, lluvia GEV Tr100 80,2 mm). Eliminado el "DATOS SIMULADOS".
+- **`monitoreo.html`**: consola de red de monitoreo con navbar compartido; estación **P1 con API real**
+  (nivel/temp/humedad/lluvia + histórico + CSV), sirenas activadas por estado CRÍTICO real,
+  umbrales de `CONFIG.UMBRALES` (PREVENCIÓN ≥10 · CRÍTICO ≥20). Eliminada la simulación.
+
 ## Documentación
 - README reescrito + `docs/ARQUITECTURA.md`, `MENUS.md`, `DICCIONARIO_CAPAS.md`,
   `RESULTADOS_TECNICOS.md`, `PENDIENTES.md`, este CHANGELOG.
