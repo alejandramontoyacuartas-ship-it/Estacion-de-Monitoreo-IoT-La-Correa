@@ -39,7 +39,6 @@
         ]},
         {t:'Tablero de lectura', h:'dashboard.html'},
       ]},
-      {t:'Niveles de riesgo — Estación P1', h:'index.html?niveles=1'},
       {t:'Obras de mitigación', h:'#'},
     ]},
     {label:'Manejo de desastres', items:[
