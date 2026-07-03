@@ -44,6 +44,14 @@ def bullet(t):
 def parra(t):
     pdf.set_font('Helvetica','',9.5); pdf.set_text_color(*TEXTO); pdf.multi_cell(180,5,s(t)); pdf.ln(1)
 
+import os
+def figura(path, cap, w=105):
+    if not os.path.exists(path): return
+    if pdf.get_y()>210: pdf.add_page()
+    pdf.image(path, x=(210-w)/2, w=w)
+    pdf.set_font('Helvetica','I',8); pdf.set_text_color(*GRIS)
+    pdf.cell(0,5,s(cap),0,1,'C'); pdf.set_text_color(*TEXTO); pdf.ln(2)
+
 parra('Este documento actualiza los resultados del componente geoespacial (SIG) del informe del SAT de la '
       'Quebrada La Correa, con base en el análisis final del proyecto N_CORREA sobre el modelo digital de '
       'elevación DTM12 (ALOS PALSAR de 12,5 m corregido con stream burning del cauce real). Se listan solo los '
@@ -97,6 +105,43 @@ with pdf.table(col_widths=(50,42,88), line_height=5, text_align='LEFT',
         row=table.row()
         for c in r_: row.cell(s(c))
 pdf.ln(3)
+
+titulo('7. Geoportal de gestión del riesgo (construido)')
+parra('El geoportal, que en el informe figuraba como trabajo futuro, ya está construido y operativo (visor web '
+      '"SAT - La Correa", Alcaldía de Girardota). Integra la capa estática (SIG) y la dinámica (IoT).')
+bullet('Menús: Conocimiento del riesgo · Reducción del riesgo · Manejo de desastres.')
+bullet('Capas: subcuencas del municipio, uso del suelo (AMVA), amenaza, exposición, riesgo, red hídrica, curvas de nivel, elementos expuestos, estación P1 y bocinas.')
+bullet('Estación de monitoreo en tiempo real: lee la API (endpoint /mapa) y muestra nivel, temperatura, humedad, lluvia y estado sobre el mapa.')
+bullet('Herramientas: coordenadas y escala, medición, mi ubicación y mapas base (calle, satélite, terreno).')
+bullet('Páginas analíticas: puntos críticos, inspecciones interinstitucionales (con informe descargable) y tablero de lectura.')
+
+titulo('8. Sección transversal del cauce en P1  (nuevo, MDT 2 m)')
+bullet('Perfil del cauce perpendicular a la corriente en P1, extraído del MDT de 2 m (EPSG:9377): valle en "V".')
+bullet('Fondo del cauce (thalweg) ~ 1.551,7 m s.n.m.; ancho modelado ~ 50 m; el sensor se ubica sobre el punto más bajo de la sección.')
+bullet('Base para dimensionar los niveles de alerta N1-N4 según la lámina de agua medida en tiempo real.')
+bullet('Niveles de alerta (prototipo, pendientes de calibración oficial): N1 seguro (<10 cm) · N2 precaución (10-20) · N3 inundación menor (20-40) · N4 mayor (>40).')
+
+titulo('9. Inventario de campo y visitas interinstitucionales')
+bullet('61 elementos expuestos validados en campo, clasificados por nivel de riesgo.')
+bullet('18 puntos críticos con fotografía (avenida torrencial, movimiento en masa, inundación, socavación, estructural).')
+bullet('18 puntos de visitas técnicas interinstitucionales (P1-P18) con informe descargable, por institución: Corantioquia (14) · AMVA (3) · DAGRAN (1).')
+
+titulo('10. Estaciones de referencia SIATA integradas')
+bullet('4 estaciones de nivel de SIATA en Girardota: 671 Q. Telesfora, 821 Q. El Limonar, 472 R. Medellín-Puente, 272 Q. El Salado.')
+bullet('6 estaciones pluviométricas de SIATA: 127, 66, 31, 324, 88 y 389 (subcuencas La Molinal, La Correa, El Tábano, El Salado, La Ferrería, Juan Cojo).')
+bullet('Se muestran en el geoportal con enlace directo al geoportal SIATA; complementan (no reemplazan) la estación propia P1.')
+
+titulo('11. Conexión IoT en vivo (API)')
+bullet('API REST (FastAPI, desplegada en Render); el geoportal consume el endpoint /mapa (GeoJSON con las mediciones del punto P1).')
+bullet('Campos en vivo: nivel_agua, nivel_fluvial, temperatura, humedad, esta_lloviendo, estado_alerta, fecha_hora.')
+bullet('Estado derivado del nivel medido: NORMAL · PREVENCIÓN (>=10 cm) · CRÍTICO (>=20 cm).')
+bullet('La lectura en vivo ya funciona en el geoportal; el nodo electrónico sigue en Prueba de Concepto (pendiente el despliegue de campo).')
+
+titulo('12. Cartografía del análisis (geoportal)')
+DOCS=r"C:\Users\malej\OneDrive\Escritorio\IOT\GeoportalGRDGirardota\docs"
+figura(os.path.join(DOCS,'02_amenaza.png'),'Amenaza por avenida torrencial a lo largo del cauce (stream power).')
+figura(os.path.join(DOCS,'06_SAT_sensor_sirenas.png'),'Productos del SAT: estación de monitoreo (P1) y bocinas de alerta.')
+
 titulo('Nota de honestidad técnica (limitaciones)')
 parra('El caudal Q(Tr100) ~ 249 m³/s es provisional: se estimó con lluvia satelital CHIRPS + factor de corrección, '
       'sin estación local; debe validarse con lluvia de IDEAM/SIATA y modelación hidráulica (HEC-RAS / IBER). '
