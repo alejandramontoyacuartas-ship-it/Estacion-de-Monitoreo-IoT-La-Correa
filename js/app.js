@@ -35,6 +35,28 @@ function popupSiata(p){
     <a href="${p.url}" target="_blank" rel="noopener" style="display:block;margin-top:8px;text-align:center;background:#0277bd;color:#fff;padding:7px 10px;border-radius:7px;text-decoration:none;font-weight:700">Ver en el geoportal SIATA ↗</a>
   </div>`;
 }
+// ---- Resaltar la microcuenca (cuencas_municipio) del sensor de nivel al que se le da clic ----
+let _mcHi=null;
+function _pipGeom(lon,lat,geom){
+  const rings = geom.type==='Polygon' ? [geom.coordinates] : geom.type==='MultiPolygon' ? geom.coordinates : [];
+  for(const poly of rings){ const ring=poly[0]; let inside=false;
+    for(let i=0,j=ring.length-1;i<ring.length;j=i++){ const xi=ring[i][0],yi=ring[i][1],xj=ring[j][0],yj=ring[j][1];
+      if(((yi>lat)!==(yj>lat)) && (lon < (xj-xi)*(lat-yi)/(yj-yi)+xi)) inside=!inside; }
+    if(inside) return true; }
+  return false;
+}
+async function resaltarMicrocuenca(lat,lon){
+  let gj=(window.GEO&&window.GEO.cuencas_municipio)||null;
+  if(!gj){ try{ gj=await (await fetch('data/cuencas_municipio.geojson',{cache:'force-cache'})).json(); }catch(e){ return; } }
+  let feat=null; for(const f of gj.features){ if(f.geometry&&_pipGeom(lon,lat,f.geometry)){ feat=f; break; } }
+  if(_mcHi){ map.removeLayer(_mcHi); _mcHi=null; }
+  if(!feat) return;
+  _mcHi=L.geoJSON(feat,{style:{color:'#0277bd',weight:2.6,fillColor:'#29b6f6',fillOpacity:.20,dashArray:'5 3'}}).addTo(map);
+  _mcHi.bringToBack();
+  const nom=(feat.properties&&feat.properties.Nombre)||'Microcuenca';
+  _mcHi.bindTooltip('Microcuenca: '+nom,{sticky:true,direction:'top'});
+}
+window.limpiarMicrocuenca=function(){ if(_mcHi){ map.removeLayer(_mcHi); _mcHi=null; } };
 const nivelDe=z=>z&&z.startsWith('ALTA')?'ALTA':z&&z.startsWith('MEDIA')?'MEDIA':'BAJA';
 // Carga una capa: primero busca los datos incrustados (window.GEO, para abrir por doble clic / file://),
 // y si no existen hace fetch http (Live Server / servidor).
@@ -171,12 +193,14 @@ const DEF=[
      const siata=L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconNivel('#0277bd')}),
        onEachFeature:(f,l)=>{ const p=f.properties;
          l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
-         l.bindPopup(popupSiata(p),{maxWidth:270}); }});
+         l.bindPopup(popupSiata(p),{maxWidth:270});
+         l.on('click',()=>{ const c=l.getLatLng(); resaltarMicrocuenca(c.lat,c.lng); });   // clic → resalta su microcuenca
+       }});
      // Estación PROPIA del proyecto (P1) — NO es SIATA: clic abre el panel con la info trabajada
      const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
      const p1=L.marker([s.lat,s.lon],{icon:iconNivel('#1b7a3a'),zIndexOffset:1000})
        .bindTooltip(s.nombre+' · estación propia',{direction:'top'})
-       .on('click',()=>{ if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });   // P1 → vista flotante "Niveles de Riesgo"
+       .on('click',()=>{ resaltarMicrocuenca(s.lat,s.lon); if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });   // P1 → microcuenca + vista flotante
      return L.layerGroup([siata,p1]);
    }},
  {k:'siata_pluvio',label:'Red pluviométrica (SIATA)',sub:'Estaciones de lluvia · red SIATA · Girardota',icon:'🌧️',color:'#5e35b1',def:false,lazy:true,

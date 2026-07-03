@@ -186,7 +186,7 @@
       const href=a.getAttribute('href')||'';
       if(/niveles=1/.test(href)) return;                               // ese enlace abre la ventana; no la cierres
       a.addEventListener('click', ()=>{
-        if(!/capa=siata_nivel/.test(href)) redHidrica(false);          // "Sensores de nivel" mantiene la red hídrica
+        if(!/capa=siata_nivel/.test(href)){ redHidrica(false); if(window.limpiarMicrocuenca) window.limpiarMicrocuenca(); }  // "Sensores de nivel" mantiene la red hídrica y el resaltado
         if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
       });
     });
