@@ -202,7 +202,18 @@
         li.addEventListener('mouseenter', cerrar);
         lk.addEventListener('click', cerrar);
       }
+      // Al salir con el mouse del menú, quita el foco para que el desplegable se cierre
+      // (si no, un interruptor/enlace con foco lo mantiene abierto tapando el contenido).
+      li.addEventListener('mouseleave', ()=>{ const el=document.activeElement; if(el&&li.contains(el)&&el.blur) el.blur(); });
     });
+    // Cerrar el menú al hacer clic FUERA de la barra (para que no tape el Tablero de lectura ni el mapa).
+    if(!window._navCloseOutside){ window._navCloseOutside=true;
+      document.addEventListener('click', e=>{
+        if(e.target.closest && e.target.closest('.navbar')) return;   // clic dentro del menú: no cerrar
+        const el=document.activeElement; if(el&&el.blur&&el.closest&&el.closest('.navbar')) el.blur();
+        document.querySelectorAll('.navbar .fly-open').forEach(x=>x.classList.remove('fly-open'));
+      });
+    }
   }
   function inject(){ const r=document.getElementById('navbar-root'); if(r){ r.outerHTML=html; wire(); } }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',inject); else inject();
