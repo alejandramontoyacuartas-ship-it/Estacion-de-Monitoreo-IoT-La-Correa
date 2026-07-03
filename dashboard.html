@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tablero SAT — Quebrada La Correa</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <link rel="stylesheet" href="css/navbar.css?v=3"/>
 <link rel="stylesheet" href="css/puntos_riesgo.css?v=2"/>
 <style>
@@ -87,7 +88,20 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
         <div class="m" style="grid-column:1 / span 2"><b id="s-hora" style="font-size:13px">—</b><span>Última lectura</span></div>
       </div>
     </div>
-    <div class="card"><div class="chart-box" style="height:300px"><canvas id="cSim"></canvas></div></div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <b style="color:#1f5a43;font-size:14px">Comportamiento del nivel en el tiempo</b>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="sim-win" style="font-size:12px;font-weight:600;color:#1f5a43;background:#eef5f0;border:1px solid #cfe3d6;border-radius:7px;padding:4px 8px;cursor:pointer">
+            <option value="3">3 horas</option><option value="24">24 horas</option>
+            <option value="72" selected>72 horas</option><option value="720">30 días</option>
+          </select>
+          <button id="sim-pdf" title="Descargar la serie seleccionada en PDF" style="font-size:12px;font-weight:700;color:#fff;background:#1f7a45;border:none;border-radius:7px;padding:5px 12px;cursor:pointer">⭳ PDF</button>
+        </div>
+      </div>
+      <div class="chart-box" style="height:260px"><canvas id="cSim"></canvas></div>
+      <div id="sim-resumen" style="font-size:12px;color:#4c6658;margin-top:8px;display:flex;gap:16px;flex-wrap:wrap"></div>
+    </div>
   </div>
   <p class="note">Lectura en vivo desde la <b>API del sensor P1</b> (Render). El estado se deriva del nivel medido:
   <b>PREVENCIÓN ≥ 10 cm · CRÍTICO ≥ 20 cm</b>. Si aparece "SIN DATO", abre este tablero con el servidor local
@@ -191,43 +205,86 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
     datasets:[{data:[39.7,61.3,97.5],backgroundColor:[C_NIV[2],C_NIV[4],C_NIV[5]],borderColor:'#fff',borderWidth:2}]},
   options:dOpt});
 
-// ---- Monitoreo en tiempo real desde la API (sensor P1) ----
+// ---- Monitoreo en tiempo real (dinámico, con el formato de la ventana flotante + descarga PDF) ----
 (function(){
  const C=CONFIG.CAMPOS, U=CONFIG.UMBRALES;
- const labels=[], data=[];
- const chart=new Chart(document.getElementById('cSim'),{type:'line',
-   data:{labels,datasets:[{label:'Nivel (cm)',data,borderColor:'#2f7a57',
-     backgroundColor:'rgba(47,122,87,.15)',fill:true,tension:.3,pointRadius:0}]},
-   options:{animation:false,plugins:{legend:{display:false}},
-     scales:{y:{beginAtZero:true,title:{display:true,text:'Nivel (cm)'}}},maintainAspectRatio:false}});
- function estado(nv){ if(isNaN(nv)) return {t:'SIN DATO',c:'#9a9a92'};
-   if(nv>=U.critico) return {t:'CRÍTICO',c:'#c0392b'};
-   if(nv>=U.preventivo) return {t:'PREVENCIÓN',c:'#EF9F27'};
-   return {t:'NORMAL',c:'#2e9e57'}; }
+ const N=[{n:'N1',c:'#2e9e57',tope:U.preventivo},{n:'N2',c:'#EAB308',tope:U.critico},{n:'N3',c:'#EF9F27',tope:U.critico*2}];
  const set=(id,v)=>{const e=document.getElementById(id); if(e)e.textContent=v;};
- // Fuente única: /mapa (GeoJSON con todas las mediciones del punto P1)
+ const parse=s=>new Date(String(s).replace(' ','T'));
+ const estado=nv=>isNaN(nv)?{t:'SIN DATO',c:'#9a9a92'}:nv>=U.critico?{t:'CRÍTICO',c:'#c0392b'}:nv>=U.preventivo?{t:'PREVENCIÓN',c:'#EF9F27'}:{t:'NORMAL',c:'#2e9e57'};
+ let SERIE=[], VEN=[], chart=null;
+ const umbralDs=len=>N.map(x=>({label:x.n,data:Array(len).fill(x.tope),borderColor:x.c,borderDash:[6,4],borderWidth:1.2,pointRadius:0,fill:false,tension:0,order:5}));
+ function ventana(){ const win=+document.getElementById('sim-win').value; if(!SERIE.length) return [];
+   const tU=parse(SERIE[SERIE.length-1][C.fecha]).getTime(), desde=tU-win*3600000;
+   const v=SERIE.filter(m=>{const t=parse(m[C.fecha]).getTime(); return !isNaN(t)&&t>=desde;});
+   return v.length>=2?v:SERIE.slice(-40); }
+ function stats(){ const nums=VEN.map(m=>parseFloat(m[C.nivel])).filter(v=>!isNaN(v));
+   return {mx:nums.length?Math.max.apply(null,nums):NaN, mn:nums.length?Math.min.apply(null,nums):NaN,
+     prom:nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:NaN, n:VEN.length}; }
+ function pintar(){ VEN=ventana(); const win=+document.getElementById('sim-win').value;
+   const fL=win>=720?(d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2))
+         :win>=48?(d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+'h')
+         :(d=>('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2));
+   const labels=VEN.map(m=>fL(parse(m[C.fecha]))), data=VEN.map(m=>parseFloat(m[C.nivel]));
+   const st=stats(); const maxI=data.findIndex(v=>v===st.mx);
+   const ptR=data.map((_,i)=>i===maxI?5:0), ptC=data.map((_,i)=>i===maxI?'#c0392b':'#1f7a45');
+   const yMax=Math.max(30,Math.ceil(((isNaN(st.mx)?0:st.mx)+5)/10)*10);
+   if(chart) chart.destroy();
+   chart=new Chart(document.getElementById('cSim'),{type:'line',
+     data:{labels,datasets:[{label:'Nivel (cm)',data,borderColor:'#1f7a45',backgroundColor:'rgba(47,158,87,.18)',
+       fill:true,tension:.35,pointRadius:ptR,pointBackgroundColor:ptC,pointBorderColor:ptC,borderWidth:2,order:1}, ...umbralDs(labels.length)]},
+     options:{animation:false,plugins:{legend:{display:false},
+       tooltip:{filter:it=>it.datasetIndex===0,callbacks:{label:it=>'Nivel: '+(isNaN(it.parsed.y)?'—':it.parsed.y.toFixed(1))+' cm'}}},
+       scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{beginAtZero:true,max:yMax,title:{display:true,text:'Nivel (cm)'}}},maintainAspectRatio:false}});
+   const f1=v=>isNaN(v)?'—':v.toFixed(1);
+   document.getElementById('sim-resumen').innerHTML=
+     '<span><b>Máximo:</b> '+f1(st.mx)+' cm</span><span><b>Mínimo:</b> '+f1(st.mn)+' cm</span>'
+    +'<span><b>Promedio:</b> '+f1(st.prom)+' cm</span><span><b>N.º lecturas:</b> '+st.n+'</span>'; }
+ async function getReadings(){
+   try{ const r=await fetch(CONFIG.API_BASE+'/mediciones',{cache:'no-store'}); if(r.ok){ const a=await r.json(); if(Array.isArray(a)&&a.length) return a; } }catch(e){}
+   try{ const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(r.ok){ const g=await r.json(); if(g&&g.features) return g.features.map(f=>f.properties||{}); } }catch(e){}
+   return null; }
  async function refrescar(){
-   try{
-     const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(!r.ok)throw 0;
-     const gj=await r.json();
-     let feats=((gj&&gj.features)||[]).map(f=>f.properties||{}).filter(m=>m[C.fecha]);
-     if(!feats.length) throw 0;
-     feats.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // cronológico
-     const d=feats[feats.length-1];                               // más reciente
-     const nv=parseFloat(d[C.nivel]);
-     set('s-nivel',isNaN(nv)?'—':nv.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
-     set('s-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':(d[C.lluvia]??'—'));
-     set('s-hora',d[C.fecha]?String(d[C.fecha]).replace('T',' ').slice(0,16):'—');
-     const e=estado(nv); const b=document.getElementById('sim-estado'); b.textContent=e.t; b.style.background=e.c;
-     const lb=document.getElementById('live-badge'); lb.textContent='EN VIVO'; lb.style.background='#2e9e57';
-     const ult=feats.slice(-40);                                  // histórico del gráfico
-     labels.length=0; data.length=0;
-     ult.forEach(m=>{labels.push(String(m[C.fecha]).slice(11,16)); data.push(parseFloat(m[C.nivel]));});
-     chart.update();
-   }catch(err){ const lb=document.getElementById('live-badge'); lb.textContent='API no disponible'; lb.style.background='#c0392b'; }
+   const lb=document.getElementById('live-badge'); const arr=await getReadings();
+   if(!arr){ lb.textContent='API no disponible'; lb.style.background='#c0392b'; return; }
+   SERIE=arr.filter(m=>m[C.fecha]&&m[C.fecha]!=='None'&&!isNaN(parse(m[C.fecha]).getTime())).sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));
+   if(!SERIE.length){ lb.textContent='Sin datos'; lb.style.background='#c0392b'; return; }
+   const d=SERIE[SERIE.length-1], nv=parseFloat(d[C.nivel]);
+   set('s-nivel',isNaN(nv)?'—':nv.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
+   set('s-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':(d[C.lluvia]??'—'));
+   set('s-hora',d[C.fecha]?String(d[C.fecha]).replace('T',' ').slice(0,16):'—');
+   const e=estado(nv); const b=document.getElementById('sim-estado'); b.textContent=e.t; b.style.background=e.c;
+   lb.textContent='EN VIVO'; lb.style.background='#2e9e57'; pintar(); }
+ function descargarPDF(){
+   if(!window.jspdf||!chart){ alert('Aún no hay datos para el PDF.'); return; }
+   const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'});
+   const win=document.getElementById('sim-win').selectedOptions[0].textContent;
+   const img=chart.toBase64Image('image/png',1); const st=stats(); const ult=SERIE[SERIE.length-1]||{};
+   doc.setFillColor(20,81,47); doc.rect(0,0,210,22,'F');
+   doc.setTextColor(255); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+   doc.text('Registros de lectura - Nivel de agua',14,11);
+   doc.setFont('helvetica','normal'); doc.setFontSize(10);
+   doc.text('Estacion de Monitoreo La Correa (P1) - SAT Quebrada La Correa, Girardota',14,17.5);
+   doc.setTextColor(30); let y=30; doc.setFontSize(10);
+   doc.text('Ventana de datos: '+win,14,y); doc.text('Generado: '+new Date().toLocaleString(),120,y); y+=6;
+   doc.text('Coordenadas P1: 6.407003, -75.446880',14,y); y+=8;
+   doc.addImage(img,'PNG',14,y,182,86); y+=93;
+   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,81,47); doc.text('Resumen de la serie',14,y); y+=6;
+   doc.setTextColor(30); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+   const f1=v=>isNaN(v)?'-':v.toFixed(1);
+   [['Nivel actual',f1(parseFloat(ult[C.nivel]))+' cm'],['Maximo',f1(st.mx)+' cm'],['Minimo',f1(st.mn)+' cm'],
+    ['Promedio',f1(st.prom)+' cm'],['N. de lecturas',String(st.n)],
+    ['Ultima lectura',ult[C.fecha]?String(ult[C.fecha]).replace('T',' ').slice(0,19):'-']].forEach(f=>{
+     doc.text(f[0]+':',16,y); doc.setFont('helvetica','bold'); doc.text(f[1],72,y); doc.setFont('helvetica','normal'); y+=6; });
+   y+=4; doc.setFontSize(9); doc.setTextColor(90);
+   doc.text('Umbrales (cm): N1 seguro < '+U.preventivo+'  |  N2 precaucion '+U.preventivo+'-'+U.critico+'  |  N3 inundacion menor '+U.critico+'-'+(U.critico*2)+'  |  N4 mayor >= '+(U.critico*2),14,y);
+   y+=5; doc.text('*Calidad de datos sin verificar exhaustivamente. Lecturas de la API del sensor P1 (Render).',14,y);
+   doc.setFontSize(8); doc.setTextColor(120); doc.text('Grupo 3 - Universidad de San Buenaventura, Medellin - 2026',14,290);
+   doc.save('Registros_Nivel_'+win.replace(/\s/g,'')+'_'+new Date().toISOString().slice(0,10)+'.pdf');
  }
- refrescar();
- setInterval(refrescar, CONFIG.REFRESH_MS);
+ document.getElementById('sim-win').addEventListener('change',pintar);
+ document.getElementById('sim-pdf').addEventListener('click',descargarPDF);
+ refrescar(); setInterval(refrescar, CONFIG.REFRESH_MS);
 })();
 </script>
 </body>
