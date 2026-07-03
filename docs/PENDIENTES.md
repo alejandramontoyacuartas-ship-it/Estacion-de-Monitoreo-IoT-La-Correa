@@ -5,6 +5,26 @@ Punto de avance actual y lo que falta. **Continúa desde aquí; no repitas lo ya
 ---
 
 ## ✅ Hecho (no rehacer)
+### Sesión 2026-07-02 (tarde/noche) — Ventana flotante "Registros de lectura" + estación
+- **Página `niveles.html`** (vista SIATA-like): escala de niveles N1–N4, serie de tiempo con **selector 3h/24h/72h/30d**,
+  marcador de máximo, panel Resumen (tipo sensor, resolución, % datos, promedio) y **sección transversal en P1** con
+  **deslizador de instante** (mueve la lámina). Lee la API real (`/mediciones`→`/mapa`), fallback demo. Modo `?embed=1`
+  = presentación compacta (encabezado 2 líneas, escala **horizontal al final**, lectura primero). Encabezado:
+  **"Registros de lectura — Nivel de agua"**.
+- **Ventana FLOTANTE lateral** (`#niv-modal`, ~1/3 a la derecha) = `niveles.html?embed=1&v=N` en iframe. Lógica en `app.js`
+  (`abrirNivelesFlotante`/`cerrarNivelesFlotante`). **Abre SOLO al clic en el ícono de nivel** (onda + marcador verde P1);
+  **cierra** con ✕/Esc, al desactivar el nivel, al activar otro sensor o **al elegir otra opción de menú**. El toggle
+  "Nivel de la quebrada" ya NO abre la ventana (solo enciende ícono).
+- **Panel compacto `#sensor-detalle`**: encabezado verde "Niveles de Riesgo", pestaña **"Series"→"Lectura"**; se abre para
+  lluvia/temp/humedad. `#panel-sensor` "Estación de monitoreo" movido a **arriba-izquierda** (antes abajo-derecha, chocaba
+  con la ventana flotante).
+- **Red hídrica municipal (`red_hidrica_muni`) = capa de CONTEXTO del nivel:** se enciende con "Sensores de nivel"
+  (`?capa=siata_nivel,red_hidrica_muni`) y con el toggle "Nivel de la quebrada"; se apaga al elegir cualquier otra opción-hoja.
+- **Menú:** "Niveles de riesgo — Estación P1" (bajo Reducción) abre la ventana flotante (visor) o navega con `?niveles=1`.
+- **Documentos:** `Informe_Proceso_Detallado_N_CORREA` (.docx+.pdf, con figuras) en Downloads y `N_CORREA/docs`.
+  MED corregido a **LiDAR 2 m (AMVA)** en el PDF de actualización. Versiones actuales: app.js v53, navbar.js v42, estilos.css v17.
+
+### Base
 - Visor `index.html` con catálogo de capas (`DEF`), leyenda dinámica, panel del sensor, herramientas
   (coordenadas G°M'S, escala, "Mi ubicación", medición distancia/área).
 - **Datos embebidos** en `js/data.js` → el geoportal abre por **doble clic** (offline).

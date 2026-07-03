@@ -176,8 +176,7 @@ const DEF=[
      const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
      const p1=L.marker([s.lat,s.lon],{icon:iconNivel('#1b7a3a'),zIndexOffset:1000})
        .bindTooltip(s.nombre+' · estación propia',{direction:'top'})
-       .on('click',()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // panel de lectura en vivo
-         if(typeof abrirPanelSensor==='function') abrirPanelSensor('nivel'); });
+       .on('click',()=>{ if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });   // P1 → vista flotante "Niveles de Riesgo"
      return L.layerGroup([siata,p1]);
    }},
  {k:'siata_pluvio',label:'Red pluviométrica (SIATA)',sub:'Estaciones de lluvia · red SIATA · Girardota',icon:'🌧️',color:'#5e35b1',def:false,lazy:true,
@@ -267,7 +266,7 @@ document.getElementById('cp-close').onclick=()=>document.getElementById('capas-p
 const sensorMarker=L.marker([CONFIG.SENSOR.lat,CONFIG.SENSOR.lon],{icon:iconNivel('#2e9e57'),zIndexOffset:1000})
   .bindTooltip('P1',{permanent:true,direction:'right',offset:[14,0],className:'vereda-label'})
   .bindPopup('<b>'+CONFIG.SENSOR.nombre+'</b><br>Estación de nivel · punto óptimo (P1)')
-  .on('click',()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true); }); // clic en P1 → panel de lectura en vivo
+  .on('click',()=>{ if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); }); // clic en P1 → vista flotante "Niveles de Riesgo"
 
 // ----- Íconos de los sensores de la estación P1 (activables desde el navbar) -----
 const SENS_IC={
@@ -277,6 +276,21 @@ const SENS_IC={
  humedad:'<svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 3C8 8 6.5 11.5 6.5 14a5.5 5.5 0 0 0 11 0c0-2.5-1.5-6-5.5-11Z" fill="#1e88e5"/></svg>'
 };
 const SENS_DX={nivel:-39,lluvia:-13,temp:13,humedad:39};       // posición en fila sobre P1
+// Ventana FLOTANTE LATERAL "Niveles de Riesgo" (~1/3 de la pantalla, sobre un costado) — reusa niveles.html en vivo.
+// Se abre SOLO al hacer clic en el ícono de nivel; el toggle del menú solo enciende/apaga el ícono.
+window.abrirNivelesFlotante=function(){
+  let m=document.getElementById('niv-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='niv-modal';
+    m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
+      +'<iframe title="Niveles de Riesgo — Estación P1" src="niveles.html?embed=1&v=4"</iframe></div>';
+    document.body.appendChild(m);
+    m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
+  }
+  m.classList.add('open');
+};
+window.cerrarNivelesFlotante=function(){ const m=document.getElementById('niv-modal'); if(m) m.classList.remove('open'); };
 const sensorIcons={};
 window.setSensorIcon=function(key,on){
   if(!(key in SENS_IC)) return;
@@ -286,7 +300,8 @@ window.setSensorIcon=function(key,on){
         html:`<div title="Ver lectura de ${key}" style="cursor:pointer;font-size:14px;background:#fff;border:1.6px solid #2e8b57;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.35)">${SENS_IC[key]}</div>`});
       sensorIcons[key]=L.marker([CONFIG.SENSOR.lat,CONFIG.SENSOR.lon],{icon:ic,interactive:true,zIndexOffset:1100,bubblingMouseEvents:false}).addTo(map);
       sensorIcons[key].on('click',function(e){ if(e&&e.originalEvent&&e.originalEvent.stopPropagation)e.originalEvent.stopPropagation();
-        if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // también el panel de lectura en vivo
+        if(key==='nivel' && window.abrirNivelesFlotante){ window.abrirNivelesFlotante(); return; }  // nivel → vista flotante completa
+        if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // otros sensores → panel compacto de lectura
         abrirPanelSensor(key); });
     }
   }else if(sensorIcons[key]){ map.removeLayer(sensorIcons[key]); delete sensorIcons[key]; }
@@ -294,15 +309,20 @@ window.setSensorIcon=function(key,on){
 // Los 4 íconos de sensor inician APAGADOS; se activan desde los interruptores del navbar
 // ("Estación de Monitoreo La Correa"). No se fuerzan al cargar (evita que queden activos al refrescar).
 ['nivel','lluvia','temp','humedad'].forEach(k=>window.setSensorIcon(k,false));
+// Enlace del menú "Niveles de riesgo — Estación P1" desde otra página: llega con ?niveles=1
+// y abre la ventana flotante sola (una vez cargado todo el navbar).
+if(/[?&]niveles=1/.test(location.search)){
+  window.addEventListener('load',()=>{ if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });
+}
 
 // ===== Panel de detalle por sensor (clic en el ícono activo sobre P1) =====
 const SENSOR_INFO={
-  nivel:  {campo:'nivel_agua',     label:'Nivel de la quebrada', unidad:'cm', color:'#1565c0'},
-  lluvia: {campo:'esta_lloviendo', label:'Sensor de lluvia',     unidad:'',   color:'#1e88e5', bool:true},
-  temp:   {campo:'temperatura',    label:'Temperatura',          unidad:'°C', color:'#c0392b'},
-  humedad:{campo:'humedad',        label:'Humedad',              unidad:'%',  color:'#00897b'}
+  nivel:  {campo:'nivel_agua',     label:'Nivel de la quebrada', unidad:'cm', color:'#1565c0', tipo:'Ultrasónico JSN-SR04T (sin contacto)'},
+  lluvia: {campo:'esta_lloviendo', label:'Sensor de lluvia',     unidad:'',   color:'#1e88e5', bool:true, tipo:'Detector de lluvia YL-83'},
+  temp:   {campo:'temperatura',    label:'Temperatura',          unidad:'°C', color:'#c0392b', tipo:'SHT30'},
+  humedad:{campo:'humedad',        label:'Humedad',              unidad:'%',  color:'#00897b', tipo:'SHT30'}
 };
-let _medCache=null,_medTime=0,_detChart=null,_corteChart=null;
+let _medCache=null,_medTime=0,_detChart=null,_corteChart=null,_serieInfo=null,_serieLista=null;
 function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
 // Niveles de alerta tipo SIATA a partir de los umbrales (cm de lámina sobre el thalweg)
 function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:10,critico:20};
@@ -347,7 +367,7 @@ function renderCorte(nivelCm){
 // ---- Contenido de las pestañas de la estación (estilo SIATA) ----
 const _kv=(k,v)=>`<div class="sd-kv"><span>${k}:</span><b>${v}</b></div>`;
 function _tabsHTML(){
-  const T=[['series','Series'],['niveles','Niveles de riesgo'],['descripcion','Descripción'],
+  const T=[['series','Lectura'],['niveles','Niveles de riesgo'],['descripcion','Descripción'],
            ['geomorfologia','Geomorfología'],['coberturas','Coberturas'],['perfil','Perfil'],['galeria','Galería']];
   return T.map((t,i)=>`<button data-t="${t[0]}"${i===0?' class="on"':''}>${t[1]}</button>`).join('');
 }
@@ -385,11 +405,16 @@ function sdTab(t){
 function panelDetalle(){
   let p=document.getElementById('sensor-detalle');
   if(!p){ p=document.createElement('div'); p.id='sensor-detalle';
-    p.innerHTML='<div class="sd-h"><span class="sd-titulo">Estación de Monitoreo La Correa</span><span class="sd-x" title="Cerrar">✕</span></div>'
+    p.innerHTML='<div class="sd-h"><div class="sd-h-tit"><b>Niveles de Riesgo</b><span>Estación de Monitoreo La Correa</span></div>'
+      +'<svg class="sd-h-ico" viewBox="0 0 64 48" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M16 24 L32 11 L48 24"/><path d="M21 24 V37 H43 V24"/><path d="M9 43 q4 -4 8 0 t8 0 t8 0 t8 0 t8 0" stroke-width="2.6"/></svg>'
+      +'<span class="sd-x" title="Cerrar">✕</span></div>'
       +'<div class="sd-tabs">'+_tabsHTML()+'</div>'
       +'<div class="sd-body">'
       +  '<div class="sd-tab" data-tab="series"><div class="sd-sub"></div><div class="sd-valor"></div>'
-      +    '<div class="sd-serie-tit">Serie de tiempo</div><div class="sd-chart-wrap"><canvas id="sd-chart"></canvas></div></div>'
+      +    '<div class="sd-serie-head"><span class="sd-serie-tit">Serie de tiempo</span>'
+      +      '<select id="sd-win" title="Ventana de tiempo"><option value="3">3 horas</option><option value="24">24 horas</option><option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>'
+      +    '<div class="sd-chart-wrap"><canvas id="sd-chart"></canvas></div>'
+      +    '<div class="sd-resumen" id="sd-resumen"></div></div>'
       +  '<div class="sd-tab" data-tab="niveles" style="display:none"><div class="sd-serie-tit">Niveles de riesgo (por lámina)</div>'
       +    '<div class="sd-niv-cur" id="sd-niv-cur"></div><div id="sd-niv-list"></div>'
       +    '<div class="sd-note2">Umbrales derivados de CONFIG.UMBRALES · calibración oficial pendiente.</div></div>'
@@ -408,6 +433,7 @@ function panelDetalle(){
     document.body.appendChild(p);
     p.querySelector('.sd-x').addEventListener('click',()=>{ p.style.display='none'; });
     p.querySelectorAll('.sd-tabs button').forEach(b=>b.addEventListener('click',()=>sdTab(b.dataset.t)));
+    p.querySelector('#sd-win').addEventListener('change',()=>{ if(_serieInfo&&_serieLista){ const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); } });
   }
   return p;
 }
@@ -438,11 +464,73 @@ function renderLecturas(lista, info){
   el.innerHTML=_kv('Última',fmtNum(last&&last[info.campo])+u+' · '+t)+_kv('Máximo',fmtNum(max)+u)
     +_kv('Mínimo',fmtNum(min)+u)+_kv('Promedio',fmtNum(prom)+u)+_kv('N.º lecturas',vals.length);
 }
+// Pinta la serie SIATA-like: filtra por la ventana de tiempo elegida, resalta el máximo
+// y calcula el panel Resumen (tipo, resolución temporal, % datos transmitidos, promedio).
+// Devuelve el nivel de agua (cm) de la última lectura de la ventana.
+function _pintarSerie(info, lista){
+  const p=document.getElementById('sensor-detalle'); if(!p) return NaN;
+  _serieInfo=info; _serieLista=lista;
+  const sel=p.querySelector('#sd-win'); const win=sel?parseFloat(sel.value):72;   // horas
+  const parse=s=>new Date(String(s).replace(' ','T'));
+  const conF=lista.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime())); if(!conF.length) return NaN;
+  const tUlt=parse(conF[conF.length-1].fecha_hora).getTime();
+  const desde=tUlt - win*3600000;
+  let ven=conF.filter(m=>{const t=parse(m.fecha_hora).getTime(); return !isNaN(t)&&t>=desde;});
+  if(ven.length<2) ven=conF.slice(-40);                          // fallback si la ventana no alcanza
+  const fmtLab = win>=720 ? (d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2))
+              : win>=48  ? (d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+'h')
+              :            (d=>('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2));
+  const labels=ven.map(m=>fmtLab(parse(m.fecha_hora)));
+  const data=ven.map(m=>info.bool ? (m[info.campo]?1:0) : parseFloat(m[info.campo]));
+  const nums=data.filter(v=>!isNaN(v));
+  const maxV=nums.length?Math.max.apply(null,nums):NaN;
+  const maxI=data.findIndex(v=>v===maxV);
+  const prom=nums.length?nums.reduce((a,b)=>a+b,0)/nums.length:NaN;
+  const ptR=data.map((_,i)=>i===maxI?5:1.3);
+  const ptC=data.map((_,i)=>i===maxI?'#c0392b':info.color);
+  // resolución temporal (mediana de intervalos) + % de datos transmitidos (detecta huecos)
+  const ts=ven.map(m=>parse(m.fecha_hora).getTime()).filter(t=>!isNaN(t)).sort((a,b)=>a-b);
+  let medGap=NaN;
+  if(ts.length>2){ const g=[]; for(let i=1;i<ts.length;i++) g.push(ts[i]-ts[i-1]); g.sort((a,b)=>a-b); medGap=g[Math.floor(g.length/2)]; }
+  const resTxt = isNaN(medGap)||medGap<=0 ? '—' : (medGap>=60000?('≈ '+Math.round(medGap/60000)+' min'):('≈ '+Math.round(medGap/1000)+' s'));
+  let pct=100;
+  if(!isNaN(medGap)&&medGap>0&&ts.length>1){ const esp=Math.round((ts[ts.length-1]-ts[0])/medGap)+1; if(esp>0) pct=Math.min(100,Math.round(ven.length/esp*100)); }
+  const u=info.unidad?(' '+info.unidad):'';
+  const cv=p.querySelector('#sd-chart'); if(_detChart) _detChart.destroy();
+  if(window.Chart) _detChart=new Chart(cv.getContext('2d'),{type:'line',
+    data:{labels:labels,datasets:[{label:info.label,data:data,borderColor:info.color,
+      backgroundColor:'rgba(46,139,87,.12)',fill:true,tension:.3,pointRadius:ptR,
+      pointBackgroundColor:ptC,pointBorderColor:ptC,stepped:!!info.bool}]},
+    options:{plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:it=>info.label+': '+(info.bool?(it.parsed.y?'Sí':'No'):fmtNum(it.parsed.y)+u)}}},
+      scales:{x:{ticks:{maxTicksLimit:6,autoSkip:true}},y:{beginAtZero:!!info.bool,
+        ticks:info.bool?{stepSize:1,callback:v=>v?'Sí':'No'}:{}}},responsive:true,maintainAspectRatio:false}});
+  // valor grande actual
+  const last=ven.length?ven[ven.length-1]:{}; const actual=last[info.campo];
+  const sv=p.querySelector('.sd-valor');
+  if(sv) sv.innerHTML = info.bool ? (actual?'🌧️ Lloviendo':'☀️ Sin lluvia')
+    : (fmtNum(actual)+' <span style="font-size:14px;font-weight:600">'+(info.unidad||'')+'</span>');
+  // panel Resumen (estilo SIATA)
+  const res=p.querySelector('#sd-resumen');
+  if(res){
+    let html='<div class="sd-serie-tit">Resumen</div>'
+      +_kv('Estación','P1 · '+((CONFIG.SENSOR&&CONFIG.SENSOR.nombre)||'La Correa'))
+      +_kv('Tipo de sensor',info.tipo||info.label)
+      +_kv('Resolución temporal',resTxt)
+      +_kv('Datos transmitidos',pct+' %');
+    if(info.bool){ const si=ven.filter(m=>m[info.campo]).length;
+      html+=_kv('% del periodo con lluvia',(ven.length?Math.round(si/ven.length*100):0)+' %'); }
+    else { html+=_kv('Máximo',fmtNum(maxV)+u)+_kv(info.campo==='nivel_agua'?'Nivel medio':'Promedio',fmtNum(prom)+u); }
+    html+=_kv('N.º de lecturas',ven.length)
+      +'<div class="sd-note2">*Calidad de datos sin verificar exhaustivamente.</div>';
+    res.innerHTML=html;
+  }
+  return parseFloat(last.nivel_agua);
+}
 async function abrirPanelSensor(key){
   const info=SENSOR_INFO[key]; if(!info) return;
   const p=panelDetalle(); p.style.display='block'; sdTab('series');
   p.querySelector('.sd-sub').textContent=info.label+(info.unidad?' ('+info.unidad+')':'');
-  p.querySelector('.sd-h').style.background=info.color;
   p.querySelector('.sd-valor').textContent='cargando…';
   let lista=[];
   try{
@@ -454,23 +542,8 @@ async function abrirPanelSensor(key){
   }catch(e){ p.querySelector('.sd-valor').textContent='Sin datos (API no disponible)'; return; }
   lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fecha
   lista.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // orden cronológico por id
-  const ult=lista.slice(-40);
-  const labels=ult.map(m=>String(m.fecha_hora).slice(11,16));
-  const data=ult.map(m=>info.bool ? (m[info.campo]?1:0) : parseFloat(m[info.campo]));
-  const actual=ult.length?ult[ult.length-1][info.campo]:null;
-  p.querySelector('.sd-valor').innerHTML = info.bool
-    ? (actual? '🌧️ Lloviendo' : '☀️ Sin lluvia')
-    : (fmtNum(actual)+' <span style="font-size:14px;font-weight:600">'+info.unidad+'</span>');
-  const cv=p.querySelector('#sd-chart'); if(_detChart) _detChart.destroy();
-  if(window.Chart) _detChart=new Chart(cv.getContext('2d'),{type:'line',
-    data:{labels:labels,datasets:[{label:info.label,data:data,borderColor:info.color,
-      backgroundColor:'rgba(46,139,87,.12)',fill:true,tension:.3,pointRadius:1.6,stepped:!!info.bool}]},
-    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:!!info.bool,
-      ticks:info.bool?{stepSize:1,callback:v=>v?'Sí':'No'}:{}}},responsive:true,maintainAspectRatio:false}});
-  // Descripción (últimas lecturas del sensor abierto)
+  const nivelCm=_pintarSerie(info, lista);                    // serie por ventana de tiempo + máximo + resumen
   renderLecturas(lista, info);
-  // Niveles de riesgo y Perfil usan el NIVEL de agua de la última lectura (aunque se abra otro sensor)
-  const nivelCm = ult.length?parseFloat(ult[ult.length-1].nivel_agua):NaN;
   renderNiveles(nivelCm);
   renderCorte(nivelCm);
 }
@@ -512,6 +585,14 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
     +'<div style="font-size:11px;color:#666;margin-top:5px">Última lectura: '+fmt(d[C.fecha])+'</div>'
     +'</div>');
   const nv=parseFloat(d[C.nivel]);if(!isNaN(nv)){hist.labels.push(new Date().toLocaleTimeString());hist.data.push(nv);if(hist.data.length>20){hist.labels.shift();hist.data.shift();}if(chart)chart.update();}
+  // En vivo: si el panel del sensor (estilo SIATA) está abierto, agrega la lectura nueva a su serie.
+  const sd=document.getElementById('sensor-detalle');
+  if(sd && sd.style.display!=='none' && _serieInfo && _serieLista && _serieLista.length && d[C.fecha]){
+    const prev=_serieLista[_serieLista.length-1];
+    const esNueva = (d.id_medicion||0)>(prev.id_medicion||0) || String(d[C.fecha])!==String(prev[C.fecha]);
+    if(esNueva){ _serieLista.push(d);
+      const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); }
+  }
  }catch(e){setEstado('SIN DATO');document.getElementById('sensor-update').textContent='API no disponible (revisa endpoint/CORS). '+e.message;
    try{ sensorMarker.setPopupContent('<b>📡 '+CONFIG.SENSOR.nombre+'</b><br>Sin datos (API no disponible)'); }catch(_){} }}
 // El panel "Estación de monitoreo" (#panel-sensor) NO aparece al inicio del geoportal;

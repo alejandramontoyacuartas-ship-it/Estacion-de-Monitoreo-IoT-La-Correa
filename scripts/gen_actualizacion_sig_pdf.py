@@ -28,7 +28,7 @@ pdf.cell(0,8,s('Actualización del análisis SIG'),0,1)
 pdf.set_x(15); pdf.set_font('Helvetica','',11)
 pdf.cell(0,6,s('Sistema de Alerta Temprana - Quebrada La Correa · Girardota (Antioquia)'),0,1)
 pdf.set_x(15); pdf.set_font('Helvetica','',9)
-pdf.cell(0,5,s('Nuevo modelo de elevación DTM12 (ALOS PALSAR 12,5 m corregido con stream burning) · Proyecto N_CORREA'),0,1)
+pdf.cell(0,5,s('Modelo de elevación LiDAR 2 m (AMVA), con stream burning del cauce real · Proyecto N_CORREA'),0,1)
 pdf.ln(6); pdf.set_text_color(*TEXTO)
 
 def titulo(t):
@@ -54,7 +54,7 @@ def figura(path, cap, w=105):
 
 parra('Este documento actualiza los resultados del componente geoespacial (SIG) del informe del SAT de la '
       'Quebrada La Correa, con base en el análisis final del proyecto N_CORREA sobre el modelo digital de '
-      'elevación DTM12 (ALOS PALSAR de 12,5 m corregido con stream burning del cauce real). Se listan solo los '
+      'elevación LiDAR de 2 m del AMVA (con stream burning del cauce real). Se listan solo los '
       'valores del análisis SIG; el componente electrónico/IoT no varía.')
 
 titulo('1. Modelación hidrológica y morfometría')
@@ -145,8 +145,8 @@ figura(os.path.join(DOCS,'06_SAT_sensor_sirenas.png'),'Productos del SAT: estaci
 titulo('Nota')
 parra('El caudal Q(Tr100) ~ 249 m³/s es provisional: se estimó con lluvia satelital CHIRPS + factor de corrección, '
       'sin estación local; debe validarse con lluvia de IDEAM/SIATA y modelación hidráulica (HEC-RAS / IBER). '
-      'El modelo de elevación es ALOS PALSAR (SRTM remuestreado a 12,5 m), no LiDAR; los puntos óptimos requieren '
-      'verificación en terreno.')
+      'El modelo de elevación es un LiDAR de 2 m del AMVA; aun así, los puntos óptimos requieren '
+      'verificación en terreno (sección transversal levantada y prueba acústica).')
 
 out=r"C:\Users\malej\Downloads\Actualizacion_SIG_SAT_LaCorrea_nuevoMDE.pdf"
 pdf.output(out)

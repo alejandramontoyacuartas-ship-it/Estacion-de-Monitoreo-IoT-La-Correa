@@ -30,7 +30,7 @@
     {label:'Reducción del riesgo', items:[
       {t:'Monitoreo y Alertas', grupo:true, items:[
         {t:'Estaciones de monitoreo', sub:[
-          {t:'Sensores de nivel',   h:'index.html?capa=siata_nivel'},
+          {t:'Sensores de nivel',   h:'index.html?capa=siata_nivel,red_hidrica_muni'},
           {t:'Red pluviométrica',    h:'index.html?capa=siata_pluvio'},
           {t:'Red sismológica',      h:'https://geoportal.siata.gov.co/', ext:true},
         ]},
@@ -39,6 +39,7 @@
         ]},
         {t:'Tablero de lectura', h:'dashboard.html'},
       ]},
+      {t:'Niveles de riesgo — Estación P1', h:'index.html?niveles=1'},
       {t:'Obras de mitigación', h:'#'},
     ]},
     {label:'Manejo de desastres', items:[
@@ -151,14 +152,44 @@
     if(window.setSensorIcon) window.setSensorIcon(inp.dataset.key, inp.checked);
   }
   function wire(){
+    // Red hídrica municipal = capa de CONTEXTO del nivel. Solo visible con "Sensores de nivel"
+    // o con el sensor "Nivel de la quebrada" activo; al elegir cualquier otra opción se apaga.
+    function redHidrica(on){ if(window.geoToggle){ try{ window.geoToggle('red_hidrica_muni', on); }catch(e){} } }
     // acordeón: cada grupo se despliega/colapsa al hacer clic en su encabezado
     document.querySelectorAll('.sat-grp .sat-head').forEach(h=>{
       h.addEventListener('click', e=>{ e.stopPropagation(); h.parentElement.classList.toggle('open'); });
     });
     document.querySelectorAll('.sat-sw input[data-key]').forEach(inp=>{
-      inp.addEventListener('change', e=>{ e.stopPropagation(); aplicar(inp); });
+      inp.addEventListener('change', e=>{ e.stopPropagation(); aplicar(inp);
+        // Al ACTIVAR cualquier sensor se muestra su lectura: el nivel abre la ventana flotante lateral;
+        // lluvia/temperatura/humedad abren su panel compacto. Al DESACTIVAR el nivel, se cierra su ventana.
+        if(inp.dataset.key==='nivel'){
+          // Activar solo enciende el ícono + la red hídrica; la VENTANA se abre al hacer clic en el ícono de nivel.
+          if(inp.checked){ redHidrica(true); }
+          else { if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante(); redHidrica(false); }
+        } else {
+          redHidrica(false);                                        // otro sensor → apaga la red hídrica
+          if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();   // y cierra la ventana de nivel
+          if(inp.checked && window.abrirPanelSensor) window.abrirPanelSensor(inp.dataset.key);
+        }
+      });
       inp.parentElement.addEventListener('click', e=>e.stopPropagation());
       aplicar(inp); // estado inicial (todos activos => íconos visibles)
+    });
+    // Enlace "Niveles de riesgo — Estación P1": en el visor abre la ventana FLOTANTE
+    // (no navega); en otras páginas navega a index.html?niveles=1 y allí se abre sola.
+    document.querySelectorAll('a[href="index.html?niveles=1"]').forEach(a=>{
+      a.addEventListener('click', e=>{ if(window.abrirNivelesFlotante){ e.preventDefault(); window.abrirNivelesFlotante(); } });
+    });
+    // Al elegir una opción-hoja del menú: cierra la ventana flotante de lectura y apaga la red hídrica
+    // municipal. Excepciones: "Niveles de riesgo — Estación P1" (la ABRE) y "Sensores de nivel" (mantiene la red).
+    document.querySelectorAll('.navbar a').forEach(a=>{
+      const href=a.getAttribute('href')||'';
+      if(/niveles=1/.test(href)) return;                               // ese enlace abre la ventana; no la cierres
+      a.addEventListener('click', ()=>{
+        if(!/capa=siata_nivel/.test(href)) redHidrica(false);          // "Sensores de nivel" mantiene la red hídrica
+        if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
+      });
     });
     // Panel "Estación de monitoreo" (#panel-sensor del visor): aparece al hacer clic en
     // "Estación de Monitoreo La Correa"; se oculta al pasar a Conocimiento o Manejo.
