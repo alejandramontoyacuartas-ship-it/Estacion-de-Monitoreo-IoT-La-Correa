@@ -142,7 +142,7 @@ DOCS=r"C:\Users\malej\OneDrive\Escritorio\IOT\GeoportalGRDGirardota\docs"
 figura(os.path.join(DOCS,'02_amenaza.png'),'Amenaza por avenida torrencial a lo largo del cauce (stream power).')
 figura(os.path.join(DOCS,'06_SAT_sensor_sirenas.png'),'Productos del SAT: estación de monitoreo (P1) y bocinas de alerta.')
 
-titulo('Nota de honestidad técnica (limitaciones)')
+titulo('Nota')
 parra('El caudal Q(Tr100) ~ 249 m³/s es provisional: se estimó con lluvia satelital CHIRPS + factor de corrección, '
       'sin estación local; debe validarse con lluvia de IDEAM/SIATA y modelación hidráulica (HEC-RAS / IBER). '
       'El modelo de elevación es ALOS PALSAR (SRTM remuestreado a 12,5 m), no LiDAR; los puntos óptimos requieren '
