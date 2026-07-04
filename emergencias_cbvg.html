@@ -8,7 +8,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="css/navbar.css?v=3"/>
-  <link rel="stylesheet" href="css/puntos_riesgo.css?v=2"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=4"/>
   <style>
     body{overflow:auto}
     #map{height:660px;border-radius:10px}
@@ -30,14 +30,14 @@
   <section class="filtros-panel">
     <h2>Filtros de consulta</h2>
     <div class="filtros-grid">
-      <label for="veredaSelect">Seleccione la vereda:</label>
-      <select id="veredaSelect"><option value="">Seleccione vereda</option></select>
+      <span class="fgrp"><label for="veredaSelect">Seleccione la vereda:</label>
+      <select id="veredaSelect"><option value="">Seleccione vereda</option></select></span>
 
-      <label for="riesgoSelect">Tipo de emergencia:</label>
-      <select id="riesgoSelect"><option value="">Todas las emergencias</option></select>
+      <span class="fgrp"><label for="riesgoSelect">Tipo de emergencia:</label>
+      <select id="riesgoSelect"><option value="">Todas las emergencias</option></select></span>
 
-      <label for="anioSelect">Año:</label>
-      <select id="anioSelect"><option value="">Todos los años</option></select>
+      <span class="fgrp"><label for="anioSelect">Año:</label>
+      <select id="anioSelect"><option value="">Todos los años</option></select></span>
 
       <button class="btn-filtrar" onclick="filtrarDatos()">Filtrar</button>
       <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
