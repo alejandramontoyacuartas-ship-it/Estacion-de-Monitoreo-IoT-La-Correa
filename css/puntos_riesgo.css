@@ -200,6 +200,11 @@ button:active {
     color: var(--texto-oscuro);
 }
 
+.btn-pdf {
+    background: var(--verde-oscuro);
+    color: var(--blanco);
+}
+
 /* 7. Estructura de las columnas
    
    Izquierda:

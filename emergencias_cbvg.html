@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="stylesheet" href="css/navbar.css?v=3"/>
-  <link rel="stylesheet" href="css/puntos_riesgo.css?v=4"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=5"/>
   <style>
     body{overflow:auto}
     #map{height:660px;border-radius:10px}
@@ -41,6 +42,7 @@
 
       <button class="btn-filtrar" onclick="filtrarDatos()">Filtrar</button>
       <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
+      <button class="btn-pdf" onclick="descargarPDF()" title="Descargar en PDF las emergencias filtradas">⭳ Descargar PDF</button>
     </div>
     <p class="info-text">El mapa inicia sin mostrar emergencias. El registro y análisis se evidencian cuando el usuario aplica un filtro. Cada punto tiene su evidencia fotográfica de atención.</p>
   </section>
@@ -98,6 +100,6 @@
 <footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
 
 <script src="js/data.js?v=7"></script>
-<script src="js/emergencias_cbvg.js?v=5"></script>
+<script src="js/emergencias_cbvg.js?v=6"></script>
 </body>
 </html>

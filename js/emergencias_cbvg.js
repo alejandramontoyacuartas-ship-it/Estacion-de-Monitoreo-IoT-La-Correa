@@ -82,6 +82,7 @@ let puntosLayer = null;
 
 let puntosData = null;
 let veredasData = null;
+let ultimoFiltro = null;   // último resultado filtrado (para exportar a PDF)
 
 let graficoRiesgos = null;
 let graficoVeredas = null;
@@ -450,6 +451,7 @@ function filtrarDatos() {
         })
     };
 
+    ultimoFiltro = filtrados;   // se guarda para poder exportarlo a PDF
     console.log("Resultado del filtro:", filtrados);
 
     if (filtrados.features.length === 0) {
@@ -767,6 +769,66 @@ function crearGraficoVeredas(conteoVeredas) {
     });
 }
 
+
+/* 20. DESCARGAR PDF con las emergencias filtradas (lo que el usuario quiere imprimir) */
+function descargarPDF() {
+    if (!window.jspdf || !window.jspdf.jsPDF) { alert("No se pudo cargar el generador de PDF."); return; }
+    const data = ultimoFiltro || puntosData;
+    if (!data || !data.features || data.features.length === 0) {
+        alert("Aplica un filtro (o usa \"Todas\" y Filtrar) para generar el PDF.");
+        return;
+    }
+    const san = s => String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\x00-\x7F]/g, "");
+    const feats = data.features;
+    const fv = (document.getElementById("veredaSelect") || {}).value || "Todas";
+    const ft = (document.getElementById("riesgoSelect") || {}).value || "Todas";
+    const fa = (document.getElementById("anioSelect") || {}).value || "Todos";
+
+    // resumen
+    const porTipo = {}, veredas = new Set();
+    feats.forEach(f => { const t = obtenerRiesgo(f.properties); porTipo[t] = (porTipo[t] || 0) + 1; veredas.add(obtenerNombreVereda(f.properties)); });
+    let pred = "-", mx = 0;
+    Object.keys(porTipo).forEach(t => { if (porTipo[t] > mx) { mx = porTipo[t]; pred = t; } });
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+    doc.setFillColor(20, 81, 47); doc.rect(0, 0, 210, 22, "F");
+    doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(15);
+    doc.text("Emergencias atendidas - CBVG Girardota", 14, 11);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+    doc.text("Cuerpo de Bomberos Voluntarios de Girardota - Registro de emergencias atendidas", 14, 17.5);
+    doc.setTextColor(30); let y = 30; doc.setFontSize(10);
+    doc.text(san("Filtros -> Vereda: " + fv + "   |   Tipo: " + ft + "   |   Ano: " + fa), 14, y); y += 6;
+    doc.text(san("Total emergencias: " + feats.length + "   |   Veredas: " + veredas.size + "   |   Tipo predominante: " + pred), 14, y); y += 6;
+    doc.text("Generado: " + new Date().toLocaleString(), 14, y); y += 8;
+
+    // tabla
+    const cols = [{ t: "N.", w: 12 }, { t: "Fecha", w: 28 }, { t: "Vereda", w: 32 }, { t: "Tipo de emergencia", w: 46 }, { t: "Ubicacion", w: 62 }];
+    function cab() {
+        doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setFillColor(31, 90, 67); doc.setTextColor(255);
+        let x = 14; cols.forEach(c => { doc.rect(x, y - 4.5, c.w, 6.5, "F"); doc.text(c.t, x + 2, y); x += c.w; });
+        y += 6; doc.setFont("helvetica", "normal"); doc.setTextColor(40);
+    }
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(20, 81, 47);
+    doc.text("Listado de emergencias (" + feats.length + ")", 14, y); y += 7; cab();
+
+    const sorted = feats.slice().sort((a, b) => String(a.properties.fecha).localeCompare(String(b.properties.fecha)));
+    sorted.forEach((f, i) => {
+        const p = f.properties;
+        const cells = [san(p.num), san(String(p.fecha || "").slice(0, 16)), san(obtenerNombreVereda(p)), san(obtenerRiesgo(p)), san(p.ubicacion || "-")];
+        doc.setFontSize(8);
+        const lines = cells.map((txt, ci) => doc.splitTextToSize(txt, cols[ci].w - 3));
+        const rh = Math.max.apply(null, lines.map(l => l.length)) * 3.6 + 2;
+        if (y + rh > 288) { doc.addPage(); y = 18; cab(); }
+        if (i % 2 === 0) { doc.setFillColor(238, 244, 240); doc.rect(14, y - 4, cols.reduce((s, c) => s + c.w, 0), rh, "F"); }
+        let x = 14; cells.forEach((ln, ci) => { doc.text(lines[ci], x + 2, y); x += cols[ci].w; }); y += rh;
+    });
+
+    doc.setFontSize(8); doc.setTextColor(120);
+    doc.text("Alcaldia de Girardota - Cuerpo de Bomberos Voluntarios (CBVG)", 14, y > 285 ? y + 4 : 292);
+    doc.save("Emergencias_CBVG_" + fa.replace(/\s/g, "") + "_" + new Date().toISOString().slice(0, 10) + ".pdf");
+}
 
 /* 19. ESTADO INICIAL DEL SISTEMA (AYUDA IA)*/
 document.addEventListener("DOMContentLoaded", function () {
