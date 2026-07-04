@@ -193,18 +193,19 @@
         if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
       });
     });
-    // Botón "Regresa al geoportal" en el encabezado verde de las páginas analíticas
-    // (no aparece en el visor del mapa, que usa #header, no .header).
-    const hdr=document.querySelector('.header');
+    // Botón "Regresa al geoportal" en el encabezado de las páginas analíticas (estilo verde "Limpiar",
+    // más visible). Cubre .header (banner verde) y .esc-head (escenarios / cambio climático).
+    // No aparece en el visor del mapa (usa #header, no .header).
+    const hdr=document.querySelector('.header, .esc-head');
     if(hdr && !hdr.querySelector('.btn-volver-geo')){
       hdr.style.position='relative';
       const a=document.createElement('a');
       a.className='btn-volver-geo'; a.href='index.html'; a.textContent='← Regresa al geoportal';
-      a.style.cssText='position:absolute;top:14px;right:18px;z-index:3;background:#fff;color:#1f5a43;'
-        +'font-weight:800;font-size:13px;text-decoration:none;padding:9px 16px;border-radius:9px;'
-        +'box-shadow:0 2px 8px rgba(0,0,0,.22);white-space:nowrap';
-      a.addEventListener('mouseover',()=>{a.style.background='#eaf5ee';});
-      a.addEventListener('mouseout',()=>{a.style.background='#fff';});
+      a.style.cssText='position:absolute;top:14px;right:18px;z-index:3;background:#8ccf4d;color:#1e3d2f;'
+        +'font-weight:800;font-size:13.5px;text-decoration:none;padding:10px 18px;border-radius:10px;'
+        +'box-shadow:0 3px 10px rgba(0,0,0,.28);white-space:nowrap';
+      a.addEventListener('mouseover',()=>{a.style.background='#79b85d';});
+      a.addEventListener('mouseout',()=>{a.style.background='#8ccf4d';});
       hdr.appendChild(a);
     }
     // Panel "Estación de monitoreo" (#panel-sensor del visor): aparece al hacer clic en
