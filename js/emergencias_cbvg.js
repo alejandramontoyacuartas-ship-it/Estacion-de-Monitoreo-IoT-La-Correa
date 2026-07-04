@@ -360,6 +360,7 @@ function crearCapaPuntos(data) {
             const vereda = obtenerNombreVereda(feature.properties);
             const fecha = obtenerFecha(feature.properties);
             const num = feature.properties.num || "";
+            const ubic = feature.properties.ubicacion || "";
             const image = obtenerImage(feature.properties);
 
             let popupHTML = `
@@ -369,6 +370,7 @@ function crearCapaPuntos(data) {
                     <b>Tipo:</b> ${riesgo}<br>
                     <b>Fecha:</b> ${fecha || "—"}<br>
                     <b>Vereda:</b> ${vereda}
+                    ${ubic ? `<br><b>Ubicación:</b> ${ubic}` : ""}
             `;
 
             if (image && image.trim() !== "") {
