@@ -184,13 +184,18 @@ function obtenerColorPorRiesgo(riesgo = "") {
 }
 
 function obtenerColorPorRiesgo(riesgo = "") {
-    const valor = riesgo.toLowerCase().trim();
+    const v = riesgo.toLowerCase().trim();
 
-    if (valor.includes("avenida")) return "#c542b3";
-    if (valor.includes("inund")) return "#4db7ff";
-    if (valor.includes("estruct")) return "#57b85c";
-    if (valor.includes("socav") || valor.includes("hund")) return "#d9e73f";
-    if (valor.includes("movimiento") || valor.includes("masa")) return "#f04b44";return "#2f7a57";
+    if (v.includes("avenida")) return "#c542b3";
+    if (v.includes("movimiento") || v.includes("masa")) return "#f04b44";
+    if (v.includes("ladera") || v.includes("talud") || v.includes("inestab") || v.includes("flujo")) return "#8d6e63";
+    if (v.includes("creciente") || v.includes("torrencial")) return "#2980b9";
+    if (v.includes("inund")) return "#4db7ff";
+    if (v.includes("socav") || v.includes("hund")) return "#d9e73f";
+    if (v.includes("incendio")) return "#e67e22";
+    if (v.includes("sanitario") || v.includes("ambient")) return "#9b59b6";
+    if (v.includes("colapso") || v.includes("estruct")) return "#57b85c";
+    return "#2f7a57";
 }
 
 /* 5. CARGAR CAPA DE VEREDAS - GEOJSON ARGIS SHP*/
