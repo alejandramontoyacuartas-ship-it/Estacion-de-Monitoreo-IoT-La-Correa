@@ -159,7 +159,10 @@
       h.addEventListener('click', e=>{ e.stopPropagation(); h.parentElement.classList.toggle('open'); });
     });
     document.querySelectorAll('.sat-sw input[data-key]').forEach(inp=>{
-      inp.addEventListener('change', e=>{ e.stopPropagation(); aplicar(inp);
+      inp.addEventListener('change', e=>{ e.stopPropagation();
+        // Si NO estamos en el mapa (p. ej. Tablero de lectura), volver al geoportal donde el sensor funciona.
+        if(typeof window.setSensorIcon!=='function'){ location.href = inp.dataset.key==='nivel' ? 'index.html?niveles=1' : 'index.html'; return; }
+        aplicar(inp);
         // Al ACTIVAR cualquier sensor se muestra su lectura: el nivel abre la ventana flotante lateral;
         // lluvia/temperatura/humedad abren su panel compacto. Al DESACTIVAR el nivel, se cierra su ventana.
         if(inp.dataset.key==='nivel'){
