@@ -562,7 +562,12 @@ function _pintarSerie(info, lista){
 }
 async function abrirPanelSensor(key){
   const info=SENSOR_INFO[key]; if(!info) return;
-  const p=panelDetalle(); p.style.display='block'; sdTab('series');
+  const p=panelDetalle(); p.style.display='block';
+  // Pestañas propias del NIVEL del agua (no aplican a lluvia/temperatura/humedad): se ocultan.
+  const soloNivel=['niveles','perfil','galeria'];
+  p.querySelectorAll('.sd-tabs button').forEach(b=>{ b.style.display=(key!=='nivel'&&soloNivel.includes(b.dataset.t))?'none':''; });
+  p.querySelectorAll('.sd-tab').forEach(d=>{ if(key!=='nivel'&&soloNivel.includes(d.dataset.tab)) d.style.display='none'; });
+  sdTab('series');
   p.querySelector('.sd-sub').textContent=info.label+(info.unidad?' ('+info.unidad+')':'');
   p.querySelector('.sd-valor').textContent='cargando…';
   let lista=[];
