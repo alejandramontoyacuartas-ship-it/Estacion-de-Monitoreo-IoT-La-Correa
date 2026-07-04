@@ -193,6 +193,20 @@
         if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
       });
     });
+    // Botón "Regresa al geoportal" en el encabezado verde de las páginas analíticas
+    // (no aparece en el visor del mapa, que usa #header, no .header).
+    const hdr=document.querySelector('.header');
+    if(hdr && !hdr.querySelector('.btn-volver-geo')){
+      hdr.style.position='relative';
+      const a=document.createElement('a');
+      a.className='btn-volver-geo'; a.href='index.html'; a.textContent='← Regresa al geoportal';
+      a.style.cssText='position:absolute;top:14px;right:18px;z-index:3;background:#fff;color:#1f5a43;'
+        +'font-weight:800;font-size:13px;text-decoration:none;padding:9px 16px;border-radius:9px;'
+        +'box-shadow:0 2px 8px rgba(0,0,0,.22);white-space:nowrap';
+      a.addEventListener('mouseover',()=>{a.style.background='#eaf5ee';});
+      a.addEventListener('mouseout',()=>{a.style.background='#fff';});
+      hdr.appendChild(a);
+    }
     // Panel "Estación de monitoreo" (#panel-sensor del visor): aparece al hacer clic en
     // "Estación de Monitoreo La Correa"; se oculta al pasar a Conocimiento o Manejo.
     document.querySelectorAll('.est-panel-head').forEach(h=>{
