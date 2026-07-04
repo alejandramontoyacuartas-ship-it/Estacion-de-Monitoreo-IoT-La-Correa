@@ -175,6 +175,30 @@ function obtenerFecha(properties = {}) {
     return properties.fecha || properties.FECHA || properties.Fecha || "";
 }
 
+/* Año de la emergencia (extraído de la fecha "YYYY-MM-DD ...") */
+function obtenerAnio(properties = {}) {
+    const f = String(obtenerFecha(properties));
+    const m = f.match(/(\d{4})/);
+    return m ? m[1] : "";
+}
+
+/* Llenar el selector de AÑOS con los años presentes en los datos */
+function llenarSelectorAnios(data) {
+    const select = document.getElementById("anioSelect");
+    if (!select) return;
+    select.innerHTML = `<option value="">Todos los años</option>`;
+    if (!data || !data.features) return;
+
+    const anios = new Set();
+    data.features.forEach(f => { const a = obtenerAnio(f.properties); if (a) anios.add(a); });
+
+    Array.from(anios).sort((a, b) => b.localeCompare(a)).forEach(a => {   // más reciente primero
+        const opt = document.createElement("option");
+        opt.value = a; opt.textContent = a;
+        select.appendChild(opt);
+    });
+}
+
 /* Color del marcador por tipo de emergencia atendida (CBVG) */
 function obtenerColorPorRiesgo(riesgo = "") {
     const v = riesgo.toLowerCase().trim();
@@ -251,6 +275,7 @@ cargarGeo("emergencias_cbvg", "data/emergencias_cbvg.geojson")
 
         llenarSelectorVeredas(data);
         llenarSelectorRiesgos(data);
+        llenarSelectorAnios(data);
         limpiarEstadisticas();   // el panel estadístico inicia vacío hasta aplicar el filtro
         limpiarTabla();
     })
@@ -395,12 +420,14 @@ function crearCapaPuntos(data) {
 function filtrarDatos() {
     const veredaSelect = document.getElementById("veredaSelect");
     const riesgoSelect = document.getElementById("riesgoSelect");
+    const anioSelect = document.getElementById("anioSelect");
 
     const veredaSeleccionada = veredaSelect ? veredaSelect.value.trim() : "";
     const riesgoSeleccionado = riesgoSelect ? riesgoSelect.value.trim() : "";
+    const anioSeleccionado = anioSelect ? anioSelect.value.trim() : "";
 
     if (!puntosData || !puntosData.features) {
-        alert("No se han cargado los puntos críticos.");
+        alert("No se han cargado las emergencias del CBVG.");
         return;
     }
 
@@ -413,11 +440,13 @@ function filtrarDatos() {
         features: puntosData.features.filter(feature => {
             const veredaDato = obtenerNombreVereda(feature.properties).trim();
             const riesgoDato = obtenerRiesgo(feature.properties).trim();
+            const anioDato = obtenerAnio(feature.properties);
 
             const cumpleVereda = !veredaSeleccionada || veredaDato === veredaSeleccionada;
             const cumpleRiesgo = !riesgoSeleccionado || riesgoDato === riesgoSeleccionado;
+            const cumpleAnio = !anioSeleccionado || anioDato === anioSeleccionado;
 
-            return cumpleVereda && cumpleRiesgo;
+            return cumpleVereda && cumpleRiesgo && cumpleAnio;
         })
     };
 
@@ -443,9 +472,11 @@ function filtrarDatos() {
 function limpiarFiltro() {
     const veredaSelect = document.getElementById("veredaSelect");
     const riesgoSelect = document.getElementById("riesgoSelect");
+    const anioSelect = document.getElementById("anioSelect");
 
     if (veredaSelect) veredaSelect.value = "";
     if (riesgoSelect) riesgoSelect.value = "";
+    if (anioSelect) anioSelect.value = "";
 
     if (puntosLayer && map.hasLayer(puntosLayer)) {
         map.removeLayer(puntosLayer);
