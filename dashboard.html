@@ -279,7 +279,21 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
    y+=4; doc.setFontSize(9); doc.setTextColor(90);
    doc.text('Umbrales (cm): N1 seguro < '+U.preventivo+'  |  N2 precaucion '+U.preventivo+'-'+U.critico+'  |  N3 inundacion menor '+U.critico+'-'+(U.critico*2)+'  |  N4 mayor >= '+(U.critico*2),14,y);
    y+=5; doc.text('*Calidad de datos sin verificar exhaustivamente. Lecturas de la API del sensor P1 (Render).',14,y);
-   doc.setFontSize(8); doc.setTextColor(120); doc.text('Grupo 3 - Universidad de San Buenaventura, Medellin - 2026',14,290);
+   // ---- Tabla de lecturas (fecha + nivel) de la ventana, más reciente primero ----
+   y+=9;
+   function cabTabla(){ doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setFillColor(31,90,67); doc.setTextColor(255);
+     doc.rect(14,y-4.5,96,6.5,'F'); doc.rect(112,y-4.5,40,6.5,'F');
+     doc.text('Fecha y hora',17,y); doc.text('Nivel (cm)',115,y); y+=6; doc.setFont('helvetica','normal'); doc.setTextColor(40); }
+   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,81,47);
+   doc.text('Lecturas de la ventana ('+VEN.length+')',14,y); y+=7; cabTabla();
+   VEN.slice().reverse().forEach((m,i)=>{
+     if(y>284){ doc.addPage(); y=18; cabTabla(); }
+     if(i%2===0){ doc.setFillColor(238,244,240); doc.rect(14,y-4,138,5.6,'F'); }
+     const f=m[C.fecha]?String(m[C.fecha]).replace('T',' ').slice(0,19):'-';
+     const nv=parseFloat(m[C.nivel]);
+     doc.setTextColor(40); doc.setFontSize(9); doc.text(f,17,y); doc.text(isNaN(nv)?'-':nv.toFixed(2),115,y); y+=5.6;
+   });
+   doc.setFontSize(8); doc.setTextColor(120); doc.text('Grupo 3 - Universidad de San Buenaventura, Medellin - 2026',14,y>288?y+4:292);
    doc.save('Registros_Nivel_'+win.replace(/\s/g,'')+'_'+new Date().toISOString().slice(0,10)+'.pdf');
  }
  document.getElementById('sim-win').addEventListener('change',pintar);
