@@ -438,7 +438,7 @@ function sdTab(t){
 function panelDetalle(){
   let p=document.getElementById('sensor-detalle');
   if(!p){ p=document.createElement('div'); p.id='sensor-detalle';
-    p.innerHTML='<div class="sd-h"><div class="sd-h-tit"><b>Niveles de Riesgo</b><span>Estación de Monitoreo La Correa</span></div>'
+    p.innerHTML='<div class="sd-h"><div class="sd-h-tit"><b>Registros de lectura</b><span>SENSORES EST. LA CORREA</span></div>'
       +'<svg class="sd-h-ico" viewBox="0 0 64 48" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M16 24 L32 11 L48 24"/><path d="M21 24 V37 H43 V24"/><path d="M9 43 q4 -4 8 0 t8 0 t8 0 t8 0 t8 0" stroke-width="2.6"/></svg>'
       +'<span class="sd-x" title="Cerrar">✕</span></div>'
       +'<div class="sd-tabs">'+_tabsHTML()+'</div>'
