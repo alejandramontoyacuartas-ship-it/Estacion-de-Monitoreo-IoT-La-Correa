@@ -42,8 +42,8 @@
       {t:'Obras de mitigación', h:'#'},
     ]},
     {label:'Manejo de desastres', items:[
-      {t:'Emergencias atendidas', h:'index.html?capa=antecedentes'},
-      {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'#'},
+      {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},
+      {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
     ]},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;

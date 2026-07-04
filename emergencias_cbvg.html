@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergencias atendidas — CBVG Girardota</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=2"/>
+  <style>
+    body{overflow:auto}
+    #map{height:660px;border-radius:10px}
+  </style>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=47"></script>
+
+<div class="container">
+
+  <header class="header">
+    <h1>Emergencias atendidas — CBVG Girardota</h1>
+    <p>Registro espacial y estadístico de las emergencias atendidas por el Cuerpo de Bomberos Voluntarios de Girardota · consulta por vereda y tipo de emergencia</p>
+  </header>
+
+  <!-- PANEL DE FILTROS -->
+  <section class="filtros-panel">
+    <h2>Filtros de consulta</h2>
+    <div class="filtros-grid">
+      <label for="veredaSelect">Seleccione la vereda:</label>
+      <select id="veredaSelect"><option value="">Seleccione vereda</option></select>
+
+      <label for="riesgoSelect">Tipo de emergencia:</label>
+      <select id="riesgoSelect"><option value="">Todas las emergencias</option></select>
+
+      <button class="btn-filtrar" onclick="filtrarDatos()">Filtrar</button>
+      <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
+    </div>
+    <p class="info-text">El mapa inicia sin mostrar emergencias. El registro y análisis se evidencian cuando el usuario aplica un filtro. Cada punto tiene su evidencia fotográfica de atención.</p>
+  </section>
+
+  <main class="main-grid">
+    <div class="left-column">
+
+      <section class="map-panel">
+        <h2>Mapa de emergencias atendidas</h2>
+        <div id="map"></div>
+      </section>
+
+      <section class="table-panel">
+        <h2>Resultados de consulta</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Fecha</th><th>Vereda</th><th>Tipo de emergencia</th><th>Evidencia</th></tr>
+            </thead>
+            <tbody id="tablaResultados">
+              <tr><td colspan="5">Aún no se ha aplicado ningún filtro.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <aside class="dashboard-panel">
+      <h2>Panel estadístico SIG</h2>
+      <div class="cards-resumen">
+        <div class="card-resumen"><h3>Total de emergencias</h3><p id="totalEventos">—</p></div>
+        <div class="card-resumen"><h3>Total de veredas</h3><p id="totalVeredas">—</p></div>
+        <div class="card-resumen"><h3>Tipo predominante</h3><p id="eventoPredominante">—</p></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Emergencias por tipo</h3>
+        <div class="grafico-container"><canvas id="graficoRiesgos"></canvas></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Distribución por vereda</h3>
+        <div class="grafico-container"><canvas id="graficoVeredas"></canvas></div>
+      </div>
+
+      <div class="panel-estadisticas">
+        <h3>Detalle estadístico</h3>
+        <div id="estadisticasRiesgo"></div>
+      </div>
+    </aside>
+  </main>
+
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script src="js/data.js?v=6"></script>
+<script src="js/emergencias_cbvg.js?v=2"></script>
+</body>
+</html>
