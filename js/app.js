@@ -307,12 +307,21 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Niveles de Riesgo — Estación P1" src="niveles.html?embed=1&v=4"</iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=5"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
+    // Cerrar al hacer clic FUERA de la ventana (otro ícono, el mapa o el menú). El clic que la ABRE
+    // es de la estación propia P1 y actualiza _nivOpenTs justo antes, por eso no la cierra.
+    document.addEventListener('click', function(e){
+      if(!m.classList.contains('open')) return;
+      if(m.contains(e.target)) return;                                      // dentro de la ventana / ✕
+      if(window._nivOpenTs && (Date.now()-window._nivOpenTs)<350) return;   // el clic que la abrió / reclic en P1
+      window.cerrarNivelesFlotante();
+    });
   }
   m.classList.add('open');
+  window._nivOpenTs=Date.now();
 };
 window.cerrarNivelesFlotante=function(){ const m=document.getElementById('niv-modal'); if(m) m.classList.remove('open'); };
 const sensorIcons={};
