@@ -771,13 +771,27 @@ function crearGraficoVeredas(conteoVeredas) {
 
 
 /* 20. DESCARGAR PDF con las emergencias filtradas (lo que el usuario quiere imprimir) */
-function descargarPDF() {
+async function descargarPDF() {
     if (!window.jspdf || !window.jspdf.jsPDF) { alert("No se pudo cargar el generador de PDF."); return; }
     const data = ultimoFiltro || puntosData;
     if (!data || !data.features || data.features.length === 0) {
         alert("Aplica un filtro (o usa \"Todas\" y Filtrar) para generar el PDF.");
         return;
     }
+    const _btn = document.querySelector(".btn-pdf"); const _txt = _btn ? _btn.textContent : "";
+    if (_btn) { _btn.textContent = "Generando PDF…"; _btn.disabled = true; }
+    // Carga una foto y la reduce a JPEG (data URL) para no inflar el PDF
+    const imgToData = (src, maxW) => new Promise(res => {
+        const im = new Image();
+        im.onload = () => { try {
+            const sc = Math.min(1, maxW / im.naturalWidth);
+            const w = Math.round(im.naturalWidth * sc), h = Math.round(im.naturalHeight * sc);
+            const c = document.createElement("canvas"); c.width = w; c.height = h;
+            c.getContext("2d").drawImage(im, 0, 0, w, h);
+            res({ data: c.toDataURL("image/jpeg", 0.72), w: im.naturalWidth, h: im.naturalHeight });
+        } catch (e) { res(null); } };
+        im.onerror = () => res(null); im.src = src;
+    });
     const san = s => String(s == null ? "" : s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^\x00-\x7F]/g, "");
     const feats = data.features;
     const fv = (document.getElementById("veredaSelect") || {}).value || "Todas";
@@ -827,6 +841,36 @@ function descargarPDF() {
 
     doc.setFontSize(8); doc.setTextColor(120);
     doc.text("Alcaldia de Girardota - Cuerpo de Bomberos Voluntarios (CBVG)", 14, y > 285 ? y + 4 : 292);
+
+    // ---- Evidencia fotografica: 6 fotos por hoja (2 x 3) ----
+    const conFoto = sorted.filter(f => f.properties.foto);
+    const IMGW = 86, IMGH = 66, GAPX = 98, ROWH = 88;
+    for (let i = 0; i < conFoto.length; i++) {
+        const p = conFoto[i].properties;
+        const pos = i % 6;
+        if (pos === 0) {
+            doc.addPage();
+            doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(20, 81, 47);
+            doc.text(san("Evidencia fotografica (" + conFoto.length + ") - CBVG"), 14, 13);
+        }
+        const col = pos % 2, row = Math.floor(pos / 2);
+        const cx = 12 + col * GAPX, cy = 20 + row * ROWH;
+        const info = await imgToData(p.foto, 700);
+        doc.setDrawColor(200); doc.rect(cx, cy, IMGW, IMGH);
+        if (info) {
+            let dw = IMGW, dh = IMGW * info.h / info.w;
+            if (dh > IMGH) { dh = IMGH; dw = IMGH * info.w / info.h; }
+            doc.addImage(info.data, "JPEG", cx + (IMGW - dw) / 2, cy + (IMGH - dh) / 2, dw, dh);
+        } else {
+            doc.setFontSize(8); doc.setTextColor(150); doc.text("Sin imagen", cx + 30, cy + IMGH / 2);
+        }
+        doc.setFont("helvetica", "bold"); doc.setFontSize(8.5); doc.setTextColor(20, 81, 47);
+        doc.text(san("N." + p.num + " - " + obtenerRiesgo(p)), cx, cy + IMGH + 5, { maxWidth: IMGW });
+        doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(80);
+        doc.text(san(String(p.fecha || "").slice(0, 10) + (p.vereda ? " - " + p.vereda : "")), cx, cy + IMGH + 9, { maxWidth: IMGW });
+    }
+
+    if (_btn) { _btn.textContent = _txt; _btn.disabled = false; }
     doc.save("Emergencias_CBVG_" + fa.replace(/\s/g, "") + "_" + new Date().toISOString().slice(0, 10) + ".pdf");
 }
 
