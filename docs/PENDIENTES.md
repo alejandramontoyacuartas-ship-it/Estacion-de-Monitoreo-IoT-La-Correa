@@ -5,6 +5,30 @@ Punto de avance actual y lo que falta. **Continúa desde aquí; no repitas lo ya
 ---
 
 ## ✅ Hecho (no rehacer)
+### Sesión 2026-07-04 — CBVG, puntos de riesgo, PDFs y ajustes de ventana
+- **Nueva ventana `emergencias_cbvg.html`** (Manejo de desastres → Emergencias atendidas / CBVG): estilo Puntos de riesgo,
+  con datos del **KMZ auditado** `CBVG/BOMBEROS_EMERGENCIAS_AUDITADO_COMPLETO_RVDO.xlsx` → **69 emergencias** con foto y
+  ubicación. Filtros **vereda + tipo + año**. `data/emergencias_cbvg.geojson` (vereda por point-in-polygon), 69 fotos en
+  `img/cbvg/`. **Botón "Descargar PDF"** (jsPDF): filtros aplicados + resumen + tabla + **fotos de evidencia 6 por hoja**.
+  Lógica en `js/emergencias_cbvg.js`. Para reconstruir: `scratchpad/build_cbvg.py`.
+- **Puntos de riesgo actualizados a 55** (18 previos + **37 nuevos IDs 19-60**) desde `INFORMACION DE PUNTOS EN RIESGO/
+  NUEVA INFORMACION PUNTOS CRITICOS/PUNTOS_RIESGO_REF.xlsx`. `data/puntos_criticos.geojson` regenerado; 37 fotos a
+  `img/puntos/` (ID{n}.jpeg). Color por tipo ampliado en `puntos_riesgo.js` (ladera/creciente/sanitario/incendio/colapso).
+  Reconstruir: `scratchpad/build_puntos.py`.
+- **Botón "← Regresa al geoportal"** (verde, estilo Limpiar) inyectado por `navbar.js` en el encabezado de TODAS las páginas
+  analíticas (`.header` y `.esc-head`); no en el visor del mapa.
+- **Ventana flotante de nivel**: abre SOLO con la estación propia P1; **se cierra** al clic en cualquier otro ícono/opción
+  (gracia de 350ms para el clic que la abre). Corregida etiqueta `<iframe>` malformada.
+- **Panel de sensor** (#sensor-detalle): encabezado "Registros de lectura / SENSORES EST. LA CORREA"; oculta pestañas
+  Niveles de riesgo/Perfil/Galería para lluvia/temp/humedad.
+- **Tablero de lectura**: monitoreo dinámico (selector 3h/24h/72h/30d, gráfica formato ventana flotante) + **descarga PDF**
+  con tabla de lecturas. Fuera del mapa, tocar un sensor del menú **regresa al geoportal**.
+- **"Sensores de nivel"** enciende la **red hídrica municipal** (capa de contexto), que se apaga al elegir otra opción.
+  Clic en cada ícono de nivel **resalta su microcuenca** (point-in-polygon). El menú se cierra al hacer clic fuera.
+- Retirado del menú "Niveles de riesgo — Estación P1".
+- **Versiones actuales:** app.js v57 · navbar.js v49 · estilos.css v17 · data.js v8 · puntos_riesgo.css v5 ·
+  emergencias_cbvg.js v7 · puntos_riesgo.js v4.
+
 ### Sesión 2026-07-02 (tarde/noche) — Ventana flotante "Registros de lectura" + estación
 - **Página `niveles.html`** (vista SIATA-like): escala de niveles N1–N4, serie de tiempo con **selector 3h/24h/72h/30d**,
   marcador de máximo, panel Resumen (tipo sensor, resolución, % datos, promedio) y **sección transversal en P1** con
