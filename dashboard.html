@@ -50,7 +50,7 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
 </head>
 <body>
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=52"></script>
+<script src="js/navbar.js?v=53"></script>
 
 <div class="container">
   <header class="header">
@@ -104,7 +104,7 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
     </div>
   </div>
   <p class="note">Lectura en vivo desde la <b>API del sensor P1</b> (Render). El estado se deriva del nivel medido:
-  <b>PREVENCIÓN ≥ 10 cm · CRÍTICO ≥ 20 cm</b>. Si aparece "SIN DATO", abre este tablero con el servidor local
+  <b>ADVERTENCIA ≥ 20 cm · CRÍTICO ≥ 40 cm · EVACUACIÓN ≥ 60 cm</b>. Si aparece "SIN DATO", abre este tablero con el servidor local
   (proxy, puerto 8080) o publica la API con CORS.</p>
 
   <!-- Graficas -->
@@ -182,7 +182,7 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
 
 <footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
 
-<script src="js/config.js?v=6"></script>
+<script src="js/config.js?v=8"></script>
 <script>
 // ---- Gráficos del análisis (datos verificados del proyecto) ----
 // Paleta armónica con el geoportal: rampa de riesgo suave (crítico→bajo) + verdes institucionales.
@@ -211,7 +211,7 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
  const N=[{n:'N1',c:'#2e9e57',tope:U.preventivo},{n:'N2',c:'#EAB308',tope:U.prevencion},{n:'N3',c:'#EF9F27',tope:U.critico}];
  const set=(id,v)=>{const e=document.getElementById(id); if(e)e.textContent=v;};
  const parse=s=>new Date(String(s).replace(' ','T'));
- const estado=nv=>isNaN(nv)?{t:'SIN DATO',c:'#9a9a92'}:nv>=U.critico?{t:'CRÍTICO',c:'#c0392b'}:nv>=U.prevencion?{t:'PREVENCIÓN',c:'#e67e22'}:nv>=U.preventivo?{t:'PRECAUCIÓN',c:'#EAB308'}:{t:'NORMAL',c:'#2e9e57'};
+ const estado=nv=>isNaN(nv)?{t:'SIN DATO',c:'#9a9a92'}:nv>=U.critico?{t:'EVACUACIÓN',c:'#c0392b'}:nv>=U.prevencion?{t:'CRÍTICO',c:'#e67e22'}:nv>=U.preventivo?{t:'ADVERTENCIA',c:'#EAB308'}:{t:'NORMAL',c:'#2e9e57'};
  let SERIE=[], VEN=[], chart=null;
  const umbralDs=len=>N.map(x=>({label:x.n,data:Array(len).fill(x.tope),borderColor:x.c,borderDash:[6,4],borderWidth:1.2,pointRadius:0,fill:false,tension:0,order:5}));
  function ventana(){ const win=+document.getElementById('sim-win').value; if(!SERIE.length) return [];
@@ -277,7 +277,7 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
     ['Ultima lectura',ult[C.fecha]?String(ult[C.fecha]).replace('T',' ').slice(0,19):'-']].forEach(f=>{
      doc.text(f[0]+':',16,y); doc.setFont('helvetica','bold'); doc.text(f[1],72,y); doc.setFont('helvetica','normal'); y+=6; });
    y+=4; doc.setFontSize(9); doc.setTextColor(90);
-   doc.text('Umbrales (cm): N1 normal < '+U.preventivo+'  |  N2 precaucion '+U.preventivo+'-'+U.prevencion+'  |  N3 prevencion '+U.prevencion+'-'+U.critico+'  |  N4 critico >= '+U.critico,14,y);
+   doc.text('Umbrales (cm): N1 normal < '+U.preventivo+'  |  N2 advertencia '+U.preventivo+'-'+U.prevencion+'  |  N3 critico '+U.prevencion+'-'+U.critico+'  |  N4 evacuacion >= '+U.critico,14,y);
    y+=5; doc.text('*Calidad de datos sin verificar exhaustivamente. Lecturas de la API del sensor P1 (Render).',14,y);
    // ---- Tabla de lecturas (fecha + nivel) de la ventana, más reciente primero ----
    y+=9;

@@ -114,7 +114,7 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=52"></script>
+<script src="js/navbar.js?v=53"></script>
 
 <div class="wrap">
 
@@ -180,25 +180,26 @@ input[type=range]{width:100%;accent-color:var(--verde)}
   </div>
 </div>
 
-<script src="js/config.js?v=6"></script>
+<script src="js/config.js?v=8"></script>
 <script src="js/corte_p1.js?v=1"></script>
 <script>
 // Modo embebido (dentro del modal flotante del visor): oculta el menú superior.
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
-const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
+const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
 const N=[
  {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
- {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Precaución',           desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
- {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Prevención',           desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
- {n:'N4',c:'#E24B4A',tope:U.critico*1.5,   tit:'Crítico',              desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
+ {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Advertencia',          desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
+ {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
+ {n:'N4',c:'#E24B4A',tope:U.critico*1.5,   tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
 ];
 const idxNivel=cm=>{ for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; };
 const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
-// Eje de nivel fijo a 0–700 cm con divisiones alineadas a los umbrales de alerta.
-const NIVEL_MAX=700;
-function ticksNivel(scale){ scale.ticks=[0,U.preventivo,U.prevencion,U.critico,500,NIVEL_MAX].map(v=>({value:v})); }
+// Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
+// con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
+const NIVEL_MAX=Math.max(80, Math.ceil(U.critico*1.5/10)*10);
+function ticksNivel(scale){ scale.ticks=[0,U.preventivo,U.prevencion,U.critico,NIVEL_MAX].map(v=>({value:v})); }
 
 // ---- Escala (tarjetas) y barras N ----
 document.getElementById('esc').innerHTML=N.slice().reverse().map(x=>
@@ -208,7 +209,7 @@ function pintarNbar(id,act){ document.getElementById(id).innerHTML=
 
 // ---- Líneas de umbral (dataset dashed) para la serie ----
 // Cada línea marca el nivel al que se ENTRA a un estado; toma el color de ese estado
-// (150 -> N2 Precaución amarillo · 250 -> N3 Prevención naranja · 350 -> N4 Crítico rojo).
+// (N2 Advertencia amarillo · N3 Crítico naranja · N4 Evacuación rojo).
 function umbralesSerie(len){ return [1,2,3].map(i=>({label:N[i].n,data:Array(len).fill(N[i-1].tope),borderColor:N[i].c,
   borderDash:[6,4],borderWidth:1.3,pointRadius:0,fill:false,tension:0,order:5})); }
 // Relleno tipo "agua": degradado azul claro (superficie) a azul intenso (fondo).

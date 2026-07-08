@@ -56,7 +56,7 @@ th{background:#eef5ea;color:var(--azul)}
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=52"></script>
+<script src="js/navbar.js?v=53"></script>
 
 <div id="top">
   <div>
@@ -79,7 +79,7 @@ th{background:#eef5ea;color:var(--azul)}
       <button data-f="sirena">Sirenas</button>
     </div>
     <div id="lista"></div>
-    <div class="leg">Estado:<i style="background:#2e9e57"></i>Normal<i style="background:#EF9F27"></i>Prevención<i style="background:#c0392b"></i>Crítico</div>
+    <div class="leg">Estado:<i style="background:#2e9e57"></i>Normal<i style="background:#EAB308"></i>Advertencia<i style="background:#EF9F27"></i>Crítico<i style="background:#c0392b"></i>Evacuación</div>
   </div>
 
   <!-- Mapa -->
@@ -92,7 +92,7 @@ th{background:#eef5ea;color:var(--azul)}
   </div>
 </div>
 
-<script src="js/config.js?v=6"></script>
+<script src="js/config.js?v=8"></script>
 <script src="js/data.js?v=8"></script>
 <script>
 // ---------------- Estaciones ----------------
@@ -102,14 +102,14 @@ const ESTACIONES=[
  {id:'S2', nombre:'Sirena 2 — Vía baja', sitio:'Boca / vía', tipo:'sirena', lat:6.397220, lon:-75.436563},
  {id:'S3', nombre:'Sirena 3 — Puente', sitio:'Tramo intermedio', tipo:'sirena', lat:6.403203, lon:-75.441245},
 ];
-const COL={NORMAL:'#2e9e57',PREVENCIÓN:'#EF9F27',CRÍTICO:'#c0392b','SIN DATO':'#9a9a92',REPOSO:'#6b6b6b',ACTIVADA:'#c0392b'};
+const COL={NORMAL:'#2e9e57',ADVERTENCIA:'#EAB308',CRÍTICO:'#EF9F27',EVACUACIÓN:'#c0392b','SIN DATO':'#9a9a92',REPOSO:'#6b6b6b',ACTIVADA:'#c0392b'};
 const C=CONFIG.CAMPOS, U=CONFIG.UMBRALES;
 const estado={}; let filtro='todas', sel=null, chart=null;
 ESTACIONES.forEach(e=>{ estado[e.id]= e.tipo==='nivel'
   ? {nivel:NaN,temp:'—',hum:'—',lluvia:null,est:'SIN DATO',hist:[]}
   : {activa:false,ultima:null,est:'REPOSO'} ; });
 
-function estadoNivel(nv){ if(isNaN(nv))return'SIN DATO'; if(nv>=U.critico)return'CRÍTICO'; if(nv>=U.prevencion)return'PREVENCIÓN'; if(nv>=U.preventivo)return'PRECAUCIÓN'; return'NORMAL'; }
+function estadoNivel(nv){ if(isNaN(nv))return'SIN DATO'; if(nv>=U.critico)return'EVACUACIÓN'; if(nv>=U.prevencion)return'CRÍTICO'; if(nv>=U.preventivo)return'ADVERTENCIA'; return'NORMAL'; }
 
 // GEO-first para las capas base (modo offline)
 async function cargar(url){ if(window.GEO){const m=url.match(/([^/]+)\.geojson$/); if(m&&GEO[m[1]])return GEO[m[1]];}
@@ -154,8 +154,8 @@ async function loadP1(){
 async function tick(){
   document.getElementById('clock').textContent=new Date().toLocaleTimeString();
   await loadP1();
-  // sirenas: se activan si P1 está en estado CRÍTICO
-  const critico = estado.P1.est==='CRÍTICO';
+  // sirenas: se activan si P1 está en el estado más alto (N4 = EVACUACIÓN)
+  const critico = estado.P1.est==='EVACUACIÓN';
   ESTACIONES.filter(e=>e.tipo==='sirena').forEach(e=>{
     const s=estado[e.id]; s.activa=critico; s.est=critico?'ACTIVADA':'REPOSO'; if(critico)s.ultima=new Date();
   });
@@ -190,7 +190,7 @@ function renderDetalle(id,soloDatos){
       <span class="estbadge" style="background:${COL[s.est]}">${s.est}</span>
       <div class="kv"><div><b>${e.sitio}</b><span>Ubicación</span></div>
         <div><b>${s.ultima?s.ultima.toLocaleTimeString():'—'}</b><span>Última activación</span></div></div>
-      <p style="font-size:12px;color:#4c6658">La sirena se activa automáticamente cuando la estación P1 entra en estado <b>CRÍTICO</b> (la onda viaja aguas abajo).</p>
+      <p style="font-size:12px;color:#4c6658">La sirena se activa automáticamente cuando la estación P1 entra en estado <b>EVACUACIÓN</b> (la onda viaja aguas abajo).</p>
       <div class="gal"><img src="docs/06_SAT_sensor_sirenas.png" onclick="window.open(this.src)"></div></div>`;
     return;
   }

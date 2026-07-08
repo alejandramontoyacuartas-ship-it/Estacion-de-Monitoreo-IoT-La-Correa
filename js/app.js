@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=14"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=16"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -426,12 +426,12 @@ const SENSOR_INFO={
 let _medCache=null,_medTime=0,_detChart=null,_corteChart=null,_serieInfo=null,_serieLista=null;
 function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
 // Niveles de alerta tipo SIATA a partir de los umbrales (cm de lámina sobre el thalweg)
-function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
+function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
   return [
     {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro'},
-    {n:'N2',c:'#EAB308',tope:U.prevencion,   tit:'Nivel de precaución'},
-    {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Prevención (creciente)'},
-    {n:'N4',c:'#c0392b',tope:U.critico*1.5,   tit:'Crítico · evacuación'}
+    {n:'N2',c:'#EAB308',tope:U.prevencion,   tit:'Advertencia'},
+    {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Crítico (creciente)'},
+    {n:'N4',c:'#c0392b',tope:U.critico*1.5,   tit:'Evacuación'}
   ]; }
 function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
@@ -660,11 +660,11 @@ function initChart(){const ctx=document.getElementById('sensor-chart');if(!ctx||
   chart=new Chart(ctx,{type:'line',data:{labels:hist.labels,datasets:[{label:'Nivel',data:hist.data,borderColor:'#2e8b57',backgroundColor:'rgba(46,139,87,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},responsive:true,maintainAspectRatio:false}});}
 function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN DATO';b.textContent=t;b.className='estado-'+t.toUpperCase().replace(/\s/g,'');}
 // Deriva estado y color del nivel medido (cm) contra CONFIG.UMBRALES
-function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
+function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
   if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
-  if(nv>=U.critico)    return {txt:'CRÍTICO',   col:'#c0392b'};
-  if(nv>=U.prevencion) return {txt:'PREVENCIÓN',col:'#e67e22'};
-  if(nv>=U.preventivo) return {txt:'PRECAUCIÓN',col:'#EAB308'};
+  if(nv>=U.critico)    return {txt:'EVACUACIÓN',col:'#c0392b'};
+  if(nv>=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
+  if(nv>=U.preventivo) return {txt:'ADVERTENCIA',col:'#EAB308'};
   return {txt:'NORMAL',col:'#2e9e57'};}
 function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
 
@@ -705,10 +705,19 @@ function pintarConexion(cx){
   const sc=document.querySelector('#sensor-detalle .sd-cx');
   if(sc){ sc.textContent='● '+txt; sc.className='sd-cx '+cls; }
 }
-async function leerSensor(){const C=CONFIG.CAMPOS;try{
+// Fetch con timeout: aborta si el servidor tarda demasiado (evita peticiones colgadas
+// en GitHub Pages cuando Render está en arranque en frío). El timeout (9 s) es menor que
+// REFRESH_MS (10 s), así nunca se solapan dos peticiones.
+function _fetchT(url,ms){ const c=new AbortController(); const t=setTimeout(()=>c.abort(),ms||9000);
+  return fetch(url,{cache:'no-store',signal:c.signal}).finally(()=>clearTimeout(t)); }
+let _leyendo=false, _fallosConx=0;
+async function leerSensor(){const C=CONFIG.CAMPOS;
+  if(_leyendo) return;                         // no solapar peticiones (arranque en frío de Render)
+  _leyendo=true;
+  try{
   // Conexión con la API por /mapa (GeoJSON con todas las mediciones del punto P1)
-  const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
-  const gj=await r.json(); let d={};
+  const r=await _fetchT(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),9000);if(!r.ok)throw new Error('HTTP '+r.status);
+  const gj=await r.json(); _fallosConx=0; let d={};
   if(gj&&gj.features){ let f=gj.features.map(x=>x.properties||{}).filter(m=>m[C.fecha]);
     f.sort((a,b)=>(b.id_medicion||0)-(a.id_medicion||0)); d=f[0]||{}; }   // más reciente primero
   else if(Array.isArray(gj)) d=gj[0]||{}; else d=gj||{};
@@ -746,8 +755,17 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
     if(esNueva){ _serieLista.push(d);
       const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); }
   }
- }catch(e){setEstado('SIN DATO');pintarConexion({ok:false,edad:Infinity,fecha:''});document.getElementById('sensor-update').textContent='API no disponible (revisa endpoint/CORS). '+e.message;
-   try{ sensorMarker.setPopupContent('<b>📡 '+CONFIG.SENSOR.nombre+'</b><br>Sin datos (API no disponible)'); }catch(_){} }}
+ }catch(e){
+   _fallosConx++;
+   const arranque=_fallosConx<=3;   // ventana de arranque en frío (~30 s): "Conectando…" antes de "Desconectado"
+   setEstado('SIN DATO');
+   pintarConexion({ok: arranque?null:false, edad:Infinity, fecha:''});
+   document.getElementById('sensor-update').textContent = arranque
+     ? 'Conectando con el servidor… (puede tardar en activarse tras inactividad)'
+     : 'API no disponible (revisa endpoint/CORS). '+e.message;
+   try{ sensorMarker.setPopupContent('<b>📡 '+CONFIG.SENSOR.nombre+'</b><br>'+(arranque?'Conectando…':'Sin datos (API no disponible)')); }catch(_){}
+ } finally { _leyendo=false; }
+}
 // El panel "Estación de monitoreo" (#panel-sensor) permanece SIEMPRE visible mientras
 // se trabaja con los sensores de La Correa. NO se oculta al hacer clic en el mapa ni al
 // activar/desactivar sensores: SOLO se oculta cuando el usuario entra a otra sección del

@@ -79,7 +79,7 @@
     .sat-sw input:checked + .sat-kn:before{transform:translateX(16px)}
   </style>`;
 
-  let html = css + '<nav class="navbar"><a class="nav-brand" href="index.html"><img src="img/escudo_girardota.png" alt="Girardota" class="brand-escudo"><span>SAT · La Correa<small>Alcaldía de Girardota</small></span></a><ul class="nav-menu">';
+  let html = css + '<nav class="navbar"><a class="nav-brand" href="index.html"><span>ESTACIÓN DE MONITOREO (IoT) LA CORREA</span></a><ul class="nav-menu">';
   NAV.forEach(cat=>{
     html += `<li class="nav-item${active(cat)?' active':''}"><span class="nav-link" tabindex="0">${cat.label} ▾</span><ul class="dropdown">`;
     cat.items.forEach(it=>{

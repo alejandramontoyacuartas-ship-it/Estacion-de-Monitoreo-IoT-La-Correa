@@ -23,20 +23,19 @@ const CONFIG = {
   CONEXION_MAX_MIN: 15,
 
   // ---- Umbrales de alerta (cm de nivel_agua) ----
-  // Tomados de /configuracion-alertas de la API. El geoportal DERIVA el estado
-  // del nivel medido contra estos umbrales, porque el campo estado_alerta crudo
-  // es inconsistente en el prototipo (mezcla códigos "1".."4" y textos de prueba).
-  // Umbrales de alerta en cm de lámina sobre el lecho seco, derivados de la
-  // curva de gasto (Manning n=0,05, S=8%) en la sección de P1 con los caudales
-  // de diseño Log-Pearson III (Q Tr100 = 280 m³/s). Escala progresiva (4 niveles):
-  //   < 150  -> N1 NORMAL (verde) | 150 -> N2 PRECAUCIÓN (amarillo)
-  //   250    -> N3 PREVENCIÓN (naranja) | 350 -> N4 CRÍTICO (rojo, ~Tr100 = evacuación)
-  // ⚠️ El sensor debe montarse por encima de ~3,7 m (nivel de diseño + borde libre).
-  // Además del umbral de nivel, el SAT dispara por TASA DE ASCENSO (dz/dt) para la alerta temprana.
+  // El geoportal DERIVA el estado del nivel medido contra estos umbrales.
+  // *** VALORES DEL ENSAYO DEL PROTOTIPO *** — ajustados al ALCANCE del sensor
+  // HC-SR04 del prototipo (rango pequeño), para que el ensayo de laboratorio se
+  // refleje en el geoportal. Coinciden con las reglas del firmware:
+  //   < 20  -> N1 NORMAL (verde) | 20 -> N2 ADVERTENCIA (amarillo)
+  //   40    -> N3 CRÍTICO (naranja) | 60 -> N4 EVACUACIÓN (rojo)
+  // ⚠️ Umbrales de DISEÑO del SAT (implementación real en campo): 150 / 250 / 350 cm,
+  //   derivados de la curva de gasto de Manning con el caudal Log-Pearson III (Q Tr100 = 280 m³/s).
+  //   Requieren un sensor de mayor alcance montado por encima del nivel de diseño (>~3,7 m).
   UMBRALES: {
-    preventivo: 150,   // >= 150 cm -> N2 PRECAUCIÓN (amarillo)
-    prevencion: 250,   // >= 250 cm -> N3 PREVENCIÓN (naranja)
-    critico:    350    // >= 350 cm -> N4 CRÍTICO    (rojo)
+    preventivo: 20,   // >= 20 cm -> N2 ADVERTENCIA (amarillo)
+    prevencion: 40,   // >= 40 cm -> N3 CRÍTICO     (naranja)
+    critico:    60    // >= 60 cm -> N4 EVACUACIÓN  (rojo)
   },
 
   // ---- Estación de monitoreo (Producto A) ----
