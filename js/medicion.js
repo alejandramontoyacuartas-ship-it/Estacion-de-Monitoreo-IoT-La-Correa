@@ -20,9 +20,12 @@
         '<button class="med-btn" data-mode="dist" title="Medir distancia">'+RULER+'<small>Distancia</small></button>'+
         '<button class="med-btn" data-mode="area" title="Medir área">'+POLY+'<small>Área</small></button>'+
       '</div>'+
-      '<div class="med-hint">Clic = agregar punto · doble clic = terminar</div>'+
+      '<div class="med-hint">Clic = agregar punto · doble clic o «Terminar» = cerrar la medición</div>'+
       '<div class="med-res"><b>Resultado de la medición</b><div class="med-out">Selecciona una herramienta…</div></div>'+
-      '<button class="med-clear">Borrar</button>';
+      '<div style="display:flex;gap:8px;margin:6px 12px 12px">'+
+        '<button class="med-finish" style="flex:1;padding:7px;background:#2e8b57;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer">✔ Terminar</button>'+
+        '<button class="med-clear" style="flex:1;margin:0;width:auto;padding:7px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-weight:700;cursor:pointer">Borrar</button>'+
+      '</div>';
     document.body.appendChild(panel);
     var out=panel.querySelector('.med-out');
 
@@ -77,7 +80,7 @@
       map.doubleClickZoom.disable();
       out.innerHTML='Haz clic en el mapa para empezar…';
     }
-    function clearMeasure(){ pts=[]; finished=false; layer.clearLayers(); }
+    function clearMeasure(){ pts=[]; finished=false; layer.clearLayers(); _lastT=0; _lastPx=null; }
     function clearAll(){
       clearMeasure(); mode=null;
       map.getContainer().style.cursor=''; map.doubleClickZoom.enable();
@@ -85,19 +88,50 @@
       out.innerHTML='Selecciona una herramienta…';
     }
 
-    // ---------- Eventos del mapa ----------
-    map.on('click',function(e){ if(!mode||finished) return; pts.push(e.latlng); redraw(); });
-    map.on('mousemove',function(e){ if(!mode||finished||!pts.length) return; redraw(e.latlng); });
-    map.on('dblclick',function(e){
-      if(!mode||!pts.length) return;
-      L.DomEvent.stop(e);
-      if(pts.length>1) pts.pop();   // quitar el punto duplicado del doble clic
-      finished=true; redraw();
-      map.getContainer().style.cursor='';
+    // ---------- Eventos del mapa (a nivel del contenedor, en fase de CAPTURA) ----------
+    // Se capturan en el contenedor para que la medición funcione INCLUSO sobre las capas
+    // vectoriales (veredas, microcuenca, red hídrica, etc.). En Leaflet, un clic sobre un
+    // polígono/línea interactivo con popup NO dispara el 'click' del mapa; por eso, sobre
+    // esas zonas, "los botones no medían". Al capturar aquí y detener la propagación,
+    // el clic siempre agrega punto y no abre el popup mientras se está midiendo.
+    var mapEl=map.getContainer();
+    var _lastT=0, _lastPx=null;
+    function _enPanel(t){ return t && t.closest && (t.closest('#medicion-panel') || t.closest('.leaflet-control')); }
+    function finalizar(){                        // cierra la medición conservando la figura
+      if(mode && !finished && pts.length){ finished=true; redraw(); mapEl.style.cursor=''; }
+    }
+    mapEl.addEventListener('click',function(e){
+      if(!mode||finished) return;               // solo interviene mientras se mide
+      if(_enPanel(e.target)) return;            // no capturar clics del panel/controles
+      e.stopPropagation();                       // evita abrir popups de las capas
+      var px=map.mouseEventToContainerPoint(e);
+      var now=e.timeStamp||performance.now();
+      // Detección MANUAL de doble clic, TOLERANTE al "jitter" del ratón: dos clics seguidos
+      // (<450 ms) y cerca entre sí (<24 px) cierran la medición SIN duplicar el punto.
+      // No se depende del 'dblclick' nativo: en Windows no se dispara si los dos clics se
+      // separan más de ~4 px, que es lo normal en un doble clic humano (por eso "no cerraba").
+      if(_lastPx && (now-_lastT)<450 && px.distanceTo(_lastPx)<24){
+        _lastT=0; _lastPx=null; finalizar(); return;
+      }
+      pts.push(map.mouseEventToLatLng(e)); redraw();
+      _lastT=now; _lastPx=px;
+    },true);
+    // El doble clic nativo se neutraliza mientras se mide (el cierre lo maneja la detección manual
+    // o el botón «Terminar»); así evitamos el zoom o comportamientos inconsistentes entre navegadores.
+    mapEl.addEventListener('dblclick',function(e){
+      if(!mode) return;
+      if(_enPanel(e.target)) return;
+      e.stopPropagation(); e.preventDefault();
+      finalizar();
+    },true);
+    mapEl.addEventListener('mousemove',function(e){
+      if(!mode||finished||!pts.length) return;
+      redraw(map.mouseEventToLatLng(e));         // línea/goma elástica de previsualización
     });
 
     // ---------- Botones del panel ----------
     panel.querySelectorAll('.med-btn').forEach(function(b){ b.addEventListener('click',function(){ setMode(b.dataset.mode); }); });
+    panel.querySelector('.med-finish').addEventListener('click',finalizar);
     panel.querySelector('.med-clear').addEventListener('click',clearAll);
     panel.querySelector('.med-x').addEventListener('click',function(){ clearAll(); panel.style.display='none'; });
   }

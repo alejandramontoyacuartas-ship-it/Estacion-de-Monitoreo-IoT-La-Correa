@@ -47,7 +47,7 @@
     ]},
     // Enlace directo (sin desplegable) al Dashboard "Monitor de quebrada" (app Angular de Marcela),
     // desplegado en Netlify. Abre en pestaña nueva y funciona desde cualquier equipo.
-    {label:'Dashboard Monitor de quebrada', link:'https://6a4e993b7c8147c87f9bfd0f--monitorquebradadashboard.netlify.app/', ext:true},
+    {label:'Dashboard Monitor de quebrada', link:'https://6a4ea1dfa4fa190008a48e35--monitorquebradadashboard.netlify.app/', ext:true},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;
   const active = cat => cat.items.some(it => esta(it.h)

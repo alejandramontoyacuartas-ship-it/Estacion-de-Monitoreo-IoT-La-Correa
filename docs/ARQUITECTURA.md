@@ -20,7 +20,7 @@ js/config.js?v=3      (CONFIG: API del sensor)
 js/data.js?v=5        (window.GEO = TODAS las capas embebidas)   ← debe ir ANTES de app.js
 js/corte_p1.js?v=1    (window.CORTE_P1 = sección transversal del cauce en P1) ← ANTES de app.js
 js/app.js?v=36        (núcleo del visor)
-js/medicion.js?v=1    (herramienta de medición)
+js/medicion.js?v=2    (herramienta de medición)
 ```
 
 > **Control de caché:** cada `.js`/`.css` lleva `?v=N`. **Al editar un archivo, sube su `?v=`**

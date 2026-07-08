@@ -25,11 +25,30 @@
     .esc-nota a{color:#2e8b57;font-weight:700}
     @media(max-width:1000px){.esc-grid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:560px){.esc-grid{grid-template-columns:1fr}}
+    /* Tarjetas con video */
+    .esc-card.has-video{cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .esc-card.has-video:hover{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.16)}
+    .esc-play{margin-top:2px;display:inline-flex;align-items:center;gap:6px;background:#2e8b57;color:#fff;
+      font-size:11.5px;font-weight:700;padding:5px 13px;border-radius:20px;letter-spacing:.2px}
+    .esc-card.has-video:hover .esc-play{background:#25784a}
+    /* Ventana flotante de video */
+    #vid-modal{position:fixed;inset:0;background:rgba(15,25,20,.74);display:none;align-items:center;
+      justify-content:center;z-index:9999;padding:24px}
+    #vid-modal.open{display:flex}
+    .vid-box{position:relative;width:min(900px,92vw);background:#000;border-radius:14px;overflow:hidden;
+      box-shadow:0 22px 64px rgba(0,0,0,.55)}
+    .vid-box video{display:block;width:100%;max-height:80vh;background:#000}
+    .vid-title{position:absolute;top:0;left:0;right:0;padding:13px 54px 22px 18px;color:#fff;font-weight:700;
+      font-size:14.5px;background:linear-gradient(to bottom,rgba(0,0,0,.65),transparent);z-index:2;pointer-events:none}
+    .vid-close{position:absolute;top:10px;right:12px;z-index:3;width:38px;height:38px;border:none;border-radius:50%;
+      background:rgba(255,255,255,.92);color:#111;font-size:20px;font-weight:700;cursor:pointer;line-height:1;
+      display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .vid-close:hover{background:#fff;transform:scale(1.05)}
   </style>
 </head>
 <body>
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=57"></script>
+<script src="js/navbar.js?v=58"></script>
 
 <div class="esc-head">
   <div class="esc-breadcrumb">Escenarios de Riesgo y Cambio Climático &nbsp;›&nbsp; <b>Cambio Climático</b></div>
@@ -48,23 +67,58 @@
   </div>
 </div>
 
+<!-- Ventana flotante de video (cierra con ✕, clic fuera o Escape) -->
+<div id="vid-modal" role="dialog" aria-modal="true">
+  <div class="vid-box">
+    <div class="vid-title" id="vid-title"></div>
+    <button class="vid-close" id="vid-close" aria-label="Cerrar video">✕</button>
+    <video id="vid-player" controls playsinline preload="metadata"></video>
+  </div>
+</div>
+
 <footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
 
 <script>
 const CC = [
- {t:'Precipitación extrema', s:'Lluvias más intensas en 24 h', icon:
+ {t:'Precipitación extrema', s:'Lluvias más intensas en 24 h', video:'CAMBIO CLIMATICO/Clima_extremo_en_Girardota_ok.mp4', icon:
    '<path d="M18 34a9 9 0 0 1 1-18 11 11 0 0 1 21 3 8 8 0 0 1-2 15z" fill="#cfd8dc" stroke="#1f2937"/><path d="M20 40l-2 6M28 40l-2 6M36 40l-2 6M44 40l-2 6" stroke="#1e88e5"/>'},
- {t:'Olas de calor', s:'Aumento de temperatura', icon:
+ {t:'Olas de calor', s:'Aumento de temperatura', video:'CAMBIO CLIMATICO/Girardota__Olas_de_calor.mp4', icon:
    '<circle cx="32" cy="34" r="10" fill="#f5a623" stroke="#1f2937"/><path d="M32 14v6M32 48v2M14 34h6M44 34h6M19 21l4 4M45 47l-4-4M45 21l-4 4M19 47l4-4" stroke="#f5a623"/>'},
  {t:'Sequías', s:'Déficit hídrico estacional', icon:
    '<path d="M14 30c0-9 8-16 18-16s18 7 18 16-8 14-18 14-18-5-18-14z" fill="#f3e2b0" stroke="#1f2937"/><path d="M22 44v6M32 44v8M42 44v6" stroke="#a9772a"/><path d="M32 22v8M28 26l4-4 4 4" stroke="#a9772a"/>'},
- {t:'Más avenidas torrenciales', s:'Mayor frecuencia de crecientes', icon:
+ {t:'Más avenidas torrenciales', s:'Mayor frecuencia de crecientes', video:'CAMBIO CLIMATICO/Riesgo_en_Girardota.mp4', icon:
    '<path d="M8 38V28l8-6 8 6v10z"/><path d="M6 44q5-4 9 0t9 0 9 0 9 0 9 0" stroke="#3e9b54"/><path d="M6 51q5-4 9 0t9 0 9 0 9 0 9 0" stroke="#3e9b54"/><path d="M46 16l8 14H38z" fill="#f5a623" stroke="#1f2937"/><path d="M46 21v4"/><circle cx="46" cy="28" r="1" fill="#1f2937" stroke="none"/>'},
 ];
 const g=document.getElementById('cc-grid');
 const SVG=ic=>`<svg viewBox="0 0 64 64" fill="none" stroke="#1f2937" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>`;
 CC.forEach(e=>{ const d=document.createElement('div'); d.className='esc-card';
-  d.innerHTML=`${SVG(e.icon)}<div class="esc-t">${e.t}</div><div class="esc-s">${e.s}</div>`; g.appendChild(d); });
+  d.innerHTML=`${SVG(e.icon)}<div class="esc-t">${e.t}</div><div class="esc-s">${e.s}</div>`;
+  if(e.video){ d.classList.add('has-video');
+    d.insertAdjacentHTML('beforeend','<div class="esc-play">▶ Ver video</div>');
+    d.addEventListener('click',()=>abrirVideo(e)); }
+  g.appendChild(d); });
+
+// ---- Ventana flotante de video ----
+const modal=document.getElementById('vid-modal');
+const player=document.getElementById('vid-player');
+const vtitle=document.getElementById('vid-title');
+function abrirVideo(e){
+  vtitle.textContent=e.t;
+  player.src=encodeURI(e.video);        // codifica el espacio de "CAMBIO CLIMATICO"
+  modal.classList.add('open');
+  try{ player.currentTime=0; }catch(_){}
+  player.play().catch(()=>{});          // reproduce (gesto del usuario => permite audio)
+}
+function cerrarVideo(){
+  modal.classList.remove('open');
+  player.pause();
+  player.removeAttribute('src'); player.load();  // detiene la descarga del video
+}
+document.getElementById('vid-close').addEventListener('click',cerrarVideo);
+// Clic fuera del recuadro del video (en el fondo) cierra la ventana
+modal.addEventListener('click',ev=>{ if(ev.target===modal) cerrarVideo(); });
+// Tecla Escape cierra
+document.addEventListener('keydown',ev=>{ if(ev.key==='Escape' && modal.classList.contains('open')) cerrarVideo(); });
 </script>
 </body>
 </html>
