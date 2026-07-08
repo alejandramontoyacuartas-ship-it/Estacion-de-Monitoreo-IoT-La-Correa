@@ -64,7 +64,9 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
 #panel-sensor{position:absolute;top:60px;left:58px;z-index:1100;width:250px;background:#fff;border-radius:12px;
   box-shadow:0 2px 10px rgba(0,0,0,.28);padding:12px 14px;font-size:13px}
 #panel-sensor h2{margin:0 0 6px;font-size:14px;color:var(--azul)}
-#estado-badge{display:inline-block;padding:3px 11px;border-radius:12px;color:#fff;font-weight:700;font-size:12px;background:var(--gris)}
+/* El color de fondo lo define la clase .estado-* (NORMAL/ADVERTENCIA/CRÍTICO/EVACUACIÓN);
+   no fijar background aquí porque el selector de ID le ganaría por especificidad. */
+#estado-badge{display:inline-block;padding:3px 11px;border-radius:12px;color:#fff;font-weight:700;font-size:12px}
 .dato{display:flex;justify-content:space-between;margin:5px 0;border-bottom:1px solid #eee;padding-bottom:3px}
 .dato b{color:var(--azul2)}
 #sensor-update{font-size:11px;color:var(--gris);margin-top:6px}

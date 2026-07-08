@@ -45,10 +45,9 @@
       {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
     ]},
-    // Enlace directo (sin desplegable) al Dashboard "Monitor de quebrada" (app Angular de Marcela).
-    // Corre en el servidor de desarrollo Angular (ng serve) en http://localhost:4200/ — debe estar
-    // en ejecución para que el enlace abra. Cuando se despliegue, reemplazar por la URL pública.
-    {label:'Dashboard Monitor de quebrada', link:'http://localhost:4200/', ext:true},
+    // Enlace directo (sin desplegable) al Dashboard "Monitor de quebrada" (app Angular de Marcela),
+    // desplegado en Netlify. Abre en pestaña nueva y funciona desde cualquier equipo.
+    {label:'Dashboard Monitor de quebrada', link:'https://6a4e993b7c8147c87f9bfd0f--monitorquebradadashboard.netlify.app/', ext:true},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;
   const active = cat => cat.items.some(it => esta(it.h)
@@ -242,6 +241,18 @@
       // Al salir con el mouse del menú, quita el foco para que el desplegable se cierre
       // (si no, un interruptor/enlace con foco lo mantiene abierto tapando el contenido).
       li.addEventListener('mouseleave', ()=>{ const el=document.activeElement; if(el&&li.contains(el)&&el.blur) el.blur(); });
+    });
+    // Al hacer clic en un TÍTULO de categoría (Conocimiento/Reducción/Manejo): cerrar las
+    // ventanas flotantes de lectura y, si estamos en una página secundaria enlazada,
+    // volver al visor principal del geoportal (index.html).
+    document.querySelectorAll('.nav-menu > .nav-item > span.nav-link').forEach(sp=>{
+      sp.addEventListener('click', ()=>{
+        if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
+        if(window.cerrarLluviaFlotante) window.cerrarLluviaFlotante();
+        if(window.cerrarClimaFlotante) window.cerrarClimaFlotante();
+        const p=location.pathname; const enIndex=/index\.html$/i.test(p)||p.endsWith('/');
+        if(!enIndex) location.href='index.html';
+      });
     });
     // Cerrar el menú al hacer clic FUERA de la barra (para que no tape el Tablero de lectura ni el mapa).
     if(!window._navCloseOutside){ window._navCloseOutside=true;
