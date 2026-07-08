@@ -305,16 +305,21 @@ function dibujarSerie(keep){
 }
 function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D.perfil.filter(p=>p.z!=null);
   const base=D.z_min;                                          // lecho seco = 0 cm
-  const dd=perf.map(p=>p.d), zz=perf.map(p=>(p.z-base)*100);   // altura sobre el lecho, en cm
+  const dd=perf.map(p=>p.d);
+  // Cota sobre el lecho (cm) suavizada con media móvil (±2 puntos): quita el escalonado del
+  // muestreo del MDT 2 m para que el perfil se vea como la sección natural de la quebrada.
+  const zzRaw=perf.map(p=>(p.z-base)*100);
+  const zz=zzRaw.map((_,i)=>{let s=0,n=0;for(let j=Math.max(0,i-2);j<=Math.min(zzRaw.length-1,i+2);j++){s+=zzRaw[j];n++;}return s/n;});
   const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
-  // Eje según el RELIEVE REAL del cauce (topografía del MDT), no la escala de alerta:
+  // Eje del perfil acotado a 200 cm: muestra el detalle del fondo del cauce y la lámina de agua
+  // (las paredes del cauce por encima de 200 cm quedan fuera de cuadro).
   // así el perfil transversal muestra la forma real de la quebrada.
-  const yMax=Math.max(100, Math.ceil(Math.max.apply(null,zz)/100)*100);
+  const yMax=200;
   const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();
   chC=new Chart(document.getElementById('cCorte'),{type:'line',
     data:{labels:dd,datasets:[
-      {label:'Terreno',data:zz,borderColor:'#c9a877',backgroundColor:'rgba(214,178,122,.55)',fill:'start',tension:.2,pointRadius:0,borderWidth:1.4,order:2},
+      {label:'Terreno',data:zz,borderColor:'#c9a877',backgroundColor:'rgba(214,178,122,.55)',fill:'start',tension:.45,pointRadius:0,borderWidth:1.4,order:2},
       {label:'Agua',data:water,borderColor:'#0f5aa0',backgroundColor:'rgba(23,110,185,.55)',fill:{target:0},pointRadius:0,borderWidth:1,tension:.1,order:1}
     ]},
     options:{layout:{padding:{left:6,right:16}},
