@@ -137,7 +137,7 @@ const DEF=[
      onEachFeature:(f,l)=>{const nm=f.properties.Vereda||'—';l.bindTooltip(nm,{sticky:true,direction:'top',className:'vereda-label'});l.bindPopup('<b>Vereda:</b> '+nm);
        l.on('mouseover',e=>e.target.setStyle({weight:3,fillOpacity:.28}));l.on('mouseout',e=>e.target.setStyle({weight:2,fillOpacity:.12}));}})},
  {k:'rio_medellin',label:'Río Medellín',sub:'Cauce receptor',icon:'🌊',color:'#1565c0',def:true,
-   build:j=>L.geoJSON(j,{style:{color:'#8e24aa',weight:3,opacity:.9}})},
+   build:j=>L.geoJSON(j,{style:{color:'#1565c0',weight:3,opacity:.95}}).bindTooltip('Río Aburrá',{permanent:true,direction:'center',className:'vereda-label'})},
  {k:'cuenca',label:'Microcuenca La Correa',sub:'Delimitación · 856 ha (MDE 2 m)',icon:'⬡',color:'#9e8a1e',def:false,
    build:j=>L.geoJSON(j,{style:{color:'#FFD400',weight:2.5,fill:false}})},
  {k:'microcuenca_abastecedora',label:'Microcuenca abastecedora',sub:'CORANTIOQUIA · 172 ha',icon:'💧',color:'#00897b',def:false,
@@ -799,7 +799,7 @@ const legendSpec={
  cobertura:()=>'<h4>Cobertura sirenas</h4>'+`<div>${SW('#00bcd4')}Radio audible 400 m</div>`,
  cuenca:()=>`<div>${LN('#FFD400')}Microcuenca La Correa</div>`,
  red_hidrica:()=>`<div>${LN('#0a64dc')}Red hídrica</div>`,
- rio_medellin:()=>`<div>${LN('#8e24aa')}Río Medellín</div>`,
+ rio_medellin:()=>`<div>${LN('#1565c0')}Río Medellín</div>`,
  microcuenca_abastecedora:()=>`<div>${SW('#00bfa5')}Microcuenca abastecedora</div>`,
  puntos_riesgo:()=>'<h4>Puntos de riesgo</h4>'+[['Avenida torrencial','#c832b4'],['Inundación','#32c8f0'],['Movimiento en masa','#f03c3c'],['Socavación / hundimiento','#e1fa32'],['Estructural','#2dc83c']].map(([t,c])=>`<div>${SW(c)}${t}</div>`).join('')+`<div style="margin-top:5px;font-size:10px;color:#777">Mapa de calor = densidad</div>`,
  zona_inundable:()=>`<div>${SW('#42a5f5')}Zona inundable</div>`,
