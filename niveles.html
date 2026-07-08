@@ -114,7 +114,7 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=53"></script>
+<script src="js/navbar.js?v=55"></script>
 
 <div class="wrap">
 
@@ -240,24 +240,31 @@ const perfilAlerta={id:'perfilAlerta',afterDatasetsDraw(c){
       zonas.forEach(z=>{const a=Math.max(z[0],yMin),b=Math.min(z[1],yMax);if(b<=a)return;
         ctx.fillText(z[3],x+w/2,(ys.getPixelForValue(b)+ys.getPixelForValue(a))/2);});}
   }
+  const opts=c.options.plugins.perfilAlerta||{};
+  const lvl=opts.lvl, solo=opts.soloMarcador;   // solo=true (perfil): sin barras de alerta, solo lámina y marcador
   ctx.save();
-  barra(6, 18, true);    // IZQUIERDA: N1–N4 proporcional al eje (mismos cm), con etiquetas
-  barra(bx, bw, false);  // DERECHA: zonas de alerta (misma escala y tamaño)
-  const lvl=(c.options.plugins.perfilAlerta||{}).lvl;
+  if(!solo){
+    barra(6, 18, true);    // IZQUIERDA: N1–N4 proporcional al eje (mismos cm), con etiquetas
+    barra(bx, bw, false);  // DERECHA: zonas de alerta (misma escala y tamaño)
+  }
   if(lvl!=null&&!isNaN(lvl)){
     const ly=ys.getPixelForValue(Math.max(yMin,Math.min(lvl,yMax)));
+    const rx=solo?ca.right:bx;   // hasta dónde llega la línea punteada
     ctx.strokeStyle='#0f5aa0';ctx.lineWidth=1.6;ctx.setLineDash([5,4]);
-    ctx.beginPath();ctx.moveTo(ca.left,ly);ctx.lineTo(bx,ly);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(ca.left,ly);ctx.lineTo(rx,ly);ctx.stroke();ctx.setLineDash([]);
     // marcador ▼ del nivel, apoyado sobre la línea punteada (símbolo de nivel de agua)
     const mx=ca.left+8;
     ctx.fillStyle='#3b93d6';ctx.strokeStyle='#0f3f74';ctx.lineWidth=1.3;
     ctx.beginPath();ctx.moveTo(mx-8,ly-15);ctx.lineTo(mx+8,ly-15);ctx.lineTo(mx,ly-1);ctx.closePath();ctx.fill();ctx.stroke();
     ctx.fillStyle='#0f5aa0';
-    const lbl=Math.round(lvl)+' cm',tx=bx+bw+3;
+    const lbl=Math.round(lvl)+' cm';
     ctx.font='bold 11px Segoe UI,system-ui,sans-serif';const tw=ctx.measureText(lbl).width;
-    ctx.beginPath();ctx.moveTo(bx+bw,ly);ctx.lineTo(tx,ly-6);ctx.lineTo(tx,ly+6);ctx.closePath();ctx.fill();
-    ctx.fillRect(tx,ly-8,tw+8,16);
-    ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillText(lbl,tx+4,ly+1);
+    if(solo){ const tx=rx-tw-12; ctx.fillRect(tx,ly-8,tw+8,16);
+      ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillText(lbl,tx+4,ly+1); }
+    else { const tx=bx+bw+3;
+      ctx.beginPath();ctx.moveTo(bx+bw,ly);ctx.lineTo(tx,ly-6);ctx.lineTo(tx,ly+6);ctx.closePath();ctx.fill();
+      ctx.fillRect(tx,ly-8,tw+8,16);
+      ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillText(lbl,tx+4,ly+1); }
   }
   ctx.restore();
 }};
@@ -300,8 +307,9 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
   const base=D.z_min;                                          // lecho seco = 0 cm
   const dd=perf.map(p=>p.d), zz=perf.map(p=>(p.z-base)*100);   // altura sobre el lecho, en cm
   const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
-  // Eje fijo 0–700 cm para que se vean siempre las 4 zonas de alerta (N1–N4).
-  const yMax=NIVEL_MAX;
+  // Eje según el RELIEVE REAL del cauce (topografía del MDT), no la escala de alerta:
+  // así el perfil transversal muestra la forma real de la quebrada.
+  const yMax=Math.max(100, Math.ceil(Math.max.apply(null,zz)/100)*100);
   const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();
   chC=new Chart(document.getElementById('cCorte'),{type:'line',
@@ -309,10 +317,10 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
       {label:'Terreno',data:zz,borderColor:'#c9a877',backgroundColor:'rgba(214,178,122,.55)',fill:'start',tension:.2,pointRadius:0,borderWidth:1.4,order:2},
       {label:'Agua',data:water,borderColor:'#0f5aa0',backgroundColor:'rgba(23,110,185,.55)',fill:{target:0},pointRadius:0,borderWidth:1,tension:.1,order:1}
     ]},
-    options:{layout:{padding:{left:34,right:72}},
-      plugins:{legend:{display:false},perfilAlerta:{lvl:lvl},tooltip:{filter:it=>it.parsed.y<=yMax,callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
+    options:{layout:{padding:{left:6,right:16}},
+      plugins:{legend:{display:false},perfilAlerta:{lvl:lvl,soloMarcador:true},tooltip:{callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
       scales:{x:{title:{display:true,text:'Ancho de la corriente (m)'},ticks:{maxTicksLimit:7}},
-        y:{min:0,max:yMax,afterBuildTicks:ticksNivel,title:{display:true,text:'Nivel (cm)'}}},
+        y:{min:0,max:yMax,title:{display:true,text:'Altura sobre el lecho (cm)'}}},
       responsive:true,maintainAspectRatio:false},plugins:[perfilAlerta]});
 }
 function actualizarInstante(i){ if(!VEN.length)return; i=Math.max(0,Math.min(i,VEN.length-1));

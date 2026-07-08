@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=16"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=17"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -399,6 +399,9 @@ window.setSensorIcon=function(key,on){
         abrirPanelSensor(key); });
     }
   }else if(sensorIcons[key]){ map.removeLayer(sensorIcons[key]); delete sensorIcons[key]; }
+  // Resalta la delimitación de la microcuenca La Correa mientras haya sensores de la estación activos.
+  if(Object.keys(sensorIcons).length) resaltarMicrocuenca(CONFIG.SENSOR.lat,CONFIG.SENSOR.lon);
+  else if(window.limpiarMicrocuenca) window.limpiarMicrocuenca();
 };
 // Los 4 íconos de sensor inician APAGADOS; se activan desde los interruptores del navbar
 // ("Estación de Monitoreo La Correa"). No se fuerzan al cargar (evita que queden activos al refrescar).

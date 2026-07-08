@@ -27,8 +27,14 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
 
 /* Pie de página institucional */
 #geo-footer{flex-shrink:0;background:#fff;border-top:2px solid #1e6b3f;display:flex;align-items:center;
-  justify-content:center;padding:5px 12px;height:46px}
+  justify-content:space-between;gap:16px;padding:6px 18px;min-height:46px}
 #geo-footer img{height:36px;max-width:100%;object-fit:contain}
+#geo-footer .gf-col{display:flex;flex-direction:column;line-height:1.25;font-size:10.5px;color:#3a4f42}
+#geo-footer .gf-col b{font-size:11px;font-weight:800;color:#1e6b3f}
+#geo-footer .gf-uni{max-width:32%}
+#geo-footer .gf-proj{flex:1;text-align:center;align-items:center;border-left:1px solid #d9e5dc;border-right:1px solid #d9e5dc;padding:0 14px}
+#geo-footer .gf-team{max-width:32%;text-align:right;align-items:flex-end}
+@media(max-width:820px){#geo-footer .gf-uni,#geo-footer .gf-team{display:none}#geo-footer .gf-proj{border:none}}
 
 /* Botón y panel de capas (estilo SIATA, verde) */
 #capas-btn{position:absolute;top:12px;left:12px;z-index:1100;background:#fff;border:none;border-radius:8px;
@@ -97,7 +103,7 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
   display:none;flex-direction:column}
 #sensor-detalle[style*="block"]{display:flex!important}
 /* Ventana FLOTANTE LATERAL "Niveles de Riesgo" (~1/3 de la pantalla, costado derecho) */
-#niv-modal,#lluvia-modal,#clima-modal{position:fixed;top:48px;right:0;bottom:0;width:clamp(340px,33vw,470px);z-index:2200;display:none;
+#niv-modal,#lluvia-modal,#clima-modal{position:fixed;top:106px;right:0;bottom:0;width:clamp(420px,39vw,560px);z-index:2200;display:none;
   background:#eef1ee;box-shadow:-10px 0 30px rgba(0,0,0,.28);border-left:1px solid #cddbd0}
 #niv-modal.open,#lluvia-modal.open,#clima-modal.open{display:block}
 #niv-modal .niv-box,#lluvia-modal .niv-box,#clima-modal .niv-box{position:relative;width:100%;height:100%;overflow:hidden}

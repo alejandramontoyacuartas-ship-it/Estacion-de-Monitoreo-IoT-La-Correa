@@ -45,6 +45,10 @@
       {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
     ]},
+    // Enlace directo (sin desplegable) al Dashboard "Monitor de quebrada" (app Angular de Marcela).
+    // Corre en el servidor de desarrollo Angular (ng serve) en http://localhost:4200/ — debe estar
+    // en ejecución para que el enlace abra. Cuando se despliegue, reemplazar por la URL pública.
+    {label:'Dashboard Monitor de quebrada', link:'http://localhost:4200/', ext:true},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;
   const active = cat => cat.items.some(it => esta(it.h)
@@ -81,6 +85,10 @@
 
   let html = css + '<nav class="navbar"><a class="nav-brand" href="index.html"><span>ESTACIÓN DE MONITOREO (IoT) LA CORREA</span></a><ul class="nav-menu">';
   NAV.forEach(cat=>{
+    if(cat.link){   // categoría de enlace directo (sin desplegable)
+      html += `<li class="nav-item${esta(cat.link)?' active':''}"><a class="nav-link" href="${cat.link}"${cat.ext?' target="_blank" rel="noopener"':''}>${cat.label}${cat.ext?' ↗':''}</a></li>`;
+      return;
+    }
     html += `<li class="nav-item${active(cat)?' active':''}"><span class="nav-link" tabindex="0">${cat.label} ▾</span><ul class="dropdown">`;
     cat.items.forEach(it=>{
       if(it.correa){
