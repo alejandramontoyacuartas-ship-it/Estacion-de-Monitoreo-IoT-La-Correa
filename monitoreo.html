@@ -56,7 +56,7 @@ th{background:#eef5ea;color:var(--azul)}
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=49"></script>
+<script src="js/navbar.js?v=52"></script>
 
 <div id="top">
   <div>
@@ -92,7 +92,7 @@ th{background:#eef5ea;color:var(--azul)}
   </div>
 </div>
 
-<script src="js/config.js?v=4"></script>
+<script src="js/config.js?v=6"></script>
 <script src="js/data.js?v=8"></script>
 <script>
 // ---------------- Estaciones ----------------
@@ -109,7 +109,7 @@ ESTACIONES.forEach(e=>{ estado[e.id]= e.tipo==='nivel'
   ? {nivel:NaN,temp:'—',hum:'—',lluvia:null,est:'SIN DATO',hist:[]}
   : {activa:false,ultima:null,est:'REPOSO'} ; });
 
-function estadoNivel(nv){ if(isNaN(nv))return'SIN DATO'; if(nv>=U.critico)return'CRÍTICO'; if(nv>=U.preventivo)return'PREVENCIÓN'; return'NORMAL'; }
+function estadoNivel(nv){ if(isNaN(nv))return'SIN DATO'; if(nv>=U.critico)return'CRÍTICO'; if(nv>=U.prevencion)return'PREVENCIÓN'; if(nv>=U.preventivo)return'PRECAUCIÓN'; return'NORMAL'; }
 
 // GEO-first para las capas base (modo offline)
 async function cargar(url){ if(window.GEO){const m=url.match(/([^/]+)\.geojson$/); if(m&&GEO[m[1]])return GEO[m[1]];}

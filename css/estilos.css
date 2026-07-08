@@ -63,6 +63,19 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
 .dato b{color:var(--azul2)}
 #sensor-update{font-size:11px;color:var(--gris);margin-top:6px}
 .estado-NORMAL{background:#2e9e57}.estado-ALERTA{background:#EF9F27}.estado-EMERGENCIA{background:#c0392b}.estado-SINDATO{background:#9a9a92}
+.estado-PRECAUCIÓN{background:#EAB308}.estado-PREVENCIÓN{background:#EF9F27}.estado-CRÍTICO{background:#c0392b}.estado-SINCONEXIÓN{background:#9a9a92}
+/* Indicador de conexión REAL del sensor (panel Estación de monitoreo) */
+#conexion-badge{display:inline-block;margin-left:6px;padding:3px 9px;border-radius:12px;font-weight:700;font-size:11.5px;vertical-align:middle}
+.cx-badge.cx-on{background:#e6f6ec;color:#1c7a41;border:1px solid #b7e2c6}
+.cx-badge.cx-off{background:#fdeceb;color:#b5271c;border:1px solid #f2c4bf}
+.cx-badge.cx-wait{background:#eef0f0;color:#6b6f6e;border:1px solid #d8dcda}
+/* Sensor desconectado: el estado del nivel deja de "gritar" NORMAL en verde */
+#panel-sensor.disc #estado-badge{opacity:.4;filter:grayscale(.7)}
+/* Indicador de conexión en el encabezado del panel flotante SIATA */
+#sensor-detalle .sd-cx{flex:none;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:11px;z-index:1;white-space:nowrap}
+#sensor-detalle .sd-cx.cx-on{background:rgba(255,255,255,.92);color:#1c7a41}
+#sensor-detalle .sd-cx.cx-off{background:#ffe3e0;color:#b5271c}
+#sensor-detalle .sd-cx.cx-wait{background:rgba(255,255,255,.75);color:#5c6160}
 
 /* Herramientas: coordenadas y botones */
 .geo-coords{background:rgba(255,255,255,.92);padding:3px 9px;border-radius:6px;font:600 11.5px monospace;
@@ -84,15 +97,15 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
   display:none;flex-direction:column}
 #sensor-detalle[style*="block"]{display:flex!important}
 /* Ventana FLOTANTE LATERAL "Niveles de Riesgo" (~1/3 de la pantalla, costado derecho) */
-#niv-modal{position:fixed;top:48px;right:0;bottom:0;width:clamp(340px,33vw,470px);z-index:2200;display:none;
+#niv-modal,#lluvia-modal,#clima-modal{position:fixed;top:48px;right:0;bottom:0;width:clamp(340px,33vw,470px);z-index:2200;display:none;
   background:#eef1ee;box-shadow:-10px 0 30px rgba(0,0,0,.28);border-left:1px solid #cddbd0}
-#niv-modal.open{display:block}
-#niv-modal .niv-box{position:relative;width:100%;height:100%;overflow:hidden}
-#niv-modal .niv-x{position:absolute;top:10px;right:12px;z-index:5;width:30px;height:30px;border:none;
+#niv-modal.open,#lluvia-modal.open,#clima-modal.open{display:block}
+#niv-modal .niv-box,#lluvia-modal .niv-box,#clima-modal .niv-box{position:relative;width:100%;height:100%;overflow:hidden}
+#niv-modal .niv-x,#lluvia-modal .niv-x,#clima-modal .niv-x{position:absolute;top:10px;right:12px;z-index:5;width:30px;height:30px;border:none;
   border-radius:50%;background:rgba(255,255,255,.92);color:#14512f;font-weight:800;font-size:16px;cursor:pointer;
   box-shadow:0 2px 6px rgba(0,0,0,.3)}
-#niv-modal .niv-x:hover{background:#fff}
-#niv-modal iframe{width:100%;height:100%;border:none;display:block}
+#niv-modal .niv-x:hover,#lluvia-modal .niv-x:hover,#clima-modal .niv-x:hover{background:#fff}
+#niv-modal iframe,#lluvia-modal iframe,#clima-modal iframe{width:100%;height:100%;border:none;display:block}
 /* Encabezado verde "Niveles de Riesgo" (estilo estación) */
 #sensor-detalle .sd-h{color:#fff;padding:10px 12px;display:flex;flex-shrink:0;align-items:center;gap:8px;
   background:linear-gradient(135deg,#14512f,#1f7a45);position:relative;overflow:hidden}

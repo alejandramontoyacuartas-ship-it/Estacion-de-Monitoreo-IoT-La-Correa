@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registros de lectura — Clima · Estación de Monitoreo La Correa</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/navbar.css?v=3"/>
+<style>
+:root{--acc:#ef6c47;--acc-dark:#b23c17;--gris:#5a6b60;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background:#eef2f1;color:#233}
+.wrap{max-width:1180px;margin:0 auto;padding:14px}
+/* Encabezado */
+.sc-head{background:linear-gradient(135deg,var(--acc-dark),var(--acc));color:#fff;border-radius:14px;
+  padding:18px 26px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(0,0,0,.18);overflow:hidden;position:relative}
+.sc-head h1{margin:0;font-size:30px;font-weight:800;font-style:italic;letter-spacing:.3px;flex:1}
+.sc-head h1 small{font-style:normal;font-weight:600;font-size:22px;opacity:.95;margin-left:12px}
+.sc-head .ico{width:60px;height:52px;opacity:.92}
+.sc-cx{flex:none;font-size:12.5px;font-weight:800;padding:4px 11px;border-radius:12px;white-space:nowrap;margin-left:10px}
+.sc-cx.cx-on{background:rgba(255,255,255,.92);color:#1c7a41}
+.sc-cx.cx-off{background:#ffe3e0;color:#b5271c}
+.sc-cx.cx-wait{background:rgba(255,255,255,.78);color:#4f5453}
+/* Tarjetas resumen */
+.sc-cards{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px;margin-top:14px}
+.card{background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:16px 18px}
+.sc-now{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;text-align:center}
+.sc-now .big{font-size:38px;font-weight:800;line-height:1;color:var(--acc-dark)}
+.sc-now .big small{font-size:18px;font-weight:700;color:var(--gris)}
+.sc-now .sub{font-size:11.5px;color:var(--gris);margin-top:4px}
+.sc-kpi{display:flex;flex-direction:column;justify-content:center;gap:3px}
+.sc-kpi span{font-size:11.5px;color:var(--gris);line-height:1.2}
+.sc-kpi b{font-size:23px;font-weight:800;color:var(--acc-dark);line-height:1}
+.sc-kpi b small{font-size:12px;font-weight:700;color:var(--gris)}
+/* Gráfico */
+.pcard{position:relative;margin-top:14px}
+.ptit{text-align:center;font-size:16px;font-weight:800;color:var(--acc-dark);margin:0 0 8px}
+.chartbox{height:300px;position:relative}
+.winsel{position:absolute;top:14px;right:16px;z-index:2}
+.winsel select{font-size:12px;font-weight:600;color:var(--acc-dark);background:#f4f4f4;border:1px solid #d8d8d8;border-radius:7px;padding:3px 8px;cursor:pointer}
+.nodata{color:#b26a00;font-size:11.5px;text-align:center;margin-top:6px}
+.foot-note{margin-top:12px;background:#f2f4f3;border-radius:10px;padding:10px 14px;font-size:11.5px;color:#4a5a52;line-height:1.4}
+@media(max-width:820px){.sc-cards{grid-template-columns:1fr 1fr}}
+/* ===== Modo embebido (ventana flotante lateral) ===== */
+.embed .navbar,.embed #navbar-root{display:none!important}
+.embed .wrap{padding:8px 10px}
+.embed .sc-head{padding:11px 15px;border-radius:11px}
+.embed .sc-head h1{font-size:18px}
+.embed .sc-head h1 small{display:block;margin:2px 0 0;font-size:12.5px}
+.embed .sc-head .ico{width:34px;height:28px}
+.embed .sc-cx{font-size:11px;padding:3px 8px;margin-left:6px}
+.embed .sc-cards{grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.embed .card{padding:11px 13px;border-radius:11px}
+.embed .sc-now{grid-column:1 / -1;flex-direction:row;justify-content:center;gap:12px}
+.embed .sc-now .big{font-size:28px}
+.embed .sc-kpi b{font-size:19px}
+.embed .ptit{font-size:13.5px}
+.embed .chartbox{height:220px}
+.embed .foot-note{font-size:10.5px;padding:8px 11px}
+</style>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=52"></script>
+
+<div class="wrap">
+  <div class="sc-head">
+    <h1 id="sc-title">Registros de lectura — <small>Estación de Monitoreo La Correa</small></h1>
+    <span id="sc-cx" class="sc-cx cx-wait">⚪ Verificando…</span>
+    <svg id="sc-ico" class="ico" viewBox="0 0 24 24"></svg>
+  </div>
+
+  <div class="sc-cards">
+    <div class="card sc-now"><div class="big" id="sc-now-big">—</div><div class="sub" id="sc-now-sub">esperando lectura…</div></div>
+    <div class="card sc-kpi"><span>Mínimo (ventana)</span><b id="k-min">—</b></div>
+    <div class="card sc-kpi"><span>Máximo (ventana)</span><b id="k-max">—</b></div>
+    <div class="card sc-kpi"><span>Promedio (ventana)</span><b id="k-avg">—</b></div>
+  </div>
+
+  <div class="card pcard">
+    <div class="ptit" id="sc-chart-tit">Comportamiento en el tiempo</div>
+    <div class="winsel"><select id="win">
+      <option value="3">3 horas</option><option value="24">24 horas</option>
+      <option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>
+    <div class="chartbox"><canvas id="sc-chart"></canvas></div>
+  </div>
+
+  <div class="nodata" id="nd" style="display:none"></div>
+  <div class="foot-note" id="sc-foot"></div>
+</div>
+
+<script src="js/config.js?v=6"></script>
+<script>
+if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
+const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
+const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
+
+// Configuración por variable (temperatura / humedad)
+const VARS={
+  temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
+            ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
+            foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). La serie muestra el registro por la ventana de tiempo seleccionada.'},
+  humedad: {campo:C.humedad||'humedad', label:'Humedad', uni:'%', dec:0, acc:'#26a69a', accDark:'#00695c',
+            ico:'<path d="M12 3C8 8 6.5 11.5 6.5 14a5.5 5.5 0 0 0 11 0c0-2.5-1.5-6-5.5-11Z" fill="#fff"/>',
+            foot:'Humedad relativa del aire medida por el sensor <b>SHT30</b>. La serie muestra el registro por la ventana de tiempo seleccionada.'}
+};
+const which=(new URLSearchParams(location.search).get('var')||'temp').toLowerCase();
+const V=VARS[which]||VARS.temp;
+document.documentElement.style.setProperty('--acc',V.acc);
+document.documentElement.style.setProperty('--acc-dark',V.accDark);
+document.getElementById('sc-title').innerHTML='Registros de lectura — '+V.label+' <small>Estación de Monitoreo La Correa</small>';
+document.getElementById('sc-chart-tit').textContent='Comportamiento de la '+V.label.toLowerCase()+' en el tiempo';
+document.getElementById('sc-ico').innerHTML=V.ico;
+document.getElementById('sc-foot').innerHTML=V.foot;
+document.title='Registros de lectura — '+V.label;
+
+function parse(s){ return new Date(String(s).replace(' ','T').replace(/\.\d+$/,'')); }
+function relTiempo(ms){ ms=Math.abs(ms); let s=Math.round(ms/1000); if(s<60)return s+' s';
+  let m=Math.round(s/60); if(m<60)return m+' min'; let h=Math.round(m/60); if(h<24)return h+' h';
+  let d=Math.round(h/24); return d+(d===1?' día':' días'); }
+function fechaCorta(t){ const p=n=>String(n).padStart(2,'0');
+  return p(t.getDate())+'/'+p(t.getMonth()+1)+' '+p(t.getHours())+':'+p(t.getMinutes()); }
+const fmt=v=>isNaN(v)?'—':Number(v).toFixed(V.dec);
+
+let SERIE=[], chart=null;
+
+function pintarCx(ok,fecha){ const b=document.getElementById('sc-cx'); if(!b)return;
+  const t=ok===true?'Conectado':ok===false?'Desconectado':'Verificando…';
+  const dot=ok===true?'🟢':ok===false?'🔴':'⚪';
+  b.textContent=dot+' '+t; b.className='sc-cx '+(ok===true?'cx-on':ok===false?'cx-off':'cx-wait');
+  if(fecha){ const e=Date.now()-parse(fecha).getTime(); b.title='Última lectura: '+String(fecha).slice(0,16).replace('T',' ')+(isFinite(e)?' (hace '+relTiempo(e)+')':''); }
+}
+
+function ventana(){ const win=parseFloat(document.getElementById('win').value);
+  if(!SERIE.length) return [];
+  const tU=SERIE[SERIE.length-1].t, desde=tU-win*3600000;
+  const v=SERIE.filter(m=>m.t>=desde && !isNaN(m.v));
+  return v.length>=2?v:SERIE.filter(m=>!isNaN(m.v)).slice(-40);
+}
+
+function repintar(){
+  const ven=ventana(); const win=parseFloat(document.getElementById('win').value);
+  const vals=ven.map(m=>m.v).filter(v=>!isNaN(v));
+  // KPIs
+  const last=SERIE.length?SERIE[SERIE.length-1]:null;
+  document.getElementById('sc-now-big').innerHTML=(last&&!isNaN(last.v)?fmt(last.v):'—')+' <small>'+V.uni+'</small>';
+  document.getElementById('sc-now-sub').textContent=last?('Última lectura: '+fechaCorta(new Date(last.t))):'sin datos';
+  document.getElementById('k-min').innerHTML=vals.length?fmt(Math.min(...vals))+' <small>'+V.uni+'</small>':'—';
+  document.getElementById('k-max').innerHTML=vals.length?fmt(Math.max(...vals))+' <small>'+V.uni+'</small>':'—';
+  document.getElementById('k-avg').innerHTML=vals.length?fmt(vals.reduce((a,b)=>a+b,0)/vals.length)+' <small>'+V.uni+'</small>':'—';
+  // gráfico
+  const fL=win>=720?(t=>fechaCorta(new Date(t)).slice(0,5))
+        :win>=48?(t=>fechaCorta(new Date(t)))
+        :(t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');});
+  const labels=ven.map(m=>fL(m.t)), data=ven.map(m=>m.v);
+  const ctx=document.getElementById('sc-chart'); if(!ctx||!window.Chart)return;
+  if(chart)chart.destroy();
+  chart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:V.label,data,
+    borderColor:V.acc,backgroundColor:V.acc+'26',fill:true,tension:.3,pointRadius:vals.length>60?0:2,borderWidth:2}]},
+    options:{animation:false,plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:it=>V.label+': '+fmt(it.parsed.y)+' '+V.uni}}},
+      scales:{x:{ticks:{maxTicksLimit:7,autoSkip:true}},y:{title:{display:true,text:V.uni}}},
+      responsive:true,maintainAspectRatio:false}});
+}
+document.getElementById('win').addEventListener('change',repintar);
+
+// ===== Cargar datos reales (fallback demo) =====
+async function cargar(){
+  let arr=null, esDemo=false;
+  try{ const r=await fetch(API+'/mediciones',{cache:'no-store'}); if(r.ok) arr=await r.json(); }catch(e){}
+  if(!Array.isArray(arr)||!arr.length){
+    try{ const r=await fetch(API+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(r.ok){const g=await r.json();
+      if(g&&g.features) arr=g.features.map(x=>x.properties||{}); } }catch(e){}
+  }
+  const nd=document.getElementById('nd');
+  if(!Array.isArray(arr)||!arr.length){
+    esDemo=true; const now=Date.now(); arr=[];
+    const base=which==='humedad'?68:22, amp=which==='humedad'?18:6;
+    for(let i=0;i<260;i++){ const t=new Date(now-(260-i)*15*60000);
+      arr.push({id_medicion:i+1,[V.campo]:+(base+amp*Math.sin(i/9)+ (Math.sin(i/2.3))*2).toFixed(1),fecha_hora:t.toISOString().slice(0,19).replace('T',' ')}); }
+    nd.style.display='block'; nd.textContent='· Mostrando datos de demostración (la API no respondió; en local usa el proxy / en producción habilita CORS).';
+  } else nd.style.display='none';
+
+  SERIE=arr.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime()))
+           .map(m=>({t:parse(m.fecha_hora).getTime(), v:parseFloat(m[V.campo]), id:+(m.id_medicion||0), fecha:m.fecha_hora}))
+           .sort((a,b)=>a.t-b.t);
+
+  const now=Date.now(), maxMs=((CONFIG&&CONFIG.CONEXION_MAX_MIN)||15)*60000;
+  const last=SERIE.length?SERIE[SERIE.length-1]:null, id=last?last.id:0;
+  const T=window._scTrack||(window._scTrack={lastId:null,lastNew:0,started:now});
+  if(T.lastId===null){ T.lastId=id; } else if(id>T.lastId){ T.lastId=id; T.lastNew=now; }
+  let ok;
+  if(esDemo){ ok=false; }
+  else if(T.lastNew>0){ ok=(now-T.lastNew)<=maxMs; }
+  else { const edad=last?now-last.t:Infinity;
+         if(isFinite(edad)&&edad>6*3600000) ok=false; else if((now-T.started)<25000) ok=null; else ok=false; }
+  pintarCx(ok, last?last.fecha:'');
+
+  repintar();
+}
+cargar();
+setInterval(cargar, (CONFIG&&CONFIG.REFRESH_MS)||10000);
+</script>
+</body>
+</html>

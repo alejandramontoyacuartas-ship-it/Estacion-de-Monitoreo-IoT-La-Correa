@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registros de lectura — Lluvia · Estación de Monitoreo La Correa</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/navbar.css?v=3"/>
+<style>
+:root{--azul-oscuro:#0d47a1;--azul:#1565c0;--azul2:#1e88e5;--azul-claro:#64b5f6;--gris:#5a6b60;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background:#eef2f7;color:#173049}
+.wrap{max-width:1180px;margin:0 auto;padding:14px}
+/* Encabezado */
+.rn-head{background:linear-gradient(135deg,var(--azul-oscuro),var(--azul2));color:#fff;border-radius:14px;
+  padding:18px 26px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(13,71,161,.25);overflow:hidden;position:relative}
+.rn-head h1{margin:0;font-size:30px;font-weight:800;font-style:italic;letter-spacing:.3px;flex:1}
+.rn-head h1 small{font-style:normal;font-weight:600;font-size:22px;opacity:.95;margin-left:12px}
+.rn-head .ico{width:70px;height:52px;opacity:.92}
+.rn-cx{flex:none;font-size:12.5px;font-weight:800;padding:4px 11px;border-radius:12px;white-space:nowrap;margin-left:10px}
+.rn-cx.cx-on{background:rgba(255,255,255,.92);color:#1c7a41}
+.rn-cx.cx-off{background:#ffe3e0;color:#b5271c}
+.rn-cx.cx-wait{background:rgba(255,255,255,.78);color:#4f5453}
+/* Tarjetas resumen */
+.rn-cards{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:12px;margin-top:14px}
+.card{background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(21,101,192,.10);padding:16px 18px}
+.rn-now{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;text-align:center}
+.rn-now .big{font-size:26px;font-weight:800;line-height:1.1}
+.rn-now .big.si{color:var(--azul)} .rn-now .big.no{color:#e08e2b}
+.rn-now .sub{font-size:11.5px;color:var(--gris)}
+.rn-kpi{display:flex;flex-direction:column;justify-content:center;gap:3px}
+.rn-kpi span{font-size:11.5px;color:var(--gris);line-height:1.2}
+.rn-kpi b{font-size:23px;font-weight:800;color:var(--azul-oscuro);line-height:1}
+.rn-kpi b small{font-size:12px;font-weight:700;color:var(--gris)}
+/* Paneles de gráfico */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.ptit{text-align:center;font-size:16px;font-weight:800;color:var(--azul-oscuro);margin:0 0 8px}
+.chartbox{height:220px;position:relative}
+.chartbox.sm{height:210px}
+.pcard{position:relative}
+.winsel{position:absolute;top:14px;right:16px;z-index:2}
+.winsel select{font-size:12px;font-weight:600;color:var(--azul-oscuro);background:#eaf1fb;border:1px solid #c5d8f0;border-radius:7px;padding:3px 8px;cursor:pointer}
+.span2{grid-column:1 / -1}
+.nodata{color:#b26a00;font-size:11.5px;text-align:center;margin-top:6px}
+.foot-note{margin-top:12px;background:#eaf1fb;border-radius:10px;padding:10px 14px;font-size:11.5px;color:#3a4f6b;line-height:1.4}
+.foot-note b{color:var(--azul)}
+@media(max-width:900px){.rn-cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
+/* ===== Modo embebido (ventana flotante lateral del visor) ===== */
+.embed .navbar,.embed #navbar-root{display:none!important}
+.embed .wrap{padding:8px 10px}
+.embed .rn-head{padding:11px 15px;border-radius:11px}
+.embed .rn-head h1{font-size:18px}
+.embed .rn-head h1 small{display:block;margin:2px 0 0;font-size:12.5px}
+.embed .rn-head .ico{width:38px;height:28px}
+.embed .rn-cx{font-size:11px;padding:3px 8px;margin-left:6px}
+.embed .rn-cards{grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.embed .card{padding:11px 13px;border-radius:11px}
+.embed .rn-now{grid-column:1 / -1;flex-direction:row;justify-content:center;gap:12px}
+.embed .rn-now .big{font-size:20px}
+.embed .rn-kpi b{font-size:19px}
+.embed .grid{grid-template-columns:1fr;gap:10px;margin-top:10px}
+.embed .ptit{font-size:13.5px}
+.embed .chartbox{height:175px}
+.embed .chartbox.sm{height:165px}
+.embed .foot-note{font-size:10.5px;padding:8px 11px}
+</style>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=52"></script>
+
+<div class="wrap">
+
+  <div class="rn-head">
+    <h1>Registros de lectura — Lluvia <small>Estación de Monitoreo La Correa</small></h1>
+    <span id="rn-cx" class="rn-cx cx-wait">⚪ Verificando…</span>
+    <svg class="ico" viewBox="0 0 64 48" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
+      <path d="M20 26a9 9 0 0 1 .7-18 11 11 0 0 1 21 3 7.6 7.6 0 0 1-1.5 15" fill="rgba(255,255,255,.18)"/>
+      <line x1="20" y1="34" x2="17" y2="43"/><line x1="30" y1="34" x2="27" y2="43"/>
+      <line x1="40" y1="34" x2="37" y2="43"/>
+    </svg>
+  </div>
+
+  <!-- Estado actual + KPIs -->
+  <div class="rn-cards">
+    <div class="card rn-now"><div class="big no" id="rn-now-big">—</div><div class="sub" id="rn-now-sub">esperando lectura…</div></div>
+    <div class="card rn-kpi"><span>% del periodo con lluvia</span><b id="k-pct">—</b></div>
+    <div class="card rn-kpi"><span>Episodios de lluvia</span><b id="k-epi">—</b></div>
+    <div class="card rn-kpi"><span>Última lluvia</span><b id="k-ult" style="font-size:15px">—</b></div>
+    <div class="card rn-kpi"><span>Episodio más largo</span><b id="k-max">—</b></div>
+  </div>
+
+  <div class="grid">
+    <!-- Barras: horas con lluvia por día -->
+    <div class="card span2">
+      <div class="ptit">Horas con lluvia por día</div>
+      <div class="chartbox"><canvas id="ch-dia"></canvas></div>
+    </div>
+    <!-- Línea de presencia en el tiempo -->
+    <div class="card pcard">
+      <div class="ptit">Presencia de lluvia en el tiempo</div>
+      <div class="winsel"><select id="win">
+        <option value="3">3 horas</option><option value="24">24 horas</option>
+        <option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>
+      <div class="chartbox"><canvas id="ch-linea"></canvas></div>
+    </div>
+    <!-- Dona: proporción del periodo -->
+    <div class="card">
+      <div class="ptit">Proporción del periodo (ventana)</div>
+      <div class="chartbox sm"><canvas id="ch-dona"></canvas></div>
+    </div>
+  </div>
+
+  <div class="nodata" id="nd" style="display:none"></div>
+  <div class="foot-note">El sensor de lluvia (detector <b>YL-83</b>) registra <b>presencia</b> de precipitación (Sí/No), no milímetros. Las horas con lluvia son una estimación a partir del tiempo entre lecturas consecutivas con lluvia.</div>
+
+</div>
+
+<script src="js/config.js?v=6"></script>
+<script>
+if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
+const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
+const CAMPO=(window.CONFIG&&CONFIG.CAMPOS&&CONFIG.CAMPOS.lluvia)||'esta_lloviendo';
+const AZUL='#1565c0', AZUL2='#1e88e5', NARANJA='#e08e2b';
+
+function parse(s){ return new Date(String(s).replace(' ','T').replace(/\.\d+$/,'')); }
+function esLluvia(v){ if(v===true||v===1) return true; if(v===false||v===0||v==null) return false;
+  const s=String(v).trim().toLowerCase(); return s==='true'||s==='1'||s==='si'||s==='sí'||s==='lloviendo'||s==='rain'; }
+function relTiempo(ms){ ms=Math.abs(ms); let s=Math.round(ms/1000); if(s<60)return s+' s';
+  let m=Math.round(s/60); if(m<60)return m+' min'; let h=Math.round(m/60); if(h<24)return h+' h';
+  let d=Math.round(h/24); return d+(d===1?' día':' días'); }
+function fechaCorta(t){ const p=n=>String(n).padStart(2,'0');
+  return p(t.getDate())+'/'+p(t.getMonth()+1)+' '+p(t.getHours())+':'+p(t.getMinutes()); }
+
+let SERIE=[], chDia=null, chLinea=null, chDona=null;
+
+// ---- Estado de conexión (misma regla que el panel: ¿llegan lecturas nuevas?) ----
+function pintarCx(ok,fecha){ const b=document.getElementById('rn-cx'); if(!b)return;
+  const t=ok===true?'Conectado':ok===false?'Desconectado':'Verificando…';
+  const dot=ok===true?'🟢':ok===false?'🔴':'⚪';
+  b.textContent=dot+' '+t; b.className='rn-cx '+(ok===true?'cx-on':ok===false?'cx-off':'cx-wait');
+  if(fecha){ const e=Date.now()-parse(fecha).getTime(); b.title='Última lectura: '+String(fecha).slice(0,16).replace('T',' ')+(isFinite(e)?' (hace '+relTiempo(e)+')':''); }
+}
+
+// ---- Ventana de tiempo seleccionada ----
+function ventana(){ const win=parseFloat(document.getElementById('win').value);
+  if(!SERIE.length) return [];
+  const tU=SERIE[SERIE.length-1].t, desde=tU-win*3600000;
+  const v=SERIE.filter(m=>m.t>=desde);
+  return v.length>=2?v:SERIE.slice(-40);
+}
+
+// ---- Episodios de lluvia sobre una serie (runs contiguos con lluvia) ----
+function episodios(arr){ let n=0,largo=0,inEp=false,ini=null,ult=null,ultLluvia=null;
+  for(const m of arr){ if(m.llov){ if(!inEp){inEp=true;n++;ini=m.t;} ult=m.t; ultLluvia=m.t; }
+    else { if(inEp){ largo=Math.max(largo, ult-ini); inEp=false; } } }
+  if(inEp) largo=Math.max(largo, ult-ini);
+  return {n, largoMs:largo, ultLluvia};
+}
+
+// ---- Horas de lluvia por día (estimación por intervalos entre lecturas con lluvia) ----
+function horasPorDia(arr){ const CAP=60*60000; const byDay={};
+  for(let i=0;i<arr.length-1;i++){ if(arr[i].llov){ const dt=Math.min(arr[i+1].t-arr[i].t, CAP);
+    const d=new Date(arr[i].t); const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    byDay[k]=(byDay[k]||0)+dt; } }
+  const keys=Object.keys(byDay).sort().slice(-14);
+  return { labels:keys.map(k=>{const p=k.split('-');return p[2]+'/'+p[1];}), horas:keys.map(k=>+(byDay[k]/3600000).toFixed(2)) };
+}
+
+function pintarDia(){ const {labels,horas}=horasPorDia(SERIE);
+  const ctx=document.getElementById('ch-dia'); if(!ctx||!window.Chart)return;
+  if(chDia)chDia.destroy();
+  chDia=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Horas con lluvia',data:horas,
+    backgroundColor:AZUL2,borderRadius:4,maxBarThickness:34}]},
+    options:{animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:it=>it.parsed.y+' h con lluvia'}}},
+      scales:{y:{beginAtZero:true,title:{display:true,text:'horas'},ticks:{precision:0}}},
+      responsive:true,maintainAspectRatio:false}});
+}
+
+function pintarLinea(){ const ven=ventana();
+  const win=parseFloat(document.getElementById('win').value);
+  const fL=win>=720?(t=>fechaCorta(new Date(t)).slice(0,5))
+        :win>=48?(t=>fechaCorta(new Date(t)))
+        :(t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');});
+  const labels=ven.map(m=>fL(m.t)); const data=ven.map(m=>m.llov?1:0);
+  const ctx=document.getElementById('ch-linea'); if(!ctx||!window.Chart)return;
+  if(chLinea)chLinea.destroy();
+  chLinea=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Lluvia',data,
+    borderColor:AZUL,backgroundColor:'rgba(21,101,192,.14)',fill:true,stepped:true,pointRadius:0,borderWidth:2}]},
+    options:{animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:it=>it.parsed.y?'Lloviendo':'Sin lluvia'}}},
+      scales:{x:{ticks:{maxTicksLimit:6,autoSkip:true}},
+        y:{beginAtZero:true,max:1,ticks:{stepSize:1,callback:v=>v?'Sí':'No'}}},
+      responsive:true,maintainAspectRatio:false}});
+}
+
+function pintarDona(){ const ven=ventana(); const n=ven.length, si=ven.filter(m=>m.llov).length, no=n-si;
+  const ctx=document.getElementById('ch-dona'); if(!ctx||!window.Chart)return;
+  if(chDona)chDona.destroy();
+  chDona=new Chart(ctx,{type:'doughnut',data:{labels:['Con lluvia','Sin lluvia'],
+    datasets:[{data:[si,no],backgroundColor:[AZUL2,'#dbe6f2'],borderWidth:0}]},
+    options:{animation:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},
+      tooltip:{callbacks:{label:it=>it.label+': '+it.parsed+' lecturas'}}},
+      responsive:true,maintainAspectRatio:false}});
+}
+
+function pintarResumen(){ const ven=ventana();
+  const n=ven.length, si=ven.filter(m=>m.llov).length;
+  document.getElementById('k-pct').innerHTML=(n?Math.round(si/n*100):0)+'<small>%</small>';
+  const full=episodios(SERIE);
+  document.getElementById('k-epi').textContent=full.n;
+  document.getElementById('k-ult').textContent=full.ultLluvia?('hace '+relTiempo(Date.now()-full.ultLluvia)):'sin registro';
+  document.getElementById('k-max').innerHTML=full.largoMs?(Math.round(full.largoMs/60000)+'<small> min</small>'):'—';
+  // estado actual (última lectura)
+  const last=SERIE.length?SERIE[SERIE.length-1]:null;
+  const big=document.getElementById('rn-now-big'), sub=document.getElementById('rn-now-sub');
+  if(last){ big.textContent=last.llov?'🌧️ Lloviendo':'☀️ Sin lluvia'; big.className='big '+(last.llov?'si':'no');
+    sub.textContent='Última lectura: '+fechaCorta(new Date(last.t)); }
+}
+
+function repintar(){ pintarDia(); pintarLinea(); pintarDona(); pintarResumen(); }
+document.getElementById('win').addEventListener('change',()=>{ pintarLinea(); pintarDona(); pintarResumen(); });
+
+// ===== Cargar datos reales de la API (fallback demo si no responde) =====
+async function cargar(){
+  let arr=null, esDemo=false;
+  try{ const r=await fetch(API+'/mediciones',{cache:'no-store'}); if(r.ok) arr=await r.json(); }catch(e){}
+  if(!Array.isArray(arr)||!arr.length){
+    try{ const r=await fetch(API+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(r.ok){const g=await r.json();
+      if(g&&g.features) arr=g.features.map(x=>x.properties||{}); } }catch(e){}
+  }
+  const nd=document.getElementById('nd');
+  if(!Array.isArray(arr)||!arr.length){                       // demo si la API no responde
+    esDemo=true; const now=Date.now(); arr=[];
+    for(let i=0;i<300;i++){ const t=new Date(now-(300-i)*15*60000);
+      const ll=(Math.sin(i/11)+Math.sin(i/4.3))>1.1;          // rachas de lluvia sintéticas
+      arr.push({id_medicion:i+1,esta_lloviendo:ll,fecha_hora:t.toISOString().slice(0,19).replace('T',' ')}); }
+    nd.style.display='block'; nd.textContent='· Mostrando datos de demostración (la API no respondió; en local usa el proxy / en producción habilita CORS).';
+  } else nd.style.display='none';
+
+  SERIE=arr.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime()))
+           .map(m=>({ t:parse(m.fecha_hora).getTime(), llov:esLluvia(m[CAMPO]), id:+(m.id_medicion||0), fecha:m.fecha_hora }))
+           .sort((a,b)=>a.t-b.t);
+
+  // conexión: conectado solo si de verdad llegan lecturas nuevas
+  const now=Date.now(), maxMs=((CONFIG&&CONFIG.CONEXION_MAX_MIN)||15)*60000;
+  const last=SERIE.length?SERIE[SERIE.length-1]:null, id=last?last.id:0;
+  const T=window._rnTrack||(window._rnTrack={lastId:null,lastNew:0,started:now});
+  if(T.lastId===null){ T.lastId=id; } else if(id>T.lastId){ T.lastId=id; T.lastNew=now; }
+  let ok;
+  if(esDemo){ ok=false; }
+  else if(T.lastNew>0){ ok=(now-T.lastNew)<=maxMs; }
+  else { const edad=last?now-last.t:Infinity;
+         if(isFinite(edad)&&edad>6*3600000) ok=false; else if((now-T.started)<25000) ok=null; else ok=false; }
+  pintarCx(ok, last?last.fecha:'');
+
+  repintar();
+}
+cargar();
+setInterval(cargar, (CONFIG&&CONFIG.REFRESH_MS)||10000);
+</script>
+</body>
+</html>

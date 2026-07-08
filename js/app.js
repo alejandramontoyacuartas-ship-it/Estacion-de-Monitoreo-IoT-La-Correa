@@ -2,6 +2,9 @@
 //  GEOPORTAL SAT — Quebrada La Correa | VISOR DE CAPAS
 //  Mapa grande + menú de capas (interruptores) + sensor en tiempo real
 // =====================================================================
+// URL original al cargar (antes de que el manejo de ?capa= la limpie con replaceState).
+// Sirve para saber si entramos en contexto de "sensores de La Correa".
+window._initSearch = location.search;
 const C_RIESGO={Critico:'#8B0000',Alto:'#E24B4A',Medio:'#EF9F27',Bajo:'#FFE13C',Marginal:'#9a9a92',ALTO:'#E24B4A',MEDIO:'#EF9F27',BAJO:'#FFE13C'};
 const C_NIVEL={ALTA:'#E24B4A',MEDIA:'#EF9F27',BAJA:'#FFE13C'};
 const C_SUSC={'Muy alta':'#c80000','Alta':'#ff7800','Media':'#ffe146','Baja':'#aad278','Muy baja':'#5aaa5a'};
@@ -307,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=5"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=14"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -320,10 +323,66 @@ window.abrirNivelesFlotante=function(){
       window.cerrarNivelesFlotante();
     });
   }
+  if(window.cerrarLluviaFlotante) window.cerrarLluviaFlotante();   // solo una ventana flotante a la vez
+  if(window.cerrarClimaFlotante)  window.cerrarClimaFlotante();
   m.classList.add('open');
   window._nivOpenTs=Date.now();
 };
 window.cerrarNivelesFlotante=function(){ const m=document.getElementById('niv-modal'); if(m) m.classList.remove('open'); };
+
+// Ventana FLOTANTE LATERAL "Registros de lectura — Lluvia" (gemela de la de nivel) — reusa lluvia.html en vivo.
+// Se abre al hacer clic en el ícono de lluvia (o al activar el sensor de lluvia).
+window.abrirLluviaFlotante=function(){
+  let m=document.getElementById('lluvia-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='lluvia-modal';
+    m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
+      +'<iframe title="Registros de lectura — Lluvia" src="lluvia.html?embed=1&v=1"></iframe></div>';
+    document.body.appendChild(m);
+    m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarLluviaFlotante());
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarLluviaFlotante(); });
+    document.addEventListener('click', function(e){
+      if(!m.classList.contains('open')) return;
+      if(m.contains(e.target)) return;
+      if(window._lluOpenTs && (Date.now()-window._lluOpenTs)<350) return;   // el clic que la abrió
+      window.cerrarLluviaFlotante();
+    });
+  }
+  if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();   // solo una ventana flotante a la vez
+  if(window.cerrarClimaFlotante)   window.cerrarClimaFlotante();
+  m.classList.add('open');
+  window._lluOpenTs=Date.now();
+};
+window.cerrarLluviaFlotante=function(){ const m=document.getElementById('lluvia-modal'); if(m) m.classList.remove('open'); };
+
+// Ventana FLOTANTE LATERAL "Registros de lectura — Temperatura/Humedad" (gemela de nivel/lluvia).
+// Una sola ventana para ambas variables numéricas; el iframe se recarga según la variable pedida.
+window.abrirClimaFlotante=function(varname){
+  varname = (varname==='humedad')?'humedad':'temp';
+  let m=document.getElementById('clima-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='clima-modal';
+    m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
+      +'<iframe title="Registros de lectura — Clima" src="about:blank"></iframe></div>';
+    document.body.appendChild(m);
+    m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarClimaFlotante());
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarClimaFlotante(); });
+    document.addEventListener('click', function(e){
+      if(!m.classList.contains('open')) return;
+      if(m.contains(e.target)) return;
+      if(window._climaOpenTs && (Date.now()-window._climaOpenTs)<350) return;
+      window.cerrarClimaFlotante();
+    });
+  }
+  const ifr=m.querySelector('iframe');
+  if(ifr.getAttribute('data-var')!==varname){ ifr.setAttribute('data-var',varname);
+    ifr.setAttribute('src','sensor_clima.html?embed=1&var='+varname+'&v=1'); }
+  if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
+  if(window.cerrarLluviaFlotante)  window.cerrarLluviaFlotante();
+  m.classList.add('open');
+  window._climaOpenTs=Date.now();
+};
+window.cerrarClimaFlotante=function(){ const m=document.getElementById('clima-modal'); if(m) m.classList.remove('open'); };
 const sensorIcons={};
 window.setSensorIcon=function(key,on){
   if(!(key in SENS_IC)) return;
@@ -333,8 +392,10 @@ window.setSensorIcon=function(key,on){
         html:`<div title="Ver lectura de ${key}" style="cursor:pointer;font-size:14px;background:#fff;border:1.6px solid #2e8b57;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.35)">${SENS_IC[key]}</div>`});
       sensorIcons[key]=L.marker([CONFIG.SENSOR.lat,CONFIG.SENSOR.lon],{icon:ic,interactive:true,zIndexOffset:1100,bubblingMouseEvents:false}).addTo(map);
       sensorIcons[key].on('click',function(e){ if(e&&e.originalEvent&&e.originalEvent.stopPropagation)e.originalEvent.stopPropagation();
-        if(key==='nivel' && window.abrirNivelesFlotante){ window.abrirNivelesFlotante(); return; }  // nivel → vista flotante completa
-        if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);   // otros sensores → panel compacto de lectura
+        if(key==='nivel' && window.abrirNivelesFlotante){ window.abrirNivelesFlotante(); return; }   // nivel → vista flotante completa
+        if(key==='lluvia' && window.abrirLluviaFlotante){ window.abrirLluviaFlotante(); return; }    // lluvia → vista flotante de registros
+        if((key==='temp'||key==='humedad') && window.abrirClimaFlotante){ window.abrirClimaFlotante(key); return; }  // temp/humedad → serie de tiempo
+        if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(true);
         abrirPanelSensor(key); });
     }
   }else if(sensorIcons[key]){ map.removeLayer(sensorIcons[key]); delete sensorIcons[key]; }
@@ -347,6 +408,13 @@ window.setSensorIcon=function(key,on){
 if(/[?&]niveles=1/.test(location.search)){
   window.addEventListener('load',()=>{ if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });
 }
+// Igual para la lluvia: llega con ?lluvia=1 y abre su ventana flotante sola.
+if(/[?&]lluvia=1/.test(location.search)){
+  window.addEventListener('load',()=>{ if(window.abrirLluviaFlotante) window.abrirLluviaFlotante(); });
+}
+// Temperatura/humedad: llega con ?clima=temp o ?clima=humedad y abre su ventana flotante sola.
+{ const _clm=(new URLSearchParams(location.search).get('clima')||'').toLowerCase();
+  if(_clm==='temp'||_clm==='humedad'){ window.addEventListener('load',()=>{ if(window.abrirClimaFlotante) window.abrirClimaFlotante(_clm); }); } }
 
 // ===== Panel de detalle por sensor (clic en el ícono activo sobre P1) =====
 const SENSOR_INFO={
@@ -358,12 +426,12 @@ const SENSOR_INFO={
 let _medCache=null,_medTime=0,_detChart=null,_corteChart=null,_serieInfo=null,_serieLista=null;
 function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
 // Niveles de alerta tipo SIATA a partir de los umbrales (cm de lámina sobre el thalweg)
-function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:10,critico:20};
+function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
   return [
-    {n:'N1',c:'#2e9e57',tope:U.preventivo,      tit:'Nivel de agua seguro'},
-    {n:'N2',c:'#EF9F27',tope:U.critico,          tit:'Nivel de precaución'},
-    {n:'N3',c:'#e67e22',tope:U.critico*2,        tit:'Inundación menor'},
-    {n:'N4',c:'#c0392b',tope:U.critico*3,        tit:'Inundación mayor'}
+    {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro'},
+    {n:'N2',c:'#EAB308',tope:U.prevencion,   tit:'Nivel de precaución'},
+    {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Prevención (creciente)'},
+    {n:'N4',c:'#c0392b',tope:U.critico*1.5,   tit:'Crítico · evacuación'}
   ]; }
 function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
@@ -420,7 +488,7 @@ function _geomorfologia(){
     +_kv('Índice de Melton','0,47 · debris flood (torrencial)')
     +_kv('Pendiente del cauce','14,6 %')+_kv('Densidad de drenaje','7,12 km/km²')
     +_kv('Orden de Strahler','5')+_kv('Tiempo de concentración','≈ 43 min (Kirpich)')
-    +_kv('Caudal de diseño (Tr100)','≈ 249 m³/s · provisional');
+    +_kv('Caudal de diseño (Tr100)','≈ 280 m³/s · Log-Pearson III');
 }
 function _coberturas(){
   return _kv('Vegetación (NDVI Sentinel-2)','media 0,68 · 82 % vegetación densa')
@@ -439,6 +507,7 @@ function panelDetalle(){
   let p=document.getElementById('sensor-detalle');
   if(!p){ p=document.createElement('div'); p.id='sensor-detalle';
     p.innerHTML='<div class="sd-h"><div class="sd-h-tit"><b>Registros de lectura</b><span>SENSORES EST. LA CORREA</span></div>'
+      +'<span class="sd-cx cx-wait">● Verificando…</span>'
       +'<svg class="sd-h-ico" viewBox="0 0 64 48" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M16 24 L32 11 L48 24"/><path d="M21 24 V37 H43 V24"/><path d="M9 43 q4 -4 8 0 t8 0 t8 0 t8 0 t8 0" stroke-width="2.6"/></svg>'
       +'<span class="sd-x" title="Cerrar">✕</span></div>'
       +'<div class="sd-tabs">'+_tabsHTML()+'</div>'
@@ -563,6 +632,7 @@ function _pintarSerie(info, lista){
 async function abrirPanelSensor(key){
   const info=SENSOR_INFO[key]; if(!info) return;
   const p=panelDetalle(); p.style.display='block';
+  if(window.CONEX) pintarConexion(window.CONEX);   // refleja el estado de conexión actual al abrir
   // Pestañas propias del NIVEL del agua (no aplican a lluvia/temperatura/humedad): se ocultan.
   const soloNivel=['niveles','perfil','galeria'];
   p.querySelectorAll('.sd-tabs button').forEach(b=>{ b.style.display=(key!=='nivel'&&soloNivel.includes(b.dataset.t))?'none':''; });
@@ -590,12 +660,51 @@ function initChart(){const ctx=document.getElementById('sensor-chart');if(!ctx||
   chart=new Chart(ctx,{type:'line',data:{labels:hist.labels,datasets:[{label:'Nivel',data:hist.data,borderColor:'#2e8b57',backgroundColor:'rgba(46,139,87,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},responsive:true,maintainAspectRatio:false}});}
 function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN DATO';b.textContent=t;b.className='estado-'+t.toUpperCase().replace(/\s/g,'');}
 // Deriva estado y color del nivel medido (cm) contra CONFIG.UMBRALES
-function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:10,critico:20};
+function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
   if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
-  if(nv>=U.critico)   return {txt:'CRÍTICO',   col:'#c0392b'};
-  if(nv>=U.preventivo)return {txt:'PREVENCIÓN',col:'#EF9F27'};
+  if(nv>=U.critico)    return {txt:'CRÍTICO',   col:'#c0392b'};
+  if(nv>=U.prevencion) return {txt:'PREVENCIÓN',col:'#e67e22'};
+  if(nv>=U.preventivo) return {txt:'PRECAUCIÓN',col:'#EAB308'};
   return {txt:'NORMAL',col:'#2e9e57'};}
 function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
+
+// ===== Estado de CONEXIÓN real del sensor (muestra la verdad) =====
+// Regla robusta e independiente de la zona horaria: el sensor está CONECTADO
+// solo si están llegando lecturas nuevas (id_medicion crece) dentro de la ventana.
+// Si el id no cambia => dato estático => DESCONECTADO. Un dato claramente viejo
+// (>6 h) se marca desconectado de inmediato, sin esperar.
+function _parseFechaLocal(s){ if(!s) return NaN; s=String(s).trim().replace(' ','T').replace(/\.\d+$/,''); return new Date(s).getTime(); }
+function _relTiempo(ms){ if(!isFinite(ms)) return ''; let s=Math.round(Math.abs(ms)/1000);
+  if(s<60) return 'hace '+s+' s'; let m=Math.round(s/60); if(m<60) return 'hace '+m+' min';
+  let h=Math.round(m/60); if(h<24) return 'hace '+h+' h'; let d=Math.round(h/24); return 'hace '+d+(d===1?' día':' días'); }
+function _fechaCorta(s){ const t=_parseFechaLocal(s); if(isNaN(t)) return String(s||'—');
+  const d=new Date(t); const p=n=>String(n).padStart(2,'0');
+  return p(d.getDate())+'/'+p(d.getMonth()+1)+'/'+d.getFullYear()+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+function evaluarConexion(d,C){
+  const now=Date.now(), maxMs=((CONFIG&&CONFIG.CONEXION_MAX_MIN)||15)*60000;
+  const id=+((d&&d.id_medicion)||0), edad=now-_parseFechaLocal(d&&d[C.fecha]);
+  const T=window._cxTrack||(window._cxTrack={lastId:null,lastNew:0,started:now});
+  if(T.lastId===null){ T.lastId=id; }                       // primer sondeo: fija línea base
+  else if(id>T.lastId){ T.lastId=id; T.lastNew=now; }       // llegó lectura nueva
+  let ok;
+  if(T.lastNew>0){ ok=(now-T.lastNew)<=maxMs; }             // hay historial: ¿siguen llegando?
+  else if(isFinite(edad)&&edad>6*3600000){ ok=false; }      // dato claramente viejo => desconectado ya
+  else if((now-T.started)<25000){ ok=null; }                // aún verificando (2–3 sondeos)
+  else{ ok=false; }                                          // id estático >25 s => desconectado
+  return { ok, edad, fecha:(d&&d[C.fecha])||'' };
+}
+function pintarConexion(cx){
+  window.CONEX=cx;
+  const txt = cx.ok===true?'Conectado' : cx.ok===false?'Desconectado' : 'Verificando…';
+  const dot = cx.ok===true?'🟢' : cx.ok===false?'🔴' : '⚪';
+  const cls = cx.ok===true?'cx-on' : cx.ok===false?'cx-off' : 'cx-wait';
+  const b=document.getElementById('conexion-badge');
+  if(b){ b.textContent=dot+' '+txt; b.className='cx-badge '+cls;
+    b.title=cx.fecha?('Última lectura: '+_fechaCorta(cx.fecha)+(isFinite(cx.edad)?' ('+_relTiempo(cx.edad)+')':'')):''; }
+  const ps=document.getElementById('panel-sensor'); if(ps) ps.classList.toggle('disc', cx.ok===false);
+  const sc=document.querySelector('#sensor-detalle .sd-cx');
+  if(sc){ sc.textContent='● '+txt; sc.className='sd-cx '+cls; }
+}
 async function leerSensor(){const C=CONFIG.CAMPOS;try{
   // Conexión con la API por /mapa (GeoJSON con todas las mediciones del punto P1)
   const r=await fetch(CONFIG.API_BASE+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
@@ -608,13 +717,19 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
   // Estado derivado del NIVEL real vs umbrales (el campo estado_alerta del prototipo es inconsistente)
   const est=estadoPorNivel(parseFloat(d[C.nivel]));
   setEstado(est.txt);
-  document.getElementById('sensor-update').textContent='Última lectura: '+(d[C.fecha]||new Date().toLocaleString());
+  // Estado de conexión REAL (basado en si siguen llegando lecturas nuevas)
+  const cx=evaluarConexion(d,C); pintarConexion(cx);
+  const antig=isFinite(cx.edad)?' · '+_relTiempo(cx.edad):'';
+  document.getElementById('sensor-update').textContent='Última lectura: '+(d[C.fecha]?_fechaCorta(d[C.fecha]):new Date().toLocaleString())+antig;
   sensorMarker.setIcon(iconNivel(est.col));
   // Conectar el marcador P1 con la lectura: popup con los datos en vivo
   const fmt=v=>(v!==undefined&&v!==null&&v!=='')?v:'—';
+  const cxTxt=cx.ok===true?'Conectado':cx.ok===false?'Desconectado':'Verificando…';
+  const cxCol=cx.ok===true?'#2e9e57':cx.ok===false?'#c0392b':'#9a9a92';
   sensorMarker.setPopupContent(
     '<div style="min-width:190px;font-size:12.5px">'
     +'<b>📡 '+CONFIG.SENSOR.nombre+'</b>'
+    +'<div style="margin:4px 0;font-weight:700;color:'+cxCol+'">'+(cx.ok===true?'🟢':cx.ok===false?'🔴':'⚪')+' '+cxTxt+'</div>'
     +'<div style="margin:5px 0;font-weight:700;color:'+est.col+'">● '+est.txt+'</div>'
     +'<div><b>Nivel del agua:</b> '+fmt(d[C.nivel])+' cm</div>'
     +'<div><b>Temperatura:</b> '+fmt(d[C.temp])+' °C</div>'
@@ -631,22 +746,20 @@ async function leerSensor(){const C=CONFIG.CAMPOS;try{
     if(esNueva){ _serieLista.push(d);
       const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); }
   }
- }catch(e){setEstado('SIN DATO');document.getElementById('sensor-update').textContent='API no disponible (revisa endpoint/CORS). '+e.message;
+ }catch(e){setEstado('SIN DATO');pintarConexion({ok:false,edad:Infinity,fecha:''});document.getElementById('sensor-update').textContent='API no disponible (revisa endpoint/CORS). '+e.message;
    try{ sensorMarker.setPopupContent('<b>📡 '+CONFIG.SENSOR.nombre+'</b><br>Sin datos (API no disponible)'); }catch(_){} }}
-// El panel "Estación de monitoreo" (#panel-sensor) NO aparece al inicio del geoportal;
-// se muestra al hacer clic en el submenú "Estación de Monitoreo La Correa" y se oculta
-// al pasar a los menús Conocimiento o Manejo (lógica en navbar.js).
+// El panel "Estación de monitoreo" (#panel-sensor) permanece SIEMPRE visible mientras
+// se trabaja con los sensores de La Correa. NO se oculta al hacer clic en el mapa ni al
+// activar/desactivar sensores: SOLO se oculta cuando el usuario entra a otra sección del
+// menú (Conocimiento del riesgo o Manejo de desastres) — esa lógica vive en navbar.js.
 window.mostrarPanelEstacion=function(on){ const p=document.getElementById('panel-sensor'); if(p) p.style.display=on?'block':'none'; };
-// Cualquier clic FUERA del panel (y que no sea un marcador o el menú) lo oculta.
-document.addEventListener('click',function(e){
-  const p=document.getElementById('panel-sensor');
-  if(!p || getComputedStyle(p).display==='none') return;    // ya está oculto
-  if(p.contains(e.target)) return;                           // clic dentro del panel
-  if(e.target.closest('.leaflet-marker-icon')||e.target.closest('.leaflet-control')||e.target.closest('.navbar')
-     ||e.target.closest('#capas-panel')||e.target.closest('#capas-btn')||e.target.closest('#sensor-detalle')) return;
-  window.mostrarPanelEstacion(false);
-},true);
-window.addEventListener('load',()=>{ window.mostrarPanelEstacion(false); initChart(); leerSensor(); setInterval(leerSensor,CONFIG.REFRESH_MS); });
+// Contexto "sensores de La Correa": la estación, la capa de sensores de nivel o la ventana de niveles.
+window.enContextoCorrea=function(){ const s=window._initSearch||location.search; return /siata_nivel/.test(s) || /[?&](niveles|lluvia)=1/.test(s) || /[?&]clima=(temp|humedad)/.test(s); };
+window.addEventListener('load',()=>{
+  // Visible de entrada si venimos en contexto de sensores de La Correa; si no, oculto hasta activarlo.
+  window.mostrarPanelEstacion(!!window.enContextoCorrea());
+  initChart(); leerSensor(); setInterval(leerSensor,CONFIG.REFRESH_MS);
+});
 
 // ---------- Leyenda dinámica (según capas activas) ----------
 const SW=c=>`<i style="background:${c}"></i>`;

@@ -17,6 +17,12 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .nv-head h1{margin:0;font-size:30px;font-weight:800;font-style:italic;letter-spacing:.3px}
 .nv-head h1 small{font-style:normal;font-weight:600;font-size:22px;opacity:.95;margin-left:12px}
 .nv-head .ico{width:74px;height:54px;opacity:.9}
+.nv-head h1{flex:1}   /* empuja el estado de conexión y el ícono a la derecha */
+.nv-cx{flex:none;font-size:12.5px;font-weight:800;padding:4px 11px;border-radius:12px;white-space:nowrap;margin-left:10px}
+.nv-cx.cx-on{background:rgba(255,255,255,.92);color:#1c7a41}
+.nv-cx.cx-off{background:#ffe3e0;color:#b5271c}
+.nv-cx.cx-wait{background:rgba(255,255,255,.78);color:#4f5453}
+.embed .nv-cx{font-size:11px;padding:3px 8px;margin-left:6px}
 /* Rejilla principal */
 .grid{display:grid;grid-template-columns:300px 1fr;gap:14px;margin-top:14px}
 .card{background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(31,90,67,.10);padding:16px 18px}
@@ -108,12 +114,13 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 <body>
 
 <div id="navbar-root"></div>
-<script src="js/navbar.js?v=49"></script>
+<script src="js/navbar.js?v=52"></script>
 
 <div class="wrap">
 
   <div class="nv-head">
     <h1>Registros de lectura — Nivel de agua <small>Estación de Monitoreo La Correa</small></h1>
+    <span id="nv-cx" class="nv-cx cx-wait">⚪ Verificando…</span>
     <svg class="ico" viewBox="0 0 64 48" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round">
       <path d="M14 24 L32 10 L50 24"/><path d="M20 24 V38 H44 V24"/>
       <path d="M8 44 q4 -4 8 0 t8 0 t8 0 t8 0 t8 0" stroke-width="2.4"/>
@@ -173,22 +180,25 @@ input[type=range]{width:100%;accent-color:var(--verde)}
   </div>
 </div>
 
-<script src="js/config.js?v=4"></script>
+<script src="js/config.js?v=6"></script>
 <script src="js/corte_p1.js?v=1"></script>
 <script>
 // Modo embebido (dentro del modal flotante del visor): oculta el menú superior.
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
-const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:10,critico:20};
+const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:150,prevencion:250,critico:350};
 const N=[
  {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
- {n:'N2',c:'#EAB308',tope:U.critico,       tit:'Nivel de precaución',  desc:'Se presentan aumentos en el nivel. Estado de alerta ante posibles crecientes.'},
- {n:'N3',c:'#EF9F27',tope:U.critico*2,     tit:'Inundación menor',     desc:'Afectaciones menores a calles y estructuras cercanas. Alerta naranja. Precaución.'},
- {n:'N4',c:'#E24B4A',tope:U.critico*3,     tit:'Inundación mayor',     desc:'Inundación extensa que afecta a viviendas, vías e infraestructura. Alerta roja. Evacuación inmediata.'}
+ {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Precaución',           desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
+ {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Prevención',           desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
+ {n:'N4',c:'#E24B4A',tope:U.critico*1.5,   tit:'Crítico',              desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
 ];
 const idxNivel=cm=>{ for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; };
 const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
+// Eje de nivel fijo a 0–700 cm con divisiones alineadas a los umbrales de alerta.
+const NIVEL_MAX=700;
+function ticksNivel(scale){ scale.ticks=[0,U.preventivo,U.prevencion,U.critico,500,NIVEL_MAX].map(v=>({value:v})); }
 
 // ---- Escala (tarjetas) y barras N ----
 document.getElementById('esc').innerHTML=N.slice().reverse().map(x=>
@@ -197,14 +207,63 @@ function pintarNbar(id,act){ document.getElementById(id).innerHTML=
   N.slice().reverse().map((x,ri)=>{const i=N.length-1-ri; return `<div style="background:${x.c};opacity:${i===act?1:.5}">${x.n}</div>`;}).join(''); }
 
 // ---- Líneas de umbral (dataset dashed) para la serie ----
-function umbralesSerie(len){ return N.slice(0,3).map(x=>({label:x.n,data:Array(len).fill(x.tope),borderColor:x.c,
-  borderDash:[6,4],borderWidth:1.2,pointRadius:0,fill:false,tension:0,order:5})); }
+// Cada línea marca el nivel al que se ENTRA a un estado; toma el color de ese estado
+// (150 -> N2 Precaución amarillo · 250 -> N3 Prevención naranja · 350 -> N4 Crítico rojo).
+function umbralesSerie(len){ return [1,2,3].map(i=>({label:N[i].n,data:Array(len).fill(N[i-1].tope),borderColor:N[i].c,
+  borderDash:[6,4],borderWidth:1.3,pointRadius:0,fill:false,tension:0,order:5})); }
+// Relleno tipo "agua": degradado azul claro (superficie) a azul intenso (fondo).
+function aguaFill(cx){ const a=cx.chart.chartArea; const c=cx.chart.ctx;
+  if(!a) return 'rgba(56,152,214,.28)';
+  const g=c.createLinearGradient(0,a.top,0,a.bottom);
+  g.addColorStop(0,'rgba(96,178,230,.12)'); g.addColorStop(1,'rgba(23,110,185,.50)'); return g; }
 // ---- Plugin cursor vertical (instante seleccionado) ----
 const cursor={id:'cursor',afterDraw(c){ const i=c.$cur; if(i==null)return; const x=c.scales.x.getPixelForValue(i);
   const {top,bottom}=c.chartArea,ctx=c.ctx; ctx.save(); ctx.strokeStyle='#0b3d2e';ctx.lineWidth=1.6;ctx.setLineDash([4,3]);
   ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();ctx.restore(); }};
 
+// ---- Plugin: barra de alerta alineada al eje + triángulo del nivel (perfil transversal) ----
+let corteLvl=NaN;
+const perfilAlerta={id:'perfilAlerta',afterDatasetsDraw(c){
+  const ca=c.chartArea,ctx=c.ctx,ys=c.scales.y,yMin=ys.min,yMax=ys.max;
+  const bx=ca.right+10,bw=18;
+  const yTop=ys.getPixelForValue(yMax), yBot=ys.getPixelForValue(yMin);
+  const zonas=[[0,U.preventivo,'#2e9e57','N1'],[U.preventivo,U.prevencion,'#EAB308','N2'],[U.prevencion,U.critico,'#EF9F27','N3'],[U.critico,yMax,'#E24B4A','N4']];
+  function pill(x,w){ctx.beginPath(); if(ctx.roundRect)ctx.roundRect(x,yTop,w,yBot-yTop,8); else ctx.rect(x,yTop,w,yBot-yTop);}
+  function barra(x,w,labels){
+    ctx.save(); pill(x,w); ctx.clip();
+    zonas.forEach(z=>{const a=Math.max(z[0],yMin),b=Math.min(z[1],yMax);if(b<=a)return;
+      ctx.fillStyle=z[2];ctx.fillRect(x,ys.getPixelForValue(b),w,ys.getPixelForValue(a)-ys.getPixelForValue(b));});
+    ctx.restore();
+    ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=1;pill(x,w);ctx.stroke();
+    if(labels){ctx.font='bold 10px Segoe UI,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#fff';
+      zonas.forEach(z=>{const a=Math.max(z[0],yMin),b=Math.min(z[1],yMax);if(b<=a)return;
+        ctx.fillText(z[3],x+w/2,(ys.getPixelForValue(b)+ys.getPixelForValue(a))/2);});}
+  }
+  ctx.save();
+  barra(6, 18, true);    // IZQUIERDA: N1–N4 proporcional al eje (mismos cm), con etiquetas
+  barra(bx, bw, false);  // DERECHA: zonas de alerta (misma escala y tamaño)
+  const lvl=(c.options.plugins.perfilAlerta||{}).lvl;
+  if(lvl!=null&&!isNaN(lvl)){
+    const ly=ys.getPixelForValue(Math.max(yMin,Math.min(lvl,yMax)));
+    ctx.strokeStyle='#0f5aa0';ctx.lineWidth=1.6;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(ca.left,ly);ctx.lineTo(bx,ly);ctx.stroke();ctx.setLineDash([]);
+    // marcador ▼ del nivel, apoyado sobre la línea punteada (símbolo de nivel de agua)
+    const mx=ca.left+8;
+    ctx.fillStyle='#3b93d6';ctx.strokeStyle='#0f3f74';ctx.lineWidth=1.3;
+    ctx.beginPath();ctx.moveTo(mx-8,ly-15);ctx.lineTo(mx+8,ly-15);ctx.lineTo(mx,ly-1);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#0f5aa0';
+    const lbl=Math.round(lvl)+' cm',tx=bx+bw+3;
+    ctx.font='bold 11px Segoe UI,system-ui,sans-serif';const tw=ctx.measureText(lbl).width;
+    ctx.beginPath();ctx.moveTo(bx+bw,ly);ctx.lineTo(tx,ly-6);ctx.lineTo(tx,ly+6);ctx.closePath();ctx.fill();
+    ctx.fillRect(tx,ly-8,tw+8,16);
+    ctx.fillStyle='#fff';ctx.textBaseline='middle';ctx.textAlign='left';ctx.fillText(lbl,tx+4,ly+1);
+  }
+  ctx.restore();
+}};
+
 let SERIE=[], VEN=[], chS=null, chC=null;
+// Las barras N1–N4 ahora se dibujan en el canvas (proporcionales al eje); se ocultan las HTML.
+(function(){['nbar1','nbar2'].forEach(id=>{const n=document.getElementById(id); if(n)n.style.display='none';});})();
 
 function parse(s){ return new Date(String(s).replace(' ','T')); }
 function ventana(){ const win=parseFloat(document.getElementById('win').value);
@@ -223,31 +282,37 @@ function dibujarSerie(keep){
   const data=VEN.map(m=>parseFloat(m.nivel_agua));
   const mx=Math.max(30,...data.filter(v=>!isNaN(v)),N[1].tope+5);
   if(chS)chS.destroy();
+  const lastVal=[...data].reverse().find(v=>!isNaN(v));
   chS=new Chart(document.getElementById('cSerie'),{type:'line',
-    data:{labels,datasets:[{label:'Nivel',data,borderColor:'#1f7a45',backgroundColor:'rgba(47,158,87,.18)',
-      fill:true,tension:.35,pointRadius:0,borderWidth:2,order:1}, ...umbralesSerie(labels.length)]},
-    options:{plugins:{legend:{display:false},tooltip:{filter:it=>it.datasetIndex===0,callbacks:{label:it=>'Nivel: '+fmt(it.parsed.y)+' cm'}}},
-      scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{beginAtZero:true,max:Math.ceil(mx/10)*10,title:{display:true,text:'Nivel (cm)'}}},
-      responsive:true,maintainAspectRatio:false},plugins:[cursor]});
+    data:{labels,datasets:[{label:'Nivel',data,borderColor:'#176eb9',backgroundColor:aguaFill,
+      fill:true,tension:.35,pointRadius:0,borderWidth:2.2,order:1}]},
+    options:{layout:{padding:{left:34,right:72}},
+      plugins:{legend:{display:false},perfilAlerta:{lvl:lastVal},tooltip:{filter:it=>it.datasetIndex===0,callbacks:{label:it=>'Nivel: '+fmt(it.parsed.y)+' cm'}}},
+      scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{min:0,max:NIVEL_MAX,afterBuildTicks:ticksNivel,title:{display:true,text:'Nivel (cm)'}}},
+      responsive:true,maintainAspectRatio:false},plugins:[cursor,perfilAlerta]});
   // deslizador (conserva el instante elegido si el usuario está explorando)
   const sc=document.getElementById('scrub'); sc.max=Math.max(0,VEN.length-1);
   const idx=(keep && !wasMax)?Math.min(oldIdx,VEN.length-1):VEN.length-1;
   sc.value=idx; actualizarInstante(idx);
 }
 function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D.perfil.filter(p=>p.z!=null);
-  const dd=perf.map(p=>p.d), zz=perf.map(p=>p.z);
-  const zmin=Math.min(...zz),zmax=Math.max(...zz);
-  const dep=isNaN(cm)?0:cm/100, wElev=D.z_min+dep, water=zz.map(z=>z<wElev?wElev:z);
+  const base=D.z_min;                                          // lecho seco = 0 cm
+  const dd=perf.map(p=>p.d), zz=perf.map(p=>(p.z-base)*100);   // altura sobre el lecho, en cm
+  const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
+  // Eje fijo 0–700 cm para que se vean siempre las 4 zonas de alerta (N1–N4).
+  const yMax=NIVEL_MAX;
+  const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();
   chC=new Chart(document.getElementById('cCorte'),{type:'line',
     data:{labels:dd,datasets:[
-      {label:'Terreno',data:zz,borderColor:'#7fae86',backgroundColor:'rgba(47,158,87,.12)',fill:'start',tension:.2,pointRadius:0,borderWidth:1.6,order:2},
-      {label:'Agua',data:water,borderColor:'rgba(33,120,180,.9)',backgroundColor:'rgba(33,150,243,.45)',fill:{target:0},pointRadius:0,borderWidth:1,tension:.1,order:1}
+      {label:'Terreno',data:zz,borderColor:'#c9a877',backgroundColor:'rgba(214,178,122,.55)',fill:'start',tension:.2,pointRadius:0,borderWidth:1.4,order:2},
+      {label:'Agua',data:water,borderColor:'#0f5aa0',backgroundColor:'rgba(23,110,185,.55)',fill:{target:0},pointRadius:0,borderWidth:1,tension:.1,order:1}
     ]},
-    options:{plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(2)+' m'}}},
-      scales:{x:{title:{display:true,text:'Distancia (m)'},ticks:{maxTicksLimit:7}},
-        y:{min:Math.floor(zmin-.4),max:Math.ceil(zmax+.3),title:{display:true,text:'Cota (m s.n.m.)'}}},
-      responsive:true,maintainAspectRatio:false}});
+    options:{layout:{padding:{left:34,right:72}},
+      plugins:{legend:{display:false},perfilAlerta:{lvl:lvl},tooltip:{filter:it=>it.parsed.y<=yMax,callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
+      scales:{x:{title:{display:true,text:'Ancho de la corriente (m)'},ticks:{maxTicksLimit:7}},
+        y:{min:0,max:yMax,afterBuildTicks:ticksNivel,title:{display:true,text:'Nivel (cm)'}}},
+      responsive:true,maintainAspectRatio:false},plugins:[perfilAlerta]});
 }
 function actualizarInstante(i){ if(!VEN.length)return; i=Math.max(0,Math.min(i,VEN.length-1));
   const m=VEN[i], cm=parseFloat(m.nivel_agua), act=idxNivel(isNaN(cm)?0:cm);
@@ -268,8 +333,18 @@ document.getElementById('win').addEventListener('change',dibujarSerie);
 document.getElementById('scrub').addEventListener('input',e=>actualizarInstante(+e.target.value));
 
 // ===== Cargar datos reales de la API (fallback demo si no responde) =====
+// ---- Estado de conexión REAL (misma regla que el panel: ¿llegan lecturas nuevas?) ----
+function _nvRel(ms){ ms=Math.abs(ms); let s=Math.round(ms/1000); if(s<60)return'hace '+s+' s';
+  let m=Math.round(s/60); if(m<60)return'hace '+m+' min'; let h=Math.round(m/60); if(h<24)return'hace '+h+' h';
+  let d=Math.round(h/24); return 'hace '+d+(d===1?' día':' días'); }
+function pintarNvCx(ok,fecha){ const b=document.getElementById('nv-cx'); if(!b)return;
+  const t=ok===true?'Conectado':ok===false?'Desconectado':'Verificando…';
+  const dot=ok===true?'🟢':ok===false?'🔴':'⚪';
+  b.textContent=dot+' '+t; b.className='nv-cx '+(ok===true?'cx-on':ok===false?'cx-off':'cx-wait');
+  const edad=Date.now()-parse(fecha).getTime();
+  b.title=fecha?('Última lectura: '+String(fecha).slice(0,16).replace('T',' ')+(isFinite(edad)?' ('+_nvRel(edad)+')':'')):''; }
 async function cargar(keep){
-  let arr=null;
+  let arr=null, esDemo=false;
   try{ const r=await fetch(API+'/mediciones',{cache:'no-store'}); if(r.ok) arr=await r.json(); }catch(e){}
   if(!Array.isArray(arr)||!arr.length){
     try{ const r=await fetch(API+(CONFIG.ENDPOINT_MAPA||'/mapa'),{cache:'no-store'}); if(r.ok){const g=await r.json();
@@ -277,13 +352,24 @@ async function cargar(keep){
   }
   const nd=document.getElementById('nd');
   if(!Array.isArray(arr)||!arr.length){                       // demo si la API no responde (CORS/dormida)
-    const now=Date.now(); arr=[];
+    esDemo=true; const now=Date.now(); arr=[];
     for(let i=0;i<220;i++){ const t=new Date(now-(220-i)*20*60000);
       arr.push({id_medicion:i+1,nivel_agua:+(4+8*Math.abs(Math.sin(i/7))+ (i%17===0?7:0)).toFixed(2),fecha_hora:t.toISOString().slice(0,19).replace('T',' ')}); }
     nd.style.display='block'; nd.textContent='· Mostrando datos de demostración (la API no respondió; en local usa el proxy / en producción habilita CORS).';
   } else nd.style.display='none';
   SERIE=arr.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime()))
            .sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));
+  // conexión: el sensor está conectado solo si de verdad llegan lecturas nuevas de la API
+  const now=Date.now(), maxMs=((CONFIG&&CONFIG.CONEXION_MAX_MIN)||15)*60000;
+  const last=SERIE.length?SERIE[SERIE.length-1]:null, id=last?+(last.id_medicion||0):0;
+  const T=window._nvTrack||(window._nvTrack={lastId:null,lastNew:0,started:now});
+  if(T.lastId===null){ T.lastId=id; } else if(id>T.lastId){ T.lastId=id; T.lastNew=now; }
+  let ok;
+  if(esDemo){ ok=false; }
+  else if(T.lastNew>0){ ok=(now-T.lastNew)<=maxMs; }
+  else { const edad=last?now-parse(last.fecha_hora).getTime():Infinity;
+         if(isFinite(edad)&&edad>6*3600000) ok=false; else if((now-T.started)<25000) ok=null; else ok=false; }
+  pintarNvCx(ok, last?last.fecha_hora:'');
   dibujarSerie(keep);
 }
 cargar(false);

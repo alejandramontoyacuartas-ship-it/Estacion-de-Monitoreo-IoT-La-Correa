@@ -161,7 +161,8 @@
     document.querySelectorAll('.sat-sw input[data-key]').forEach(inp=>{
       inp.addEventListener('change', e=>{ e.stopPropagation();
         // Si NO estamos en el mapa (p. ej. Tablero de lectura), volver al geoportal donde el sensor funciona.
-        if(typeof window.setSensorIcon!=='function'){ location.href = inp.dataset.key==='nivel' ? 'index.html?niveles=1' : 'index.html'; return; }
+        if(typeof window.setSensorIcon!=='function'){ const k=inp.dataset.key;
+          location.href = k==='nivel'?'index.html?niveles=1' : k==='lluvia'?'index.html?lluvia=1' : (k==='temp'||k==='humedad')?'index.html?clima='+k : 'index.html'; return; }
         aplicar(inp);
         // Al ACTIVAR cualquier sensor se muestra su lectura: el nivel abre la ventana flotante lateral;
         // lluvia/temperatura/humedad abren su panel compacto. Al DESACTIVAR el nivel, se cierra su ventana.
@@ -169,10 +170,19 @@
           // Activar solo enciende el ícono + la red hídrica; la VENTANA se abre al hacer clic en el ícono de nivel.
           if(inp.checked){ redHidrica(true); }
           else { if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante(); redHidrica(false); }
+        } else if(inp.dataset.key==='lluvia'){
+          // La lluvia abre su propia ventana flotante de registros al activarse (y la cierra al apagarse).
+          redHidrica(false);
+          if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
+          if(inp.checked){ if(window.abrirLluviaFlotante) window.abrirLluviaFlotante(); }
+          else { if(window.cerrarLluviaFlotante) window.cerrarLluviaFlotante(); }
         } else {
-          redHidrica(false);                                        // otro sensor → apaga la red hídrica
-          if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();   // y cierra la ventana de nivel
-          if(inp.checked && window.abrirPanelSensor) window.abrirPanelSensor(inp.dataset.key);
+          // temperatura / humedad → ventana flotante con serie de tiempo (selector de periodo)
+          redHidrica(false);
+          if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
+          if(window.cerrarLluviaFlotante) window.cerrarLluviaFlotante();
+          if(inp.checked){ if(window.abrirClimaFlotante) window.abrirClimaFlotante(inp.dataset.key); }
+          else { if(window.cerrarClimaFlotante) window.cerrarClimaFlotante(); }
         }
       });
       inp.parentElement.addEventListener('click', e=>e.stopPropagation());
@@ -216,9 +226,10 @@
     document.querySelectorAll('.nav-menu > .nav-item').forEach(li=>{
       const lk=li.querySelector(':scope > .nav-link'); if(!lk) return;
       if(/Conocimiento|Manejo/i.test(lk.textContent)){
-        const cerrar=()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(false); };
-        li.addEventListener('mouseenter', cerrar);
-        lk.addEventListener('click', cerrar);
+        // El panel de la estación SOLO se oculta cuando el usuario hace CLIC en otra
+        // sección del menú (no al pasar el mouse por encima), para que permanezca
+        // visible mientras se trabaja con los sensores de La Correa.
+        lk.addEventListener('click', ()=>{ if(window.mostrarPanelEstacion) window.mostrarPanelEstacion(false); });
       }
       // Al salir con el mouse del menú, quita el foco para que el desplegable se cierre
       // (si no, un interruptor/enlace con foco lo mantiene abierto tapando el contenido).
