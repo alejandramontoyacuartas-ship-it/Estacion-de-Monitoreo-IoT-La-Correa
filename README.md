@@ -39,7 +39,7 @@ abrir por doble clic.
 | **`index.html`** | **Visor principal**: mapa + menú de capas + panel del sensor + herramientas | ✅ Actual |
 | **`puntos_riesgo.html`** | **Página analítica de puntos críticos**: filtros (vereda/riesgo) + mapa + tabla + dashboard con gráficos | ✅ Actual |
 | **`escenarios.html`** | Escenarios de riesgo (26 tarjetas en 6 categorías con iconos) | ✅ Actual |
-| **`cambio_climatico.html`** | Cambio climático (intro + tarjetas, ligado al SAT) | ✅ Actual |
+| **`cambio_climatico.html`** | Cambio climático (intro + tarjetas con **videos** en ventana flotante: precipitación extrema, olas de calor, avenidas torrenciales) | ✅ Actual |
 | `dashboard.html` | Tablero | ⚠️ **Pendiente** (contenido viejo 12,5 m) |
 | `monitoreo.html` | Portal estación tipo SIATA | ⚠️ **Pendiente** |
 | `informes.html` | Informes / visitas | ⚠️ **Pendiente** |
@@ -105,7 +105,9 @@ GeoportalGRDGirardota/
 ## 🧩 Stack técnico
 - **Leaflet 1.9.4** (mapa) · **Leaflet.heat** (mapa de calor) · **Chart.js 4.4** (gráficos).
 - **GeoJSON** estático embebido (`js/data.js`) — sin backend propio.
-- Sensor en tiempo real: el navegador lee una **API REST** (Render) definida en `js/config.js`.
+- Sensor en tiempo real: el navegador lee una **API REST** (FastAPI + PostgreSQL, en Render) definida en `js/config.js`.
+- **Dashboard "Monitor de quebrada"** (app Angular desplegada en Netlify) enlazado desde el menú superior; consume la misma API.
+- Videos de Cambio Climático en `CAMBIO CLIMATICO/` (.mp4), reproducidos en ventana flotante.
 - CRS de los datos: **WGS84 (EPSG:4326)**.
 
 ---
