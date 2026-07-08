@@ -9,6 +9,8 @@ tiempo real** vía API.
 > **Para retomar el trabajo en VS Code, lee primero esta sección y luego `docs/`.**
 > Toda la lógica está documentada para no repetir trabajo.
 
+🌐 **Geoportal en vivo (GitHub Pages):** https://alejandramontoyacuartas-ship-it.github.io/Estacion-de-Monitoreo-IoT-La-Correa/
+
 ---
 
 ## 🚀 Inicio rápido (VS Code)
