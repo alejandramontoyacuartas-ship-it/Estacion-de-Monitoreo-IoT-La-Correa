@@ -651,7 +651,7 @@ async function abrirPanelSensor(key){
     }
     lista=Array.isArray(_medCache)?_medCache.slice():[];
   }catch(e){ p.querySelector('.sd-valor').textContent='Sin datos (API no disponible)'; return; }
-  lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fecha
+  lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fechahttps://github.com/alejandramontoyacuartas-ship-it/Estacion-de-Monitoreo-IoT-La-Correa/blob/main/js/app.js
   lista.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // orden cronológico por id
   const nivelCm=_pintarSerie(info, lista);                    // serie por ventana de tiempo + máximo + resumen
   renderLecturas(lista, info);
@@ -663,13 +663,14 @@ function initChart(){const ctx=document.getElementById('sensor-chart');if(!ctx||
   chart=new Chart(ctx,{type:'line',data:{labels:hist.labels,datasets:[{label:'Nivel',data:hist.data,borderColor:'#2e8b57',backgroundColor:'rgba(46,139,87,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},responsive:true,maintainAspectRatio:false}});}
 function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN DATO';b.textContent=t;b.className='estado-'+t.toUpperCase().replace(/\s/g,'');}
 // Deriva estado y color del nivel medido (cm) contra CONFIG.UMBRALES
-function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
-  if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
-  if(nv>=U.critico)    return {txt:'EVACUACIÓN',col:'#c0392b'};
-  if(nv>=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
-  if(nv>=U.preventivo) return {txt:'ADVERTENCIA',col:'#EAB308'};
-  return {txt:'NORMAL',col:'#2e9e57'};}
-function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
+function estadoPorNivel(distancia){
+  const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
+  if(isNaN(distancia)) return {txt:'SIN DATO',col:'#888'};
+  const nivel = H_SENSOR - distancia;              // lámina de agua real (cm)
+  if(nivel>=U.critico)    return {txt:'EVACUACIÓN', col:'#c0392b'};
+  if(nivel>=U.prevencion) return {txt:'CRÍTICO',    col:'#e67e22'};
+  if(nivel>=U.preventivo) return {txt:'ADVERTENCIA',col:'#EAB308'};
+  return {txt:'NORMAL',col:'#2e9e57'};
 
 // ===== Estado de CONEXIÓN real del sensor (muestra la verdad) =====
 // Regla robusta e independiente de la zona horaria: el sensor está CONECTADO
