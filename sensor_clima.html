@@ -122,8 +122,8 @@ const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
 // Configuración por variable (temperatura / humedad)
 const VARS={
   temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
-            vMin:-10, vMax:60, gMin:0, gMax:40,
-            ref:{prom:22, lo:19, hi:25, zona:'Girardota'},
+            vMin:-10, vMax:60, gMin:15, gMax:33,
+            ref:{prom:22, lo:19, hi:25, minProm:15, maxHist:33, zona:'Girardota'},
             hmStops:[[18,'#2e9e57'],[24,'#f4d03f'],[30,'#e67e22']],
             ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
             foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'},
@@ -212,8 +212,8 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
   if(V.ref){ const tick=(tv,col,w)=>{ const a=Math.PI*(1-(tv-min)/(max-min)), r1=71, r2=89;
       return '<line x1="'+(cx+r1*Math.cos(a)).toFixed(1)+'" y1="'+(cy-r1*Math.sin(a)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(a)).toFixed(1)+'" y2="'+(cy-r2*Math.sin(a)).toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'"/>'; };
     refMarks=tick(V.ref.lo,'#ffffff',2)+tick(V.ref.hi,'#ffffff',2)+tick(V.ref.prom,'#2b3a4a',2.6);
-    refNote='<div class="g-ref">Promedio en '+V.ref.zona+': <b>'+V.ref.prom+' °C</b> · rango normal <b>'+V.ref.lo+'–'+V.ref.hi+' °C</b>'
-      +'<span>❄ bajo '+V.ref.lo+' °C se enfría · ☀ sobre '+V.ref.hi+' °C se calienta</span></div>'; }
+    refNote='<div class="g-ref">'+V.ref.zona+' · Prom. <b>'+V.ref.prom+' °C</b> · Mín. prom. ago. <b>'+V.ref.minProm+' °C</b> · Máx. histórica <b>'+V.ref.maxHist+' °C</b>'
+      +'<span>Rango normal '+V.ref.lo+'–'+V.ref.hi+' °C · ❄ bajo '+V.ref.lo+' se enfría · ☀ sobre '+V.ref.hi+' se calienta</span></div>'; }
   el.innerHTML='<svg viewBox="0 0 200 132">'
     +'<defs><linearGradient id="gg-'+which+'" x1="0" y1="0" x2="1" y2="0">'+grad+'</linearGradient></defs>'
     +'<path d="'+arc+'" fill="none" stroke="#e9edf0" stroke-width="15" stroke-linecap="round"/>'
