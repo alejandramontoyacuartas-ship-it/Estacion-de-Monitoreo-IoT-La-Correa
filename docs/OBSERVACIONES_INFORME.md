@@ -106,8 +106,8 @@ efectivamente expuesta.
 
 ## OBS-6 · Umbrales de alerta del sensor (nivel) — por calibrar
 
-**Dato afectado:** umbrales del SAT (`CONFIG.UMBRALES`: PREVENCIÓN ≥ 10 cm · CRÍTICO ≥ 20 cm) y los
-niveles **N1–N4** de la sección transversal en el geoportal.
+**Dato afectado:** umbrales del SAT (`CONFIG.UMBRALES`: ADVERTENCIA ≥ 100 cm · CRÍTICO ≥ 130 cm ·
+EVACUACIÓN ≥ 150 cm) y los niveles **N1–N4** de la sección transversal en el geoportal.
 
 **Limitación:** son valores **provisionales del prototipo** (tomados de la configuración de la API),
 no calibrados hidráulicamente. La activación por **solo nivel** no captura la dinámica torrencial.
