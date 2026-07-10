@@ -181,7 +181,7 @@ document.documentElement.style.setProperty('--acc',V.acc);
 document.documentElement.style.setProperty('--acc-dark',V.accDark);
 document.getElementById('sc-title').innerHTML='Registros de lectura — '+V.label+' <small>Estación de Monitoreo La Correa</small>';
 document.getElementById('sc-chart-tit').textContent=V.label+' actual';
-document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' cada 2 horas';
+document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' · últimas 48 h (cada 2 h)';
 if(which==='humedad'){ document.getElementById('sc-grow').style.display='none'; document.getElementById('sc-hum').classList.add('on'); }
 document.getElementById('sc-ico').innerHTML=V.ico;
 document.getElementById('sc-foot').innerHTML=V.foot;
@@ -315,12 +315,15 @@ function pintarHeatmap(){ const grid=document.getElementById('hm-grid'); if(!gri
   const byDay={};
   SERIE.forEach(m=>{ if(isNaN(m.v))return; const d=new Date(m.t); const k=ymd(d), slot=Math.floor(d.getHours()/2);
     (byDay[k]=byDay[k]||{}); (byDay[k][slot]=byDay[k][slot]||{s:0,n:0}); byDay[k][slot].s+=m.v; byDay[k][slot].n++; });
-  const days=Object.keys(byDay).sort().slice(-10);            // últimos 10 días con datos
+  // Últimas 48 h = los 2 días calendario que terminan en la lectura más reciente
+  const lastT=SERIE.length?SERIE[SERIE.length-1].t:Date.now();
+  const lastD=new Date(lastT); lastD.setHours(0,0,0,0);
+  const days=[]; for(let i=1;i>=0;i--){ const d=new Date(lastD); d.setDate(d.getDate()-i); days.push(ymd(d)); }
   const horas=[0,2,4,6,8,10,12,14,16,18,20,22];
   let html='<div class="hm-corner"></div>';
   horas.forEach(h=> html+='<div class="hm-colhead">'+String(h).padStart(2,'0')+'</div>');
-  days.forEach(k=>{ const p=k.split('-'); html+='<div class="hm-rowlabel">'+p[2]+'/'+p[1]+'</div>';
-    horas.forEach((h,ci)=>{ const c=byDay[k][ci];
+  days.forEach(k=>{ const p=k.split('-'), dd=byDay[k]||{}; html+='<div class="hm-rowlabel">'+p[2]+'/'+p[1]+'</div>';
+    horas.forEach((h,ci)=>{ const c=dd[ci];
       if(c){ const v=c.s/c.n; html+='<div class="hm-cell" style="background:'+colorFor(v)+'" title="'+p[2]+'/'+p[1]+' '+String(h).padStart(2,'0')+':00 — '+fmt(v)+' '+V.uni+'"></div>'; }
       else html+='<div class="hm-cell hm-empty" title="'+p[2]+'/'+p[1]+' '+String(h).padStart(2,'0')+':00 — sin dato"></div>'; }); });
   grid.style.gridTemplateColumns='auto repeat('+horas.length+',1fr)';
