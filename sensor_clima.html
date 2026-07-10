@@ -58,6 +58,8 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .gauge{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
 .gauge svg{width:100%;max-width:340px;height:auto}
 .g-badge{display:inline-block;padding:3px 18px;border-radius:20px;font-size:13.5px;font-weight:800}
+.g-ref{text-align:center;font-size:11.5px;color:#5a6b60;line-height:1.5;margin-top:2px}
+.g-ref b{color:var(--acc-dark)} .g-ref span{display:block;font-size:10.5px;color:#8a97a6}
 .embed .gauge svg{max-width:260px} .embed .g-badge{font-size:12px;padding:2px 14px}
 /* ===== Modo embebido (ventana flotante lateral) ===== */
 .embed .navbar,.embed #navbar-root{display:none!important}
@@ -121,6 +123,7 @@ const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
 const VARS={
   temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
             vMin:-10, vMax:60, gMin:0, gMax:40,
+            ref:{prom:22, lo:19, hi:25, zona:'Girardota'},
             hmStops:[[18,'#2e9e57'],[24,'#f4d03f'],[30,'#e67e22']],
             ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
             foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'},
@@ -163,7 +166,8 @@ function colorFor(v){ const s=V.hmStops; if(isNaN(v))return '#e8ebe9';
 // Estado (Normal / Alto / Bajo) para el badge
 function estadoVar(v){ if(isNaN(v)) return {t:'—',bg:'#e8ebe9',fg:'#5a6b60'};
   if(which==='humedad'){ if(v<40)return{t:'Bajo',bg:'#fdeacb',fg:'#b26a00'}; if(v<=80)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'Alto',bg:'#cfe6f7',fg:'#1565c0'}; }
-  if(v<15)return{t:'Bajo',bg:'#cfe6f7',fg:'#1565c0'}; if(v<=28)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'Alto',bg:'#fbe0d5',fg:'#b23c17'}; }
+  // Girardota: promedio 22 °C, rango normal 19–25 (±3). <19 se enfría, ≥25 se calienta.
+  if(v<19)return{t:'❄ Frío',bg:'#d3e9fb',fg:'#1565c0'}; if(v<25)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'☀ Cálido',bg:'#fbe0d5',fg:'#b23c17'}; }
 
 let SERIE=[], chart=null;
 
@@ -203,10 +207,18 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
   const arc='M '+(cx-R)+' '+cy+' A '+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy;
   const st=V.hmStops, grad=st.map((s,i)=>'<stop offset="'+Math.round(i/(st.length-1)*100)+'%" stop-color="'+s[1]+'"/>').join('');
   const est=estadoVar(v);
+  // Marcas del rango de referencia (p. ej. Girardota: normal 19–25, promedio 22)
+  let refMarks='', refNote='';
+  if(V.ref){ const tick=(tv,col,w)=>{ const a=Math.PI*(1-(tv-min)/(max-min)), r1=71, r2=89;
+      return '<line x1="'+(cx+r1*Math.cos(a)).toFixed(1)+'" y1="'+(cy-r1*Math.sin(a)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(a)).toFixed(1)+'" y2="'+(cy-r2*Math.sin(a)).toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'"/>'; };
+    refMarks=tick(V.ref.lo,'#ffffff',2)+tick(V.ref.hi,'#ffffff',2)+tick(V.ref.prom,'#2b3a4a',2.6);
+    refNote='<div class="g-ref">Promedio en '+V.ref.zona+': <b>'+V.ref.prom+' °C</b> · rango normal <b>'+V.ref.lo+'–'+V.ref.hi+' °C</b>'
+      +'<span>❄ bajo '+V.ref.lo+' °C se enfría · ☀ sobre '+V.ref.hi+' °C se calienta</span></div>'; }
   el.innerHTML='<svg viewBox="0 0 200 132">'
     +'<defs><linearGradient id="gg-'+which+'" x1="0" y1="0" x2="1" y2="0">'+grad+'</linearGradient></defs>'
     +'<path d="'+arc+'" fill="none" stroke="#e9edf0" stroke-width="15" stroke-linecap="round"/>'
     +'<path d="'+arc+'" fill="none" stroke="url(#gg-'+which+')" stroke-width="15" stroke-linecap="round"/>'
+    +refMarks
     +'<text x="'+cx+'" y="84" text-anchor="middle" font-size="30" font-weight="800" fill="'+V.accDark+'">'+(isNaN(v)?'—':fmt(v))+'</text>'
     +'<text x="'+cx+'" y="99" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5a6b60">'+V.label+' ('+V.uni+')</text>'
     +'<line x1="'+cx+'" y1="'+cy+'" x2="'+tx+'" y2="'+ty+'" stroke="#2b3a4a" stroke-width="4" stroke-linecap="round"/>'
@@ -214,7 +226,8 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
     +'<text x="'+(cx-R)+'" y="124" text-anchor="middle" font-size="10" fill="#8a97a6">'+min+'</text>'
     +'<text x="'+(cx+R)+'" y="124" text-anchor="middle" font-size="10" fill="#8a97a6">'+max+' '+V.uni+'</text>'
     +'</svg>'
-    +'<div class="g-badge" style="background:'+est.bg+';color:'+est.fg+'">'+est.t+'</div>';
+    +'<div class="g-badge" style="background:'+est.bg+';color:'+est.fg+'">'+est.t+'</div>'
+    +refNote;
 }
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
