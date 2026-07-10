@@ -153,11 +153,6 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
       <div class="hd-chartwrap"><canvas id="ch-dia"></canvas></div>
       <div class="hd-foot">Datos registrados por el sensor de lluvia cada 5 minutos.</div>
     </div>
-    <!-- Dona: proporción del periodo -->
-    <div class="card span2">
-      <div class="ptit">Proporción del periodo (ventana)</div>
-      <div class="chartbox sm"><canvas id="ch-dona"></canvas></div>
-    </div>
   </div>
 
   <div class="nodata" id="nd" style="display:none"></div>
@@ -181,7 +176,7 @@ function relTiempo(ms){ ms=Math.abs(ms); let s=Math.round(ms/1000); if(s<60)retu
 function fechaCorta(t){ const p=n=>String(n).padStart(2,'0');
   return p(t.getDate())+'/'+p(t.getMonth()+1)+' '+p(t.getHours())+':'+p(t.getMinutes()); }
 
-let SERIE=[], chDia=null, chLinea=null, chDona=null;
+let SERIE=[], chDia=null;
 
 // ---- Estado de conexión (misma regla que el panel: ¿llegan lecturas nuevas?) ----
 function pintarCx(ok,fecha){ const b=document.getElementById('rn-cx'); if(!b)return;
@@ -287,16 +282,6 @@ function pintarLinea(){ const cont=document.getElementById('tl-lluvia'); if(!con
   if(res) res.textContent='Resolución: cada '+(bm>=60?(bm/60)+' h':bm+' min')+' · '+conDato+' registros · ☀️ sin lluvia · 🌧️ lluvia';
 }
 
-function pintarDona(){ const ven=ventana(); const n=ven.length, si=ven.filter(m=>m.llov).length, no=n-si;
-  const ctx=document.getElementById('ch-dona'); if(!ctx||!window.Chart)return;
-  if(chDona)chDona.destroy();
-  chDona=new Chart(ctx,{type:'doughnut',data:{labels:['Con lluvia','Sin lluvia'],
-    datasets:[{data:[si,no],backgroundColor:[AZUL2,'#dbe6f2'],borderWidth:0}]},
-    options:{animation:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}},
-      tooltip:{callbacks:{label:it=>it.label+': '+it.parsed+' lecturas'}}},
-      responsive:true,maintainAspectRatio:false}});
-}
-
 function pintarResumen(){ const ven=ventana();
   const n=ven.length, si=ven.filter(m=>m.llov).length;
   document.getElementById('k-pct').innerHTML=(n?Math.round(si/n*100):0)+'<small>%</small>';
@@ -311,8 +296,8 @@ function pintarResumen(){ const ven=ventana();
     sub.textContent='Última lectura: '+fechaCorta(new Date(last.t)); }
 }
 
-function repintar(){ pintarDia(); pintarLinea(); pintarDona(); pintarResumen(); }
-document.getElementById('win').addEventListener('change',()=>{ pintarLinea(); pintarDona(); pintarResumen(); });
+function repintar(){ pintarDia(); pintarLinea(); pintarResumen(); }
+document.getElementById('win').addEventListener('change',()=>{ pintarLinea(); pintarResumen(); });
 
 // ===== Cargar datos reales de la API (fallback demo si no responde) =====
 async function cargar(){
