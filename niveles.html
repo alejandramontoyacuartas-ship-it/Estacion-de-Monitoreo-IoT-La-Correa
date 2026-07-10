@@ -186,23 +186,23 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 // Modo embebido (dentro del modal flotante del visor): oculta el menú superior.
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
-const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
-// El sensor mide DISTANCIA hasta el agua: a MENOR lectura, MAYOR peligro (agua más cerca
-// del sensor). Por eso los "tope" van en orden DESCENDENTE (N1 = lectura más alta/lejana =
-// seguro) y se compara con ">" — igual que en app.js (estadoPorNivel/nivelesN).
+const U=(typeof CONFIG!=='undefined'&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
+// nivel_agua = altura de la lámina (cm). A MAYOR nivel, MAYOR peligro (rojo arriba, verde
+// abajo) — coherente con config.js/app.js (estadoPorNivel: nivel>=critico => Evacuación).
+// tope = umbral de ENTRADA a cada estado (límite inferior del nivel).
 const N=[
- {n:'N1',c:'#2e9e57',tope:U.critico,       tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
- {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Advertencia',          desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
- {n:'N3',c:'#EF9F27',tope:U.preventivo,    tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
- {n:'N4',c:'#E24B4A',tope:0,               tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
+ {n:'N1',c:'#2e9e57',tope:0,             tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
+ {n:'N2',c:'#EAB308',tope:U.preventivo,  tit:'Advertencia',          desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
+ {n:'N3',c:'#EF9F27',tope:U.prevencion,  tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
+ {n:'N4',c:'#E24B4A',tope:U.critico,     tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
 ];
-const idxNivel=cm=>{ for(let i=0;i<N.length;i++){ if(cm>N[i].tope) return i; } return N.length-1; };
+const idxNivel=cm=>{ let r=0; for(let i=0;i<N.length;i++){ if(cm>=N[i].tope) r=i; } return r; };
 const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
-const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
+const API=(typeof CONFIG!=='undefined'&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
-const NIVEL_MAX=Math.max(80, Math.ceil(U.critico*1.5/10)*10);
-function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=100) t.push({value:v}); scale.ticks=t; }
+const NIVEL_MAX=190;   // eje de nivel fijo a 190 cm (solicitado); el crítico actual (150) queda dentro con holgura
+function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=50) t.push({value:v}); if(!t.some(o=>o.value===NIVEL_MAX)) t.push({value:NIVEL_MAX}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
 document.getElementById('esc').innerHTML=N.slice().reverse().map(x=>
@@ -231,7 +231,7 @@ const perfilAlerta={id:'perfilAlerta',afterDatasetsDraw(c){
   const ca=c.chartArea,ctx=c.ctx,ys=c.scales.y,yMin=ys.min,yMax=ys.max;
   const bx=ca.right+10,bw=18;
   const yTop=ys.getPixelForValue(yMax), yBot=ys.getPixelForValue(yMin);
-  const zonas=[[0,U.preventivo,'#E24B4A','N4'],[U.preventivo,U.prevencion,'#EF9F27','N3'],[U.prevencion,U.critico,'#EAB308','N2'],[U.critico,yMax,'#2e9e57','N1']];
+  const zonas=[[0,U.preventivo,'#2e9e57','N1'],[U.preventivo,U.prevencion,'#EAB308','N2'],[U.prevencion,U.critico,'#EF9F27','N3'],[U.critico,yMax,'#E24B4A','N4']];
   function pill(x,w){ctx.beginPath(); if(ctx.roundRect)ctx.roundRect(x,yTop,w,yBot-yTop,8); else ctx.rect(x,yTop,w,yBot-yTop);}
   function barra(x,w,labels){
     ctx.save(); pill(x,w); ctx.clip();
@@ -315,9 +315,9 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
   const zz=zzRaw.map((_,i)=>{let s=0,n=0;for(let j=Math.max(0,i-2);j<=Math.min(zzRaw.length-1,i+2);j++){s+=zzRaw[j];n++;}return s/n;});
   const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
   // Eje del perfil acotado a 200 cm: muestra el detalle del fondo del cauce y la lámina de agua
-  // (las paredes del cauce por encima de 200 cm quedan fuera de cuadro).
+  // (las paredes del cauce por encima de 300 cm quedan fuera de cuadro).
   // así el perfil transversal muestra la forma real de la quebrada.
-  const yMax=200;
+  const yMax=300;
   const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();
   chC=new Chart(document.getElementById('cCorte'),{type:'line',
@@ -325,10 +325,10 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
       {label:'Terreno',data:zz,borderColor:'#c9a877',backgroundColor:'rgba(214,178,122,.55)',fill:'start',tension:.45,pointRadius:0,borderWidth:1.4,order:2},
       {label:'Agua',data:water,borderColor:'#0f5aa0',backgroundColor:'rgba(23,110,185,.55)',fill:{target:0},pointRadius:0,borderWidth:1,tension:.1,order:1}
     ]},
-    options:{layout:{padding:{left:6,right:16}},
-      plugins:{legend:{display:false},perfilAlerta:{lvl:lvl,soloMarcador:true},tooltip:{callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
+    options:{layout:{padding:{left:34,right:72}},
+      plugins:{legend:{display:false},perfilAlerta:{lvl:lvl},tooltip:{callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
       scales:{x:{title:{display:true,text:'Ancho de la corriente (m)'},ticks:{maxTicksLimit:7}},
-        y:{min:0,max:yMax,ticks:{stepSize:100},title:{display:true,text:'Altura sobre el lecho (cm)'}}},
+        y:{min:0,max:yMax,ticks:{stepSize:50},title:{display:true,text:'Altura sobre el lecho (cm)'}}},
       responsive:true,maintainAspectRatio:false},plugins:[perfilAlerta]});
 }
 function actualizarInstante(i){ if(!VEN.length)return; i=Math.max(0,Math.min(i,VEN.length-1));
