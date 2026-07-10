@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=22"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=23"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });

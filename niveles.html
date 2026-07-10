@@ -201,7 +201,7 @@ const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(typeof CONFIG!=='undefined'&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
-const NIVEL_MAX=190;   // eje de nivel fijo a 190 cm (solicitado); el crítico actual (150) queda dentro con holgura
+const NIVEL_MAX=300;   // ambos ejes (nivel y altura) a 300 cm => las bandas de alerta N1-N4 coinciden en las dos gráficas
 function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=50) t.push({value:v}); if(!t.some(o=>o.value===NIVEL_MAX)) t.push({value:NIVEL_MAX}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
@@ -299,7 +299,7 @@ function dibujarSerie(keep){
       fill:true,tension:.35,pointRadius:0,borderWidth:2.2,order:1}]},
     options:{layout:{padding:{left:34,right:72}},
       plugins:{legend:{display:false},perfilAlerta:{lvl:lastVal},tooltip:{filter:it=>it.datasetIndex===0,callbacks:{label:it=>'Nivel: '+fmt(it.parsed.y)+' cm'}}},
-      scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{min:0,max:NIVEL_MAX,afterBuildTicks:ticksNivel,title:{display:true,text:'Nivel (cm)'}}},
+      scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{min:0,max:NIVEL_MAX,ticks:{stepSize:50,autoSkip:false},title:{display:true,text:'Nivel (cm)'}}},
       responsive:true,maintainAspectRatio:false},plugins:[cursor,perfilAlerta]});
   // deslizador (conserva el instante elegido si el usuario está explorando)
   const sc=document.getElementById('scrub'); sc.max=Math.max(0,VEN.length-1);
