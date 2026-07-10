@@ -187,7 +187,7 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
 // El sensor entrega DISTANCIA; el nivel de agua = NIVEL_REF - lectura (sube cuando el sensor baja).
-const NIVEL_REF=(typeof CONFIG!=='undefined'&&CONFIG.NIVEL_REF)||150;
+const NIVEL_REF=(typeof CONFIG!=='undefined'&&CONFIG.NIVEL_REF)||170;
 const aNivel=med=>Math.max(0, NIVEL_REF-parseFloat(med));
 // Umbrales de distancia (config) -> umbrales en NIVEL DE AGUA (N2>=10, N3>=30, N4>=50 con ref 150).
 const Ud=(typeof CONFIG!=='undefined'&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
@@ -206,7 +206,7 @@ const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(typeof CONFIG!=='undefined'&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
-const NIVEL_MAX=150;   // nivel de agua = 150 - lectura, así que el eje llega a 150 (con ref 150)
+const NIVEL_MAX=NIVEL_REF;   // el eje llega al máximo posible del nivel (= NIVEL_REF, con lectura 0)
 function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=50) t.push({value:v}); if(!t.some(o=>o.value===NIVEL_MAX)) t.push({value:NIVEL_MAX}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
@@ -319,8 +319,8 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
   const zzRaw=perf.map(p=>(p.z-base)*100);
   const zz=zzRaw.map((_,i)=>{let s=0,n=0;for(let j=Math.max(0,i-2);j<=Math.min(zzRaw.length-1,i+2);j++){s+=zzRaw[j];n++;}return s/n;});
   const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
-  // Eje del perfil a 150 cm (= NIVEL_MAX): así las bandas de alerta N1–N4 coinciden con la
-  // gráfica de serie y la lámina de agua (nivel = 150 - lectura) se lee en la misma escala.
+  // Eje del perfil = NIVEL_MAX (= NIVEL_REF): así las bandas de alerta N1–N4 coinciden con la
+  // gráfica de serie y la lámina de agua (nivel = NIVEL_REF - lectura) se lee en la misma escala.
   const yMax=NIVEL_MAX;
   const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();

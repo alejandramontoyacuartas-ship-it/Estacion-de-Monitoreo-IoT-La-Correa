@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=24"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=25"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -432,7 +432,7 @@ function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
 // El sub-panel trabaja con el nivel ya convertido (sube con el agua), así que los "tope" van
 // en orden ASCENDENTE (N1 = nivel bajo = seguro) y se compara con ">=" (a MAYOR nivel, más grave).
 function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
-  const REF=(CONFIG&&CONFIG.NIVEL_REF)||150;
+  const REF=(CONFIG&&CONFIG.NIVEL_REF)||170;
   return [
     {n:'N1',c:'#2e9e57',tope:0,             tit:'Nivel de agua seguro'},
     {n:'N2',c:'#EAB308',tope:REF-U.critico,    tit:'Advertencia'},
@@ -658,7 +658,7 @@ async function abrirPanelSensor(key){
   lista.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // orden cronológico por id
   // El sensor entrega DISTANCIA; convertimos a NIVEL DE AGUA (= NIVEL_REF - lectura) una sola vez,
   // así toda la pestaña (serie, resumen, perfil, niveles) trabaja con el nivel que sube con el agua.
-  const _REFd=(CONFIG&&CONFIG.NIVEL_REF)||150;
+  const _REFd=(CONFIG&&CONFIG.NIVEL_REF)||170;
   lista=lista.map(m=>{ const raw=parseFloat(m.nivel_agua); return isNaN(raw)?m:Object.assign({},m,{nivel_agua:+(_REFd-raw).toFixed(2)}); });
   const nivelCm=_pintarSerie(info, lista);                    // serie por ventana de tiempo + máximo + resumen
   renderLecturas(lista, info);
@@ -735,7 +735,7 @@ async function leerSensor(){const C=CONFIG.CAMPOS;
     f.sort((a,b)=>(b.id_medicion||0)-(a.id_medicion||0)); d=f[0]||{}; }   // más reciente primero
   else if(Array.isArray(gj)) d=gj[0]||{}; else d=gj||{};
   // Nivel de agua mostrado = NIVEL_REF - lectura del sensor (sube cuando la distancia baja)
-  const _REF=(CONFIG&&CONFIG.NIVEL_REF)||150; const _nivAgua=_REF-parseFloat(d[C.nivel]);
+  const _REF=(CONFIG&&CONFIG.NIVEL_REF)||170; const _nivAgua=_REF-parseFloat(d[C.nivel]);
   fila('v-nivel', isNaN(_nivAgua)?'—':_nivAgua.toFixed(2));fila('v-temp',d[C.temp]);fila('v-humedad',d[C.humedad]);
   fila('v-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':d[C.lluvia]);
   // Estado derivado del NIVEL real vs umbrales (el campo estado_alerta del prototipo es inconsistente)
@@ -767,7 +767,7 @@ async function leerSensor(){const C=CONFIG.CAMPOS;
   if(sd && sd.style.display!=='none' && _serieInfo && _serieLista && _serieLista.length && d[C.fecha]){
     const prev=_serieLista[_serieLista.length-1];
     const esNueva = (d.id_medicion||0)>(prev.id_medicion||0) || String(d[C.fecha])!==String(prev[C.fecha]);
-    if(esNueva){ const raw=parseFloat(d.nivel_agua); const dConv=isNaN(raw)?d:Object.assign({},d,{nivel_agua:+(((CONFIG&&CONFIG.NIVEL_REF)||150)-raw).toFixed(2)}); _serieLista.push(dConv);
+    if(esNueva){ const raw=parseFloat(d.nivel_agua); const dConv=isNaN(raw)?d:Object.assign({},d,{nivel_agua:+(((CONFIG&&CONFIG.NIVEL_REF)||170)-raw).toFixed(2)}); _serieLista.push(dConv);
       const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); }
   }
  }catch(e){

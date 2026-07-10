@@ -33,8 +33,8 @@ const CONFIG = {
     critico:    140   // <= 140 cm -> N2 ADVERTENCIA ; > 140 -> N1 SEGURO
   },
   // El NIVEL DE AGUA que se muestra = NIVEL_REF - lectura del sensor (sube cuando el sensor baja).
-  // NIVEL_REF = distancia del sensor al lecho seco (referencia del MDE en P1, ~150 cm).
-  NIVEL_REF: 150,
+  // NIVEL_REF = distancia del sensor al lecho seco (altura de montaje del sensor sobre el cauce, 170 cm).
+  NIVEL_REF: 170,
 
   // ---- Estación de monitoreo (Producto A) ----
   SENSOR: {
