@@ -651,7 +651,7 @@ async function abrirPanelSensor(key){
     }
     lista=Array.isArray(_medCache)?_medCache.slice():[];
   }catch(e){ p.querySelector('.sd-valor').textContent='Sin datos (API no disponible)'; return; }
-  lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fechahttps://github.com/alejandramontoyacuartas-ship-it/Estacion-de-Monitoreo-IoT-La-Correa/blob/main/js/app.js
+  lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fecha
   lista.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // orden cronológico por id
   const nivelCm=_pintarSerie(info, lista);                    // serie por ventana de tiempo + máximo + resumen
   renderLecturas(lista, info);
@@ -669,6 +669,7 @@ function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,pr
   if(nv>=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
   if(nv>=U.preventivo) return {txt:'ADVERTENCIA',col:'#EAB308'};
   return {txt:'NORMAL',col:'#2e9e57'};}
+function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
 
 // ===== Estado de CONEXIÓN real del sensor (muestra la verdad) =====
 // Regla robusta e independiente de la zona horaria: el sensor está CONECTADO
