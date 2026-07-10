@@ -376,7 +376,7 @@ window.abrirClimaFlotante=function(varname){
   }
   const ifr=m.querySelector('iframe');
   if(ifr.getAttribute('data-var')!==varname){ ifr.setAttribute('data-var',varname);
-    ifr.setAttribute('src','sensor_clima.html?embed=1&var='+varname+'&v=7'); }
+    ifr.setAttribute('src','sensor_clima.html?embed=1&var='+varname+'&v=8'); }
   if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
   if(window.cerrarLluviaFlotante)  window.cerrarLluviaFlotante();
   m.classList.add('open');

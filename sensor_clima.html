@@ -171,7 +171,7 @@ const VARS={
             ref:{zona:'Girardota', prom:72, lo:55, hi:85,
                  marks:[[95,'Saturación',1],[85,'',0],[72,'Promedio',1],[55,'',0],[40,'Ambiente seco',1]],
                  note:'🏜 bajo 55% se seca · 💧 sobre 85% muy húmedo'},
-            hmStops:[[40,'#e0c24a'],[65,'#35b18a'],[95,'#2b8fd6']],
+            hmStops:[[70,'#3bb18f'],[80,'#f1c40f'],[88,'#ef8b3b'],[94,'#e05c4f']],
             ico:'<path d="M12 3C8 8 6.5 11.5 6.5 14a5.5 5.5 0 0 0 11 0c0-2.5-1.5-6-5.5-11Z" fill="#fff"/>',
             foot:'Humedad relativa del aire medida por el sensor <b>SHT30</b>. Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'}
 };
@@ -288,8 +288,9 @@ function pintarScale(v){ const el=document.getElementById('sc-scale'); if(!el) r
 }
 
 // ===== Vista de HUMEDAD: barra horizontal + semáforo (clasificación IDEAM) =====
-const SEM=[ {t:'Muy seco',lo:0,hi:20,c:'#e15c54'}, {t:'Seco',lo:20,hi:40,c:'#eaa84a'},
-  {t:'Normal',lo:40,hi:60,c:'#5cb85c'}, {t:'Húmedo',lo:60,hi:80,c:'#6cb6e8'}, {t:'Muy húmedo',lo:80,hi:100,c:'#2f74c0'} ];
+// Semáforo hidrológico ajustado al comportamiento local de Girardota (humedad → riesgo de lluvia)
+const SEM=[ {t:'Normal',lo:0,hi:75,c:'#3bb18f'}, {t:'Precaución',lo:75,hi:82,c:'#f1c40f'},
+  {t:'Prevención',lo:82,hi:88,c:'#ef8b3b'}, {t:'Crítico',lo:88,hi:100,c:'#e05c4f'} ];
 function catHum(v){ for(const s of SEM){ if(v<s.hi) return s; } return SEM[SEM.length-1]; }
 function pintarHumedad(v){ const el=document.getElementById('sc-hum'); if(!el) return;
   const cat=isNaN(v)?null:catHum(v), pct=x=>Math.max(0,Math.min(100,x));
@@ -305,8 +306,8 @@ function pintarHumedad(v){ const el=document.getElementById('sc-hum'); if(!el) r
     +'<div class="hb-prom" title="Promedio regional 78%" style="left:'+prom+'%"></div>'+cur+'</div>'
     +'<div class="hb-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div></div>'
     +'<div class="sem">'+sem+'</div>'
-    +'<div class="g-ref">IDEAM (zonas similares) · promedio <b>~78%</b> · rango <b>75–80%</b> · pico julio <b>87%</b>'
-    +'<span>Girardota suele estar en el rango «Húmedo»</span></div>';
+    +'<div class="g-ref">Semáforo hidrológico · humedad alta = mayor probabilidad de lluvia · promedio Girardota <b>~78%</b> · pico julio <b>87%</b>'
+    +'<span>≥ 88% señala alta probabilidad de lluvias intensas o tormentas</span></div>';
 }
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
