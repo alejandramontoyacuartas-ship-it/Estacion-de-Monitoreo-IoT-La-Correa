@@ -33,9 +33,9 @@ const CONFIG = {
   //   derivados de la curva de gasto de Manning con el caudal Log-Pearson III (Q Tr100 = 280 m³/s).
   //   Requieren un sensor de mayor alcance montado por encima del nivel de diseño (>~3,7 m).
   UMBRALES: {
-    preventivo: 20,   // >= 20 cm -> N2 ADVERTENCIA (amarillo)
-    prevencion: 40,   // >= 40 cm -> N3 CRÍTICO     (naranja)
-    critico:    60    // >= 60 cm -> N4 EVACUACIÓN  (rojo)
+    preventivo: 100,   // >= 100 cm -> N2 ADVERTENCIA (amarillo)
+    prevencion: 130,   // >= 130 cm -> N3 CRÍTICO     (naranja)
+    critico:    150    // >= 150 cm -> N4 EVACUACIÓN  (rojo)
   },
 
   // ---- Estación de monitoreo (Producto A) ----
