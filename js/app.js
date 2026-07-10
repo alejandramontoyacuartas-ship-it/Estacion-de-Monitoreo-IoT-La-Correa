@@ -337,7 +337,7 @@ window.abrirLluviaFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='lluvia-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Lluvia" src="lluvia.html?embed=1&v=7"></iframe></div>';
+      +'<iframe title="Registros de lectura — Lluvia" src="lluvia.html?embed=1&v=8"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarLluviaFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarLluviaFlotante(); });
@@ -376,7 +376,7 @@ window.abrirClimaFlotante=function(varname){
   }
   const ifr=m.querySelector('iframe');
   if(ifr.getAttribute('data-var')!==varname){ ifr.setAttribute('data-var',varname);
-    ifr.setAttribute('src','sensor_clima.html?embed=1&var='+varname+'&v=9'); }
+    ifr.setAttribute('src','sensor_clima.html?embed=1&var='+varname+'&v=10'); }
   if(window.cerrarNivelesFlotante) window.cerrarNivelesFlotante();
   if(window.cerrarLluviaFlotante)  window.cerrarLluviaFlotante();
   m.classList.add('open');
@@ -520,7 +520,7 @@ function panelDetalle(){
       +'<div class="sd-body">'
       +  '<div class="sd-tab" data-tab="series"><div class="sd-sub"></div><div class="sd-valor"></div>'
       +    '<div class="sd-serie-head"><span class="sd-serie-tit">Serie de tiempo</span>'
-      +      '<select id="sd-win" title="Ventana de tiempo"><option value="3">3 horas</option><option value="24">24 horas</option><option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>'
+      +      '<select id="sd-win" title="Ventana de tiempo"><option value="3">3 horas</option><option value="6">6 horas</option><option value="12">12 horas</option><option value="24">24 horas</option><option value="36">36 horas</option><option value="72" selected>72 horas</option></select></div>'
       +    '<div class="sd-chart-wrap"><canvas id="sd-chart"></canvas></div>'
       +    '<div class="sd-resumen" id="sd-resumen"></div></div>'
       +  '<div class="sd-tab" data-tab="niveles" style="display:none"><div class="sd-serie-tit">Niveles de riesgo (por lámina)</div>'

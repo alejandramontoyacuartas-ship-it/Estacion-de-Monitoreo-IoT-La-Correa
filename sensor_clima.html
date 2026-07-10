@@ -126,13 +126,17 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 
   <div class="sc-cards">
     <div class="card sc-now"><div class="big" id="sc-now-big">—</div><div class="sub" id="sc-now-sub">esperando lectura…</div></div>
-    <div class="card sc-kpi"><span>Mínimo (72 h)</span><b id="k-min">—</b></div>
-    <div class="card sc-kpi"><span>Máximo (72 h)</span><b id="k-max">—</b></div>
-    <div class="card sc-kpi"><span>Promedio (72 h)</span><b id="k-avg">—</b></div>
+    <div class="card sc-kpi"><span>Mínimo (ventana)</span><b id="k-min">—</b></div>
+    <div class="card sc-kpi"><span>Máximo (ventana)</span><b id="k-max">—</b></div>
+    <div class="card sc-kpi"><span>Promedio (ventana)</span><b id="k-avg">—</b></div>
   </div>
 
   <div class="card pcard g-card">
     <div class="ptit" id="sc-chart-tit">Estado actual</div>
+    <div class="winsel"><select id="win">
+      <option value="3">3 horas</option><option value="6">6 horas</option>
+      <option value="12">12 horas</option><option value="24">24 horas</option>
+      <option value="36">36 horas</option><option value="72" selected>72 horas</option></select></div>
     <div class="g-row" id="sc-grow">
       <div id="sc-gauge" class="gauge"></div>
       <div id="sc-scale" class="g-scale"></div>
@@ -159,7 +163,7 @@ const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
 // Configuración por variable (temperatura / humedad)
 const VARS={
   temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
-            vMin:-10, vMax:60, gMin:15, gMax:33,
+            vMin:-10, vMax:60, gMin:15, gMax:33, hmStep:2,
             ref:{zona:'Girardota', prom:22, lo:19, hi:25,
                  marks:[[33,'Máx. histórica',1],[25,'',0],[22,'Promedio',1],[19,'',0],[15,'Mín. prom. (ago)',1]],
                  note:'❄ bajo 19 °C se enfría · ☀ sobre 25 °C se calienta'},
@@ -167,7 +171,7 @@ const VARS={
             ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
             foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'},
   humedad: {campo:C.humedad||'humedad', label:'Humedad', uni:'%', dec:0, acc:'#26a69a', accDark:'#00695c',
-            vMin:0, vMax:105, gMin:0, gMax:100,
+            vMin:0, vMax:105, gMin:0, gMax:100, hmStep:1,
             ref:{zona:'Girardota', prom:72, lo:55, hi:85,
                  marks:[[95,'Saturación',1],[85,'',0],[72,'Promedio',1],[55,'',0],[40,'Ambiente seco',1]],
                  note:'🏜 bajo 55% se seca · 💧 sobre 85% muy húmedo'},
@@ -181,7 +185,7 @@ document.documentElement.style.setProperty('--acc',V.acc);
 document.documentElement.style.setProperty('--acc-dark',V.accDark);
 document.getElementById('sc-title').innerHTML='Registros de lectura — '+V.label+' <small>Estación de Monitoreo La Correa</small>';
 document.getElementById('sc-chart-tit').textContent=V.label+' actual';
-document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' · últimas 48 h (cada 2 h)';
+document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' · últimas 48 h (cada '+(V.hmStep||2)+' h)';
 if(which==='humedad'){ document.getElementById('sc-grow').style.display='none'; document.getElementById('sc-hum').classList.add('on'); }
 document.getElementById('sc-ico').innerHTML=V.ico;
 document.getElementById('sc-foot').innerHTML=V.foot;
@@ -222,10 +226,12 @@ function pintarCx(ok,fecha){ const b=document.getElementById('sc-cx'); if(!b)ret
 }
 
 function ventana(){ if(!SERIE.length) return [];
-  const tU=SERIE[SERIE.length-1].t, desde=tU-72*3600000;      // KPIs sobre las últimas 72 h
+  const sel=document.getElementById('win'); const win=sel?parseFloat(sel.value):72;   // ventana de descarga (horas)
+  const tU=SERIE[SERIE.length-1].t, desde=tU-win*3600000;
   const v=SERIE.filter(m=>m.t>=desde && !isNaN(m.v));
   return v.length>=2?v:SERIE.filter(m=>!isNaN(m.v)).slice(-40);
 }
+const _win=document.getElementById('win'); if(_win) _win.addEventListener('change',repintar);
 
 function repintar(){
   const ven=ventana();
@@ -312,14 +318,14 @@ function pintarHumedad(v){ const el=document.getElementById('sc-hum'); if(!el) r
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
 function pintarHeatmap(){ const grid=document.getElementById('hm-grid'); if(!grid) return;
-  const byDay={};
-  SERIE.forEach(m=>{ if(isNaN(m.v))return; const d=new Date(m.t); const k=ymd(d), slot=Math.floor(d.getHours()/2);
+  const step=V.hmStep||2, byDay={};                            // paso por variable (temp 2 h, humedad 1 h)
+  SERIE.forEach(m=>{ if(isNaN(m.v))return; const d=new Date(m.t); const k=ymd(d), slot=Math.floor(d.getHours()/step);
     (byDay[k]=byDay[k]||{}); (byDay[k][slot]=byDay[k][slot]||{s:0,n:0}); byDay[k][slot].s+=m.v; byDay[k][slot].n++; });
   // Últimas 48 h = los 2 días calendario que terminan en la lectura más reciente
   const lastT=SERIE.length?SERIE[SERIE.length-1].t:Date.now();
   const lastD=new Date(lastT); lastD.setHours(0,0,0,0);
   const days=[]; for(let i=1;i>=0;i--){ const d=new Date(lastD); d.setDate(d.getDate()-i); days.push(ymd(d)); }
-  const horas=[0,2,4,6,8,10,12,14,16,18,20,22];
+  const horas=[]; for(let h=0;h<24;h+=step) horas.push(h);
   let html='<div class="hm-corner"></div>';
   horas.forEach(h=> html+='<div class="hm-colhead">'+String(h).padStart(2,'0')+'</div>');
   days.forEach(k=>{ const p=k.split('-'), dd=byDay[k]||{}; html+='<div class="hm-rowlabel">'+p[2]+'/'+p[1]+'</div>';
