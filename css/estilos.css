@@ -96,8 +96,8 @@ body{font-family:Arial,Helvetica,sans-serif;color:#222;display:flex;flex-directi
 .cx-badge.cx-on{background:#e6f6ec;color:#1c7a41;border:1px solid #b7e2c6}
 .cx-badge.cx-off{background:#fdeceb;color:#b5271c;border:1px solid #f2c4bf}
 .cx-badge.cx-wait{background:#eef0f0;color:#6b6f6e;border:1px solid #d8dcda}
-/* Sensor desconectado: el estado del nivel deja de "gritar" NORMAL en verde */
-#panel-sensor.disc #estado-badge{opacity:.4;filter:grayscale(.7)}
+/* El badge de estado SIEMPRE muestra el color del semáforo (Normal/Prevención/Precaución/Crítica).
+   La desconexión se indica aparte con el badge de conexión, no apagando el color de alerta. */
 /* Indicador de conexión en el encabezado del panel flotante SIATA */
 #sensor-detalle .sd-cx{flex:none;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:11px;z-index:1;white-space:nowrap}
 #sensor-detalle .sd-cx.cx-on{background:rgba(255,255,255,.92);color:#1c7a41}
