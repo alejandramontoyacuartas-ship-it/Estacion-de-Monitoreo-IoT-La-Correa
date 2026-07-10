@@ -81,7 +81,7 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
         <span id="sim-estado" class="tag" style="font-size:17px;padding:6px 20px;margin-top:4px;background:#9a9a92">SIN DATO</span>
       </div>
       <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px">
-        <div class="m"><b id="s-nivel">—</b><span>Nivel del agua (cm)</span></div>
+        <div class="m"><b id="s-nivel">—</b><span>Distancia del nivel de agua al sensor (cm)</span></div>
         <div class="m"><b id="s-temp">—</b><span>Temperatura (°C)</span></div>
         <div class="m"><b id="s-hum">—</b><span>Humedad (%)</span></div>
         <div class="m"><b id="s-lluvia">—</b><span>¿Lloviendo?</span></div>
@@ -260,10 +260,11 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
    // así la gráfica, el resumen, el estado y el PDF trabajan con el mismo dato que el geoportal.
    SERIE=arr.filter(m=>m[C.fecha]&&m[C.fecha]!=='None'&&!isNaN(parse(m[C.fecha]).getTime()))
             .sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0))
-            .map(m=>{ const raw=parseFloat(m[C.nivel]); return isNaN(raw)?m:Object.assign({},m,{[C.nivel]:+(REF-raw).toFixed(2)}); });
+            .map(m=>{ const raw=parseFloat(m[C.nivel]); return isNaN(raw)?m:Object.assign({},m,{[C.nivel]:+(REF-raw).toFixed(2), _dist:raw}); });
    if(!SERIE.length){ lb.textContent='Sin datos'; lb.style.background='#c0392b'; return; }
-   const d=SERIE[SERIE.length-1], nv=parseFloat(d[C.nivel]);
-   set('s-nivel',isNaN(nv)?'—':nv.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
+   const d=SERIE[SERIE.length-1], nv=parseFloat(d[C.nivel]);        // nv = nivel de agua (convertido)
+   const dist=parseFloat(d._dist);                                    // lectura cruda del sensor (distancia)
+   set('s-nivel',isNaN(dist)?'—':dist.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
    set('s-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':(d[C.lluvia]??'—'));
    set('s-hora',d[C.fecha]?String(d[C.fecha]).replace('T',' ').slice(0,16):'—');
    const e=estado(nv); const b=document.getElementById('sim-estado'); b.textContent=e.t; b.style.background=e.c;
