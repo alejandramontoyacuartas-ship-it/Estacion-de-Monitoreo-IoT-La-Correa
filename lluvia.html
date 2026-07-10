@@ -49,8 +49,8 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .tl-wrap::-webkit-scrollbar{height:8px}
 .tl-wrap::-webkit-scrollbar-thumb{background:#c5d8f0;border-radius:4px}
 .tl{display:flex;align-items:flex-start;min-width:min-content;position:relative;padding-top:4px}
-.tl::before{content:"";position:absolute;left:26px;right:26px;top:26px;height:2px;background:#dfe7f1;z-index:0}
-.tl-item{flex:0 0 auto;width:54px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;z-index:1}
+.tl::before{content:"";position:absolute;left:37px;right:37px;top:26px;height:2px;background:#dfe7f1;z-index:0}
+.tl-item{flex:0 0 auto;width:74px;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative;z-index:1}
 .tl-badge{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#fff}
 .tl-badge.rain{background:#e7f0fb}
 .tl-ico{width:30px;height:30px;display:block}
@@ -58,7 +58,7 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .tl-empty{width:9px;height:9px;border-radius:50%;background:#d3dbe4;margin:16px 0}
 .tl-res{text-align:center;font-size:11px;color:var(--gris);margin-top:6px}
 .embed .tl-badge{width:36px;height:36px} .embed .tl-ico{width:26px;height:26px}
-.embed .tl-item{width:47px} .embed .tl::before{top:24px}
+.embed .tl-item{width:62px} .embed .tl::before{top:24px;left:31px;right:31px}
 @media(max-width:900px){.rn-cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
 /* ===== Modo embebido (ventana flotante lateral del visor) ===== */
 .embed .navbar,.embed #navbar-root{display:none!important}
@@ -111,8 +111,9 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
     <div class="card pcard span2">
       <div class="ptit">Presencia de lluvia en el tiempo</div>
       <div class="winsel"><select id="win">
-        <option value="3">3 horas</option><option value="24">24 horas</option>
-        <option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>
+        <option value="3">3 horas</option><option value="6">6 horas</option>
+        <option value="12" selected>12 horas</option><option value="24">24 horas</option>
+        <option value="72">72 horas</option></select></div>
       <div class="tl-wrap" id="tl-lluvia"></div>
       <div class="tl-res" id="tl-res"></div>
     </div>
@@ -198,13 +199,10 @@ function pintarDia(){ const {labels,horas}=horasPorDia(SERIE);
 const SVG_SOL='<svg viewBox="0 0 24 24" class="tl-ico"><circle cx="12" cy="12" r="5" fill="#FDB813"/><g stroke="#FDB813" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1.8" x2="12" y2="4.2"/><line x1="12" y1="19.8" x2="12" y2="22.2"/><line x1="1.8" y1="12" x2="4.2" y2="12"/><line x1="19.8" y1="12" x2="22.2" y2="12"/><line x1="4.6" y1="4.6" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.4" y2="19.4"/><line x1="19.4" y1="4.6" x2="17.7" y2="6.3"/><line x1="6.3" y1="17.7" x2="4.6" y2="19.4"/></g></svg>';
 const SVG_LLUVIA='<svg viewBox="0 0 24 24" class="tl-ico"><path d="M7 15.2a4 4 0 0 1 .5-8 5.2 5.2 0 0 1 9.8 1.5A3.5 3.5 0 0 1 16.8 15.2Z" fill="#2E7CD6"/><g stroke="#1E88E5" stroke-width="2" stroke-linecap="round"><line x1="8.6" y1="17" x2="7.6" y2="20.4"/><line x1="12" y1="17" x2="11" y2="20.4"/><line x1="15.4" y1="17" x2="14.4" y2="20.4"/></g></svg>';
 
-// Paso (en minutos) del bucket: intenta 5 min y agranda solo lo necesario para no saturar (<= ~60 íconos).
-function pasoMin(winH){ const m=winH*60, steps=[5,10,15,30,60,120,180,360,720,1440], MAX=60;
-  for(const s of steps){ if(m/s<=MAX) return s; } return 1440; }
+// Registro fijo cada 15 min (solo se agranda como salvaguarda si la ventana fuera enorme, >~4 días).
+function pasoMin(winH){ let bm=15; while((winH*60)/bm>400) bm+=15; return bm; }
 function etiqTiempo(t,bm){ const d=new Date(t), p=n=>String(n).padStart(2,'0');
-  if(bm>=1440) return p(d.getDate())+'/'+p(d.getMonth()+1);
-  if(bm>=60)   return p(d.getDate())+'/'+p(d.getMonth()+1)+' '+p(d.getHours())+'h';
-  return p(d.getHours())+':'+p(d.getMinutes()); }
+  return p(d.getHours())+':'+p(d.getMinutes()); }   // solo la hora del registro (HH:MM)
 
 // "Presencia de lluvia en el tiempo": línea de tiempo de soles/nubes según esta_lloviendo.
 function pintarLinea(){ const cont=document.getElementById('tl-lluvia'); if(!cont) return;
@@ -215,7 +213,7 @@ function pintarLinea(){ const cont=document.getElementById('tl-lluvia'); if(!con
   const buckets=[];
   for(let bt=start; bt<=end+1; bt+=bms) buckets.push({t:bt,n:0,rain:0});
   for(const m of ven){ const i=Math.floor((m.t-start)/bms); if(i>=0&&i<buckets.length){ buckets[i].n++; if(m.llov) buckets[i].rain++; } }
-  const labelEvery=Math.max(1, Math.round(buckets.length/14));  // ~14 etiquetas máx. para no amontonar
+  const labelEvery=1;  // la hora (HH:MM) en cada registro de 15 min
   let html='<div class="tl">';
   buckets.forEach((b,idx)=>{
     const lbl=(idx%labelEvery===0)?etiqTiempo(b.t,bm):'&nbsp;';
