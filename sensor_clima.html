@@ -55,8 +55,20 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .hm-bar{width:220px;height:13px;border-radius:7px;border:1px solid rgba(0,0,0,.06)}
 .embed .hm-cell{height:20px} .embed .hm-bar{width:150px} .embed .hm-grid{min-width:300px}
 /* ===== Gauge (velocímetro de estado actual) ===== */
+.g-row{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap}
 .gauge{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
 .gauge svg{width:100%;max-width:340px;height:auto}
+/* Barra de colores vertical (tipo termómetro) con los registros de referencia */
+.g-scale{position:relative;height:196px;width:150px;flex:none}
+.g-bar{position:absolute;left:0;top:0;bottom:0;width:16px;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.g-mk{position:absolute;left:16px;transform:translateY(50%);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.g-mk-line{width:7px;height:2px;background:#b7c2cb;flex:none}
+.g-mk.strong .g-mk-line{width:10px;height:2.5px;background:#6b7a85}
+.g-mk-lbl{font-size:10.5px;font-weight:700;color:#9aa6ae;line-height:1.15}
+.g-mk.strong .g-mk-lbl{font-size:12px;font-weight:800;color:#2b3a4a}
+.g-mk-lbl i{font-style:normal;font-weight:600;color:#8a97a6;font-size:9.5px;display:block}
+.g-cur{position:absolute;left:-11px;transform:translateY(50%);width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:11px solid #2b3a4a}
+.embed .g-scale{height:172px;width:132px} .embed .g-row{gap:16px}
 .g-badge{display:inline-block;padding:3px 18px;border-radius:20px;font-size:13.5px;font-weight:800}
 .g-ref{text-align:center;font-size:11.5px;color:#5a6b60;line-height:1.5;margin-top:2px}
 .g-ref b{color:var(--acc-dark)} .g-ref span{display:block;font-size:10.5px;color:#8a97a6}
@@ -100,7 +112,10 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 
   <div class="card pcard g-card">
     <div class="ptit" id="sc-chart-tit">Estado actual</div>
-    <div id="sc-gauge" class="gauge"></div>
+    <div class="g-row">
+      <div id="sc-gauge" class="gauge"></div>
+      <div id="sc-scale" class="g-scale"></div>
+    </div>
   </div>
 
   <div class="card pcard hm-card">
@@ -212,8 +227,8 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
   if(V.ref){ const tick=(tv,col,w)=>{ const a=Math.PI*(1-(tv-min)/(max-min)), r1=71, r2=89;
       return '<line x1="'+(cx+r1*Math.cos(a)).toFixed(1)+'" y1="'+(cy-r1*Math.sin(a)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(a)).toFixed(1)+'" y2="'+(cy-r2*Math.sin(a)).toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'"/>'; };
     refMarks=tick(V.ref.lo,'#ffffff',2)+tick(V.ref.hi,'#ffffff',2)+tick(V.ref.prom,'#2b3a4a',2.6);
-    refNote='<div class="g-ref">'+V.ref.zona+' · Prom. <b>'+V.ref.prom+' °C</b> · Mín. prom. ago. <b>'+V.ref.minProm+' °C</b> · Máx. histórica <b>'+V.ref.maxHist+' °C</b>'
-      +'<span>Rango normal '+V.ref.lo+'–'+V.ref.hi+' °C · ❄ bajo '+V.ref.lo+' se enfría · ☀ sobre '+V.ref.hi+' se calienta</span></div>'; }
+    refNote='<div class="g-ref"><b>'+V.ref.zona+'</b> · rango normal '+V.ref.lo+'–'+V.ref.hi+' °C'
+      +'<span>❄ bajo '+V.ref.lo+' se enfría · ☀ sobre '+V.ref.hi+' se calienta</span></div>'; }
   el.innerHTML='<svg viewBox="0 0 200 132">'
     +'<defs><linearGradient id="gg-'+which+'" x1="0" y1="0" x2="1" y2="0">'+grad+'</linearGradient></defs>'
     +'<path d="'+arc+'" fill="none" stroke="#e9edf0" stroke-width="15" stroke-linecap="round"/>'
@@ -228,6 +243,20 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
     +'</svg>'
     +'<div class="g-badge" style="background:'+est.bg+';color:'+est.fg+'">'+est.t+'</div>'
     +refNote;
+  pintarScale(v);
+}
+
+// ===== Barra de colores vertical (costado) con los registros de referencia =====
+function pintarScale(v){ const el=document.getElementById('sc-scale'); if(!el) return;
+  if(!V.ref){ el.style.display='none'; el.innerHTML=''; return; }
+  el.style.display='';
+  const min=V.gMin, max=V.gMax, pct=x=>((Math.max(min,Math.min(max,x))-min)/(max-min)*100);
+  const st=V.hmStops, grad=st.map((s,i)=>s[1]+' '+Math.round(i/(st.length-1)*100)+'%').join(',');
+  const marks=[ [V.ref.maxHist,'Máx. histórica',1], [V.ref.hi,'',0], [V.ref.prom,'Promedio',1], [V.ref.lo,'',0], [V.ref.minProm,'Mín. prom. (ago)',1] ];
+  const mk=marks.map(m=>'<div class="g-mk'+(m[2]?' strong':'')+'" style="bottom:'+pct(m[0]).toFixed(1)+'%">'
+    +'<span class="g-mk-line"></span><span class="g-mk-lbl">'+m[0]+' '+V.uni+(m[1]?'<i>'+m[1]+'</i>':'')+'</span></div>').join('');
+  const cur=isNaN(v)?'':'<div class="g-cur" style="bottom:'+pct(v).toFixed(1)+'%" title="Actual: '+fmt(v)+' '+V.uni+'"></div>';
+  el.innerHTML='<div class="g-bar" style="background:linear-gradient(to top,'+grad+')"></div>'+mk+cur;
 }
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
