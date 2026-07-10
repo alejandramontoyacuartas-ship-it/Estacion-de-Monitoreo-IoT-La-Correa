@@ -186,20 +186,23 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 // Modo embebido (dentro del modal flotante del visor): oculta el menú superior.
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
-const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
+const U=(window.CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
+// El sensor mide DISTANCIA hasta el agua: a MENOR lectura, MAYOR peligro (agua más cerca
+// del sensor). Por eso los "tope" van en orden DESCENDENTE (N1 = lectura más alta/lejana =
+// seguro) y se compara con ">" — igual que en app.js (estadoPorNivel/nivelesN).
 const N=[
- {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
+ {n:'N1',c:'#2e9e57',tope:U.critico,       tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
  {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Advertencia',          desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
- {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
- {n:'N4',c:'#E24B4A',tope:U.critico*1.5,   tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
+ {n:'N3',c:'#EF9F27',tope:U.preventivo,    tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
+ {n:'N4',c:'#E24B4A',tope:0,               tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
 ];
-const idxNivel=cm=>{ for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; };
+const idxNivel=cm=>{ for(let i=0;i<N.length;i++){ if(cm>N[i].tope) return i; } return N.length-1; };
 const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(window.CONFIG&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
 const NIVEL_MAX=Math.max(80, Math.ceil(U.critico*1.5/10)*10);
-function ticksNivel(scale){ scale.ticks=[0,U.preventivo,U.prevencion,U.critico,NIVEL_MAX].map(v=>({value:v})); }
+function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=100) t.push({value:v}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
 document.getElementById('esc').innerHTML=N.slice().reverse().map(x=>
@@ -228,7 +231,7 @@ const perfilAlerta={id:'perfilAlerta',afterDatasetsDraw(c){
   const ca=c.chartArea,ctx=c.ctx,ys=c.scales.y,yMin=ys.min,yMax=ys.max;
   const bx=ca.right+10,bw=18;
   const yTop=ys.getPixelForValue(yMax), yBot=ys.getPixelForValue(yMin);
-  const zonas=[[0,U.preventivo,'#2e9e57','N1'],[U.preventivo,U.prevencion,'#EAB308','N2'],[U.prevencion,U.critico,'#EF9F27','N3'],[U.critico,yMax,'#E24B4A','N4']];
+  const zonas=[[0,U.preventivo,'#E24B4A','N4'],[U.preventivo,U.prevencion,'#EF9F27','N3'],[U.prevencion,U.critico,'#EAB308','N2'],[U.critico,yMax,'#2e9e57','N1']];
   function pill(x,w){ctx.beginPath(); if(ctx.roundRect)ctx.roundRect(x,yTop,w,yBot-yTop,8); else ctx.rect(x,yTop,w,yBot-yTop);}
   function barra(x,w,labels){
     ctx.save(); pill(x,w); ctx.clip();
@@ -325,7 +328,7 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
     options:{layout:{padding:{left:6,right:16}},
       plugins:{legend:{display:false},perfilAlerta:{lvl:lvl,soloMarcador:true},tooltip:{callbacks:{title:i=>'d = '+i[0].label+' m',label:it=>it.dataset.label+': '+it.parsed.y.toFixed(0)+' cm'}}},
       scales:{x:{title:{display:true,text:'Ancho de la corriente (m)'},ticks:{maxTicksLimit:7}},
-        y:{min:0,max:yMax,title:{display:true,text:'Altura sobre el lecho (cm)'}}},
+        y:{min:0,max:yMax,ticks:{stepSize:100},title:{display:true,text:'Altura sobre el lecho (cm)'}}},
       responsive:true,maintainAspectRatio:false},plugins:[perfilAlerta]});
 }
 function actualizarInstante(i){ if(!VEN.length)return; i=Math.max(0,Math.min(i,VEN.length-1));

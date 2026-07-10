@@ -428,15 +428,17 @@ const SENSOR_INFO={
 };
 let _medCache=null,_medTime=0,_detChart=null,_corteChart=null,_serieInfo=null,_serieLista=null;
 function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
-// Niveles de alerta tipo SIATA a partir de los umbrales (cm de lámina sobre el thalweg)
-function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
+// Niveles de alerta tipo SIATA a partir de los umbrales (cm de distancia sensor→agua)
+// Igual que en estadoPorNivel: a MENOR lectura, MAYOR peligro, por eso los "tope" van
+// en orden DESCENDENTE (N1 = lectura más alta/lejana = seguro) y se compara con ">".
+function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
   return [
-    {n:'N1',c:'#2e9e57',tope:U.preventivo,   tit:'Nivel de agua seguro'},
-    {n:'N2',c:'#EAB308',tope:U.prevencion,   tit:'Advertencia'},
-    {n:'N3',c:'#EF9F27',tope:U.critico,       tit:'Crítico (creciente)'},
-    {n:'N4',c:'#c0392b',tope:U.critico*1.5,   tit:'Evacuación'}
+    {n:'N1',c:'#2e9e57',tope:U.critico,       tit:'Nivel de agua seguro'},
+    {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Advertencia'},
+    {n:'N3',c:'#EF9F27',tope:U.preventivo,    tit:'Crítico (creciente)'},
+    {n:'N4',c:'#c0392b',tope:0,               tit:'Evacuación'}
   ]; }
-function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm<N[i].tope) return i; } return N.length-1; }
+function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm>N[i].tope) return i; } return N.length-1; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
 function renderCorte(nivelCm){
   const D=window.CORTE_P1; const cv=document.getElementById('sd-corte-chart'); if(!D||!cv) return;
@@ -546,7 +548,7 @@ function renderNiveles(cm){
   const N=nivelesN(), act=nivelActual(isNaN(cm)?0:cm);
   const cur=document.getElementById('sd-niv-cur');
   if(cur) cur.innerHTML='Lámina actual: <b>'+(isNaN(cm)?'—':cm.toFixed(1)+' cm')+'</b> · <b style="color:'+N[act].c+'">'+N[act].n+' — '+N[act].tit+'</b>';
-  const rango=['< '+N[0].tope+' cm', N[0].tope+'–'+N[1].tope+' cm', N[1].tope+'–'+N[2].tope+' cm', '≥ '+N[2].tope+' cm'];
+  const rango=['> '+N[0].tope+' cm', N[1].tope+'–'+N[0].tope+' cm', N[2].tope+'–'+N[1].tope+' cm', '≤ '+N[2].tope+' cm'];
   const desc=['No se registran cambios asociados a crecientes.','Aumento del nivel; primer estado de alerta ante posibles crecientes.',
     'Afectaciones menores a calles y estructuras cercanas al canal.','Inundación extensiva; evacuación de la población en la zona de influencia.'];
   const list=document.getElementById('sd-niv-list');
@@ -663,11 +665,14 @@ function initChart(){const ctx=document.getElementById('sensor-chart');if(!ctx||
   chart=new Chart(ctx,{type:'line',data:{labels:hist.labels,datasets:[{label:'Nivel',data:hist.data,borderColor:'#2e8b57',backgroundColor:'rgba(46,139,87,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},responsive:true,maintainAspectRatio:false}});}
 function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN DATO';b.textContent=t;b.className='estado-'+t.toUpperCase().replace(/\s/g,'');}
 // Deriva estado y color del nivel medido (cm) contra CONFIG.UMBRALES
-function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:20,prevencion:40,critico:60};
+// El sensor mide DISTANCIA hasta el agua: a MENOR lectura, MAYOR peligro (agua más cerca
+// del sensor). Por eso el umbral "preventivo" (el número más chico) dispara la alerta
+// más grave, y "critico" (el más grande) la más leve — es intencional, no un error.
+function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
   if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
-  if(nv>=U.critico)    return {txt:'EVACUACIÓN',col:'#c0392b'};
-  if(nv>=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
-  if(nv>=U.preventivo) return {txt:'ADVERTENCIA',col:'#EAB308'};
+  if(nv<=U.preventivo) return {txt:'EVACUACIÓN',col:'#c0392b'};
+  if(nv<=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
+  if(nv<=U.critico)    return {txt:'ADVERTENCIA',col:'#EAB308'};
   return {txt:'NORMAL',col:'#2e9e57'};}
 function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
 
