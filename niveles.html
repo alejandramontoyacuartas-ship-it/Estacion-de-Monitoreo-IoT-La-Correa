@@ -197,10 +197,10 @@ const U={preventivo:NIVEL_REF-Ud.critico, prevencion:NIVEL_REF-Ud.prevencion, cr
 // abajo) — coherente con config.js/app.js (estadoPorNivel: nivel>=critico => Evacuación).
 // tope = umbral de ENTRADA a cada estado (límite inferior del nivel).
 const N=[
- {n:'N1',c:'#2e9e57',tope:0,             tit:'Nivel de agua seguro', desc:'No se registran cambios asociados a crecientes. Condición normal.'},
- {n:'N2',c:'#EAB308',tope:U.preventivo,  tit:'Advertencia',          desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
- {n:'N3',c:'#EF9F27',tope:U.prevencion,  tit:'Crítico',              desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
- {n:'N4',c:'#E24B4A',tope:U.critico,     tit:'Evacuación',           desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
+ {n:'N1',c:'#2e9e57',tope:0,             tit:'Normal',     desc:'No se registran cambios asociados a crecientes. Condición normal.'},
+ {n:'N2',c:'#EAB308',tope:U.preventivo,  tit:'Prevención', desc:'El nivel sube de forma perceptible. Vigilancia ante una posible creciente.'},
+ {n:'N3',c:'#EF9F27',tope:U.prevencion,  tit:'Precaución', desc:'Creciente en desarrollo que alcanza la zona de exposición. Alerta naranja: preparar respuesta.'},
+ {n:'N4',c:'#E24B4A',tope:U.critico,     tit:'Crítica',    desc:'Nivel de la creciente de diseño (Tr 100). Alerta roja: evacuación inmediata.'}
 ];
 const idxNivel=cm=>{ let r=0; for(let i=0;i<N.length;i++){ if(cm>=N[i].tope) r=i; } return r; };
 const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };

@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=27"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=28"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -434,10 +434,10 @@ function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
 function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
   const REF=(CONFIG&&CONFIG.NIVEL_REF)||170;
   return [
-    {n:'N1',c:'#2e9e57',tope:0,             tit:'Nivel de agua seguro'},
-    {n:'N2',c:'#EAB308',tope:REF-U.critico,    tit:'Advertencia'},
-    {n:'N3',c:'#EF9F27',tope:REF-U.prevencion, tit:'Crítico (creciente)'},
-    {n:'N4',c:'#c0392b',tope:REF-U.preventivo, tit:'Evacuación'}
+    {n:'N1',c:'#2e9e57',tope:0,             tit:'Normal'},
+    {n:'N2',c:'#EAB308',tope:REF-U.critico,    tit:'Prevención'},
+    {n:'N3',c:'#EF9F27',tope:REF-U.prevencion, tit:'Precaución'},
+    {n:'N4',c:'#c0392b',tope:REF-U.preventivo, tit:'Crítica'}
   ]; }
 function nivelActual(cm){ const N=nivelesN(); let r=0; for(let i=0;i<N.length;i++){ if(cm>=N[i].tope) r=i; } return r; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
@@ -675,9 +675,9 @@ function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN 
 // más grave, y "critico" (el más grande) la más leve — es intencional, no un error.
 function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
   if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
-  if(nv<=U.preventivo) return {txt:'EVACUACIÓN',col:'#c0392b'};
-  if(nv<=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
-  if(nv<=U.critico)    return {txt:'ADVERTENCIA',col:'#EAB308'};
+  if(nv<=U.preventivo) return {txt:'CRÍTICA',   col:'#c0392b'};
+  if(nv<=U.prevencion) return {txt:'PRECAUCIÓN',col:'#e67e22'};
+  if(nv<=U.critico)    return {txt:'PREVENCIÓN',col:'#EAB308'};
   return {txt:'NORMAL',col:'#2e9e57'};}
 function fila(id,v){const e=document.getElementById(id);if(e)e.textContent=(v!==undefined&&v!==null)?v:'—';}
 
