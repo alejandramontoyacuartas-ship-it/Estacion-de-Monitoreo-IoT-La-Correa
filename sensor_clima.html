@@ -69,6 +69,27 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .g-mk-lbl i{font-style:normal;font-weight:600;color:#8a97a6;font-size:9.5px;display:block}
 .g-cur{position:absolute;left:-11px;transform:translateY(50%);width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:11px solid #2b3a4a}
 .embed .g-scale{height:172px;width:132px} .embed .g-row{gap:16px}
+/* ===== Vista de humedad: barra horizontal + semáforo ===== */
+.hum{display:none;flex-direction:column;align-items:center;gap:15px;padding:4px 4px 2px}
+.hum.on{display:flex}
+.hum-head{display:flex;flex-direction:column;align-items:center;gap:7px}
+.hum-val{font-size:44px;font-weight:800;color:var(--acc-dark);line-height:1}
+.hum-val small{font-size:22px;font-weight:700;color:#5a6b60}
+.hum-cat{padding:3px 16px;border-radius:20px;font-size:13.5px;font-weight:800}
+.hb-wrap{width:100%;max-width:470px;padding-top:24px}
+.hb{position:relative;height:22px;border-radius:11px}
+.hb-fill{position:absolute;inset:0;border-radius:11px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+.hb-cur{position:absolute;top:-6px;bottom:-6px;width:3px;background:#2b3a4a;border-radius:2px;transform:translateX(-50%)}
+.hb-cur::after{content:attr(data-v);position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:#2b3a4a;white-space:nowrap}
+.hb-prom{position:absolute;top:-3px;bottom:-3px;width:0;border-left:2px dashed rgba(0,0,0,.45);transform:translateX(-50%)}
+.hb-scale{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#8a97a6;font-weight:600}
+.sem{width:100%;max-width:470px;display:flex;flex-direction:column;gap:3px}
+.sem-row{display:flex;align-items:center;gap:9px;padding:4px 10px;border-radius:8px;font-size:12px}
+.sem-row.on{background:#eef4f1;font-weight:800;box-shadow:inset 0 0 0 1px #d5e6dd}
+.sem-dot{width:13px;height:13px;border-radius:50%;flex:none}
+.sem-name{flex:1;color:#2b3a4a}
+.sem-rng{color:#8a97a6;font-weight:600}
+.embed .hum-val{font-size:34px}
 .g-badge{display:inline-block;padding:3px 18px;border-radius:20px;font-size:13.5px;font-weight:800}
 .g-ref{text-align:center;font-size:11.5px;color:#5a6b60;line-height:1.5;margin-top:2px}
 .g-ref b{color:var(--acc-dark)} .g-ref span{display:block;font-size:10.5px;color:#8a97a6}
@@ -112,10 +133,11 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 
   <div class="card pcard g-card">
     <div class="ptit" id="sc-chart-tit">Estado actual</div>
-    <div class="g-row">
+    <div class="g-row" id="sc-grow">
       <div id="sc-gauge" class="gauge"></div>
       <div id="sc-scale" class="g-scale"></div>
     </div>
+    <div id="sc-hum" class="hum"></div>
   </div>
 
   <div class="card pcard hm-card">
@@ -138,12 +160,17 @@ const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
 const VARS={
   temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
             vMin:-10, vMax:60, gMin:15, gMax:33,
-            ref:{prom:22, lo:19, hi:25, minProm:15, maxHist:33, zona:'Girardota'},
+            ref:{zona:'Girardota', prom:22, lo:19, hi:25,
+                 marks:[[33,'Máx. histórica',1],[25,'',0],[22,'Promedio',1],[19,'',0],[15,'Mín. prom. (ago)',1]],
+                 note:'❄ bajo 19 °C se enfría · ☀ sobre 25 °C se calienta'},
             hmStops:[[18,'#2e9e57'],[24,'#f4d03f'],[30,'#e67e22']],
             ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
             foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'},
   humedad: {campo:C.humedad||'humedad', label:'Humedad', uni:'%', dec:0, acc:'#26a69a', accDark:'#00695c',
             vMin:0, vMax:105, gMin:0, gMax:100,
+            ref:{zona:'Girardota', prom:72, lo:55, hi:85,
+                 marks:[[95,'Saturación',1],[85,'',0],[72,'Promedio',1],[55,'',0],[40,'Ambiente seco',1]],
+                 note:'🏜 bajo 55% se seca · 💧 sobre 85% muy húmedo'},
             hmStops:[[40,'#e0c24a'],[65,'#35b18a'],[95,'#2b8fd6']],
             ico:'<path d="M12 3C8 8 6.5 11.5 6.5 14a5.5 5.5 0 0 0 11 0c0-2.5-1.5-6-5.5-11Z" fill="#fff"/>',
             foot:'Humedad relativa del aire medida por el sensor <b>SHT30</b>. Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'}
@@ -155,6 +182,7 @@ document.documentElement.style.setProperty('--acc-dark',V.accDark);
 document.getElementById('sc-title').innerHTML='Registros de lectura — '+V.label+' <small>Estación de Monitoreo La Correa</small>';
 document.getElementById('sc-chart-tit').textContent=V.label+' actual';
 document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' cada 2 horas';
+if(which==='humedad'){ document.getElementById('sc-grow').style.display='none'; document.getElementById('sc-hum').classList.add('on'); }
 document.getElementById('sc-ico').innerHTML=V.ico;
 document.getElementById('sc-foot').innerHTML=V.foot;
 document.title='Registros de lectura — '+V.label;
@@ -180,7 +208,7 @@ function colorFor(v){ const s=V.hmStops; if(isNaN(v))return '#e8ebe9';
   return s[s.length-1][1]; }
 // Estado (Normal / Alto / Bajo) para el badge
 function estadoVar(v){ if(isNaN(v)) return {t:'—',bg:'#e8ebe9',fg:'#5a6b60'};
-  if(which==='humedad'){ if(v<40)return{t:'Bajo',bg:'#fdeacb',fg:'#b26a00'}; if(v<=80)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'Alto',bg:'#cfe6f7',fg:'#1565c0'}; }
+  if(which==='humedad'){ if(v<55)return{t:'🏜 Seco',bg:'#fdeacb',fg:'#b26a00'}; if(v<=85)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'💧 Húmedo',bg:'#cfe6f7',fg:'#1565c0'}; }
   // Girardota: promedio 22 °C, rango normal 19–25 (±3). <19 se enfría, ≥25 se calienta.
   if(v<19)return{t:'❄ Frío',bg:'#d3e9fb',fg:'#1565c0'}; if(v<25)return{t:'Normal',bg:'#d7f0dd',fg:'#1c7a41'}; return{t:'☀ Cálido',bg:'#fbe0d5',fg:'#b23c17'}; }
 
@@ -209,7 +237,7 @@ function repintar(){
   document.getElementById('k-min').innerHTML=vals.length?fmt(Math.min(...vals))+' <small>'+V.uni+'</small>':'—';
   document.getElementById('k-max').innerHTML=vals.length?fmt(Math.max(...vals))+' <small>'+V.uni+'</small>':'—';
   document.getElementById('k-avg').innerHTML=vals.length?fmt(vals.reduce((a,b)=>a+b,0)/vals.length)+' <small>'+V.uni+'</small>':'—';
-  pintarGauge(lastV);                                         // 1ª vista: estado actual (gauge)
+  if(which==='humedad') pintarHumedad(lastV); else pintarGauge(lastV);   // 1ª vista según variable
   pintarHeatmap();                                            // 2ª vista: registro cada 2 horas
 }
 
@@ -227,8 +255,8 @@ function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) r
   if(V.ref){ const tick=(tv,col,w)=>{ const a=Math.PI*(1-(tv-min)/(max-min)), r1=71, r2=89;
       return '<line x1="'+(cx+r1*Math.cos(a)).toFixed(1)+'" y1="'+(cy-r1*Math.sin(a)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(a)).toFixed(1)+'" y2="'+(cy-r2*Math.sin(a)).toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'"/>'; };
     refMarks=tick(V.ref.lo,'#ffffff',2)+tick(V.ref.hi,'#ffffff',2)+tick(V.ref.prom,'#2b3a4a',2.6);
-    refNote='<div class="g-ref"><b>'+V.ref.zona+'</b> · rango normal '+V.ref.lo+'–'+V.ref.hi+' °C'
-      +'<span>❄ bajo '+V.ref.lo+' se enfría · ☀ sobre '+V.ref.hi+' se calienta</span></div>'; }
+    refNote='<div class="g-ref"><b>'+V.ref.zona+'</b> · rango normal '+V.ref.lo+'–'+V.ref.hi+' '+V.uni
+      +'<span>'+(V.ref.note||'')+'</span></div>'; }
   el.innerHTML='<svg viewBox="0 0 200 132">'
     +'<defs><linearGradient id="gg-'+which+'" x1="0" y1="0" x2="1" y2="0">'+grad+'</linearGradient></defs>'
     +'<path d="'+arc+'" fill="none" stroke="#e9edf0" stroke-width="15" stroke-linecap="round"/>'
@@ -252,11 +280,33 @@ function pintarScale(v){ const el=document.getElementById('sc-scale'); if(!el) r
   el.style.display='';
   const min=V.gMin, max=V.gMax, pct=x=>((Math.max(min,Math.min(max,x))-min)/(max-min)*100);
   const st=V.hmStops, grad=st.map((s,i)=>s[1]+' '+Math.round(i/(st.length-1)*100)+'%').join(',');
-  const marks=[ [V.ref.maxHist,'Máx. histórica',1], [V.ref.hi,'',0], [V.ref.prom,'Promedio',1], [V.ref.lo,'',0], [V.ref.minProm,'Mín. prom. (ago)',1] ];
+  const marks=V.ref.marks||[];
   const mk=marks.map(m=>'<div class="g-mk'+(m[2]?' strong':'')+'" style="bottom:'+pct(m[0]).toFixed(1)+'%">'
     +'<span class="g-mk-line"></span><span class="g-mk-lbl">'+m[0]+' '+V.uni+(m[1]?'<i>'+m[1]+'</i>':'')+'</span></div>').join('');
   const cur=isNaN(v)?'':'<div class="g-cur" style="bottom:'+pct(v).toFixed(1)+'%" title="Actual: '+fmt(v)+' '+V.uni+'"></div>';
   el.innerHTML='<div class="g-bar" style="background:linear-gradient(to top,'+grad+')"></div>'+mk+cur;
+}
+
+// ===== Vista de HUMEDAD: barra horizontal + semáforo (clasificación IDEAM) =====
+const SEM=[ {t:'Muy seco',lo:0,hi:20,c:'#e15c54'}, {t:'Seco',lo:20,hi:40,c:'#eaa84a'},
+  {t:'Normal',lo:40,hi:60,c:'#5cb85c'}, {t:'Húmedo',lo:60,hi:80,c:'#6cb6e8'}, {t:'Muy húmedo',lo:80,hi:100,c:'#2f74c0'} ];
+function catHum(v){ for(const s of SEM){ if(v<s.hi) return s; } return SEM[SEM.length-1]; }
+function pintarHumedad(v){ const el=document.getElementById('sc-hum'); if(!el) return;
+  const cat=isNaN(v)?null:catHum(v), pct=x=>Math.max(0,Math.min(100,x));
+  const grad='linear-gradient(to right,'+SEM.map(s=>s.c+' '+s.lo+'% '+s.hi+'%').join(',')+')';
+  const prom=78;   // promedio regional IDEAM (zonas similares en Antioquia)
+  const cur=isNaN(v)?'':'<div class="hb-cur" data-v="'+fmt(v)+'%" style="left:'+pct(v)+'%"></div>';
+  const rng=s=>s.lo===0?'< '+s.hi+'%':s.hi===100?'> '+s.lo+'%':s.lo+'–'+s.hi+'%';
+  const sem=SEM.map(s=>'<div class="sem-row'+(cat&&cat.t===s.t?' on':'')+'"><span class="sem-dot" style="background:'+s.c+'"></span>'
+    +'<span class="sem-name">'+s.t+'</span><span class="sem-rng">'+rng(s)+'</span></div>').join('');
+  el.innerHTML='<div class="hum-head"><div class="hum-val">'+(isNaN(v)?'—':fmt(v))+'<small>%</small></div>'
+    +(cat?'<span class="hum-cat" style="background:'+cat.c+'22;color:'+cat.c+'">'+cat.t+'</span>':'')+'</div>'
+    +'<div class="hb-wrap"><div class="hb"><div class="hb-fill" style="background:'+grad+'"></div>'
+    +'<div class="hb-prom" title="Promedio regional 78%" style="left:'+prom+'%"></div>'+cur+'</div>'
+    +'<div class="hb-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div></div>'
+    +'<div class="sem">'+sem+'</div>'
+    +'<div class="g-ref">IDEAM (zonas similares) · promedio <b>~78%</b> · rango <b>75–80%</b> · pico julio <b>87%</b>'
+    +'<span>Girardota suele estar en el rango «Húmedo»</span></div>';
 }
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
