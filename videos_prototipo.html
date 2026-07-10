@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Videos del prototipo | Monitor Quebrada La Correa</title>
+  <link rel="stylesheet" href="css/estilos.css?v=30"/>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <style>
+    body{overflow:auto;background:#fff}
+    .esc-head{background:#fff;padding:16px 26px 4px}
+    .esc-breadcrumb{font-size:13px;color:#3a6ea5}
+    .esc-breadcrumb b{color:#2e6b3f}
+    .esc-title{margin-top:8px;font-size:28px;font-weight:800;color:#2e6b3f}
+    .esc-intro{max-width:1180px;margin:6px 26px 0;color:#444;font-size:14px;line-height:1.55}
+    .esc-wrap{background:#eef5ea;padding:30px 26px 48px;flex:1}
+    .vid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1180px;margin:0 auto}
+    .vid-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);
+      cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+    .vid-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.16)}
+    .vid-thumb{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#1e6b3f,#2e8b57);display:flex;
+      align-items:center;justify-content:center;overflow:hidden}
+    .vid-thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .vid-thumb .play{position:relative;z-index:2;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.92);
+      display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+    .vid-thumb .play svg{width:26px;height:26px;margin-left:3px}
+    .vid-card:hover .play{transform:scale(1.08)}
+    .vid-meta{padding:15px 17px}
+    .vid-meta .t{color:#22402f;font-weight:800;font-size:15px;line-height:1.25}
+    .vid-meta .s{color:#7a8a80;font-size:12px;margin-top:4px;line-height:1.35}
+    .esc-nota{max-width:1180px;margin:26px auto 0;background:#fff;border-left:4px solid #2e8b57;border-radius:8px;
+      padding:14px 18px;font-size:13px;color:#444;line-height:1.55}
+    @media(max-width:1000px){.vid-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:620px){.vid-grid{grid-template-columns:1fr}}
+    /* Ventana flotante de video (cierra con ✕, clic fuera o Escape) */
+    #vid-modal{position:fixed;inset:0;background:rgba(15,25,20,.74);display:none;align-items:center;
+      justify-content:center;z-index:9999;padding:24px}
+    #vid-modal.open{display:flex}
+    .vid-box{position:relative;width:min(900px,92vw);background:#000;border-radius:14px;overflow:hidden;
+      box-shadow:0 22px 64px rgba(0,0,0,.55)}
+    .vid-box video{display:block;width:100%;max-height:80vh;background:#000}
+    .vid-boxtitle{position:absolute;top:0;left:0;right:0;padding:13px 54px 22px 18px;color:#fff;font-weight:700;
+      font-size:14.5px;background:linear-gradient(to bottom,rgba(0,0,0,.65),transparent);z-index:2;pointer-events:none}
+    .vid-close{position:absolute;top:10px;right:12px;z-index:3;width:38px;height:38px;border:none;border-radius:50%;
+      background:rgba(255,255,255,.92);color:#111;font-size:20px;font-weight:700;cursor:pointer;line-height:1;
+      display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+    .vid-close:hover{background:#fff;transform:scale(1.05)}
+  </style>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=60"></script>
+
+<div class="esc-head">
+  <div class="esc-breadcrumb">Monitor Quebrada &nbsp;›&nbsp; <b>Videos prototipo</b></div>
+  <h1 class="esc-title">Videos del prototipo</h1>
+  <p class="esc-intro">Registros de la evidencia del <b>prototipo del Sistema de Alerta Temprana</b> de la Quebrada La Correa:
+  funcionamiento del nodo IoT (ESP32), medición de variables hidrometeorológicas y envío de datos a la base de datos.
+  Haz clic en cualquier video para reproducirlo.</p>
+</div>
+
+<div class="esc-wrap">
+  <div class="vid-grid" id="vid-grid"></div>
+  <div class="esc-nota">
+    <b>Nota:</b> los videos son evidencia del prototipo en pruebas de campo/laboratorio. El sistema en operación
+    se consulta en el <a href="index.html" style="color:#2e8b57;font-weight:700">visor de la Quebrada La Correa</a>
+    y en el <a href="dashboard.html" style="color:#2e8b57;font-weight:700">tablero de monitoreo</a>.
+  </div>
+</div>
+
+<!-- Ventana flotante de video -->
+<div id="vid-modal" role="dialog" aria-modal="true">
+  <div class="vid-box">
+    <div class="vid-boxtitle" id="vid-boxtitle"></div>
+    <button class="vid-close" id="vid-close" aria-label="Cerrar video">✕</button>
+    <video id="vid-player" controls playsinline preload="metadata"></video>
+  </div>
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script>
+// ==== Para agregar más videos, añade un objeto a esta lista (t: título, s: subtítulo, video: ruta) ====
+const VIDEOS = [
+ {t:'Video 1 · Prototipo del sensor', s:'Evidencia de funcionamiento y envío de datos a la base de datos',
+  video:'videos evidencia prototipo/video 1_BD.mp4'},
+];
+
+const PLAY='<svg viewBox="0 0 24 24" fill="#1e6b3f"><path d="M8 5v14l11-7z"/></svg>';
+const g=document.getElementById('vid-grid');
+VIDEOS.forEach(e=>{
+  const d=document.createElement('div'); d.className='vid-card';
+  d.innerHTML=`<div class="vid-thumb"><video src="${encodeURI(e.video)}#t=0.5" preload="metadata" muted></video><div class="play">${PLAY}</div></div>`
+            + `<div class="vid-meta"><div class="t">${e.t}</div><div class="s">${e.s}</div></div>`;
+  d.addEventListener('click',()=>abrirVideo(e));
+  g.appendChild(d);
+});
+
+// ---- Ventana flotante de video ----
+const modal=document.getElementById('vid-modal');
+const player=document.getElementById('vid-player');
+const vtitle=document.getElementById('vid-boxtitle');
+function abrirVideo(e){
+  vtitle.textContent=e.t;
+  player.src=encodeURI(e.video);
+  modal.classList.add('open');
+  try{ player.currentTime=0; }catch(_){}
+  player.play().catch(()=>{});
+}
+function cerrarVideo(){
+  modal.classList.remove('open');
+  player.pause(); player.removeAttribute('src'); player.load();
+}
+document.getElementById('vid-close').addEventListener('click',cerrarVideo);
+modal.addEventListener('click',ev=>{ if(ev.target===modal) cerrarVideo(); });
+document.addEventListener('keydown',ev=>{ if(ev.key==='Escape' && modal.classList.contains('open')) cerrarVideo(); });
+</script>
+</body>
+</html>

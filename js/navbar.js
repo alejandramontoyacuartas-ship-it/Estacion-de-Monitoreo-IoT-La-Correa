@@ -45,9 +45,11 @@
       {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
     ]},
-    // Enlace directo (sin desplegable) al Dashboard "Monitor de quebrada" (app Angular de Marcela),
-    // desplegado en Netlify. Abre en pestaña nueva y funciona desde cualquier equipo.
-    {label:'Dashboard Monitor de quebrada', link:'https://6a5044296634e40007854f05--monitorquebradadashboard.netlify.app/', ext:true},
+    // Menú "Monitor Quebrada": el Dashboard (app Angular de Marcela en Netlify) y los videos del prototipo.
+    {label:'Monitor Quebrada', items:[
+      {t:'Dashboard Monitor de Quebrada', h:'https://6a5044296634e40007854f05--monitorquebradadashboard.netlify.app/', ext:true},
+      {t:'Videos prototipo', h:'videos_prototipo.html'},
+    ]},
   ];
   const esta = h => h && h.split('?')[0].toLowerCase() === page;
   const active = cat => cat.items.some(it => esta(it.h)
