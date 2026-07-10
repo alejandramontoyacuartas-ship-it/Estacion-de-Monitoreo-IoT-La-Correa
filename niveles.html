@@ -206,7 +206,7 @@ const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(typeof CONFIG!=='undefined'&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
-const NIVEL_MAX=NIVEL_REF;   // el eje llega al máximo posible del nivel (= NIVEL_REF, con lectura 0)
+const NIVEL_MAX=250;   // tope del eje (nivel y altura sobre el lecho) fijado a 250 cm para dar contexto del cauce
 function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=50) t.push({value:v}); if(!t.some(o=>o.value===NIVEL_MAX)) t.push({value:NIVEL_MAX}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
