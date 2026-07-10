@@ -23,6 +23,32 @@ const ICON_NIVEL=iconNivel();
 // Ícono de cámara SIATA: se coloca al lado (derecha) del sensor de nivel; clic → abre la foto SIATA
 const iconCamara=()=>L.divIcon({className:'',iconSize:[24,24],iconAnchor:[-15,10],popupAnchor:[0,-8],
   html:'<div class="cam-ico" title="Ver cámara SIATA">📷</div>'});
+// Visor flotante de la cámara SIATA (dentro del geoportal). Clic fuera de la ventana → se cierra.
+function cerrarCamara(){ const m=document.getElementById('cam-modal'); if(m) m.classList.remove('open'); }
+window.abrirCamaraSiata=function(url,nombre){
+  let m=document.getElementById('cam-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='cam-modal'; m.className='cam-modal';
+    m.innerHTML='<div class="cam-box" role="dialog" aria-label="Cámara SIATA">'
+      +'<div class="cam-head"><span id="cam-title"></span><button class="cam-x" title="Cerrar">✕</button></div>'
+      +'<div class="cam-imgwrap"><span class="cam-loading">Cargando imagen…</span><img id="cam-img" alt="Cámara SIATA" style="display:none"></div>'
+      +'<div class="cam-foot"><span>Última foto de la cámara SIATA</span> · <a id="cam-link" target="_blank" rel="noopener">abrir original ↗</a></div>'
+      +'</div>';
+    document.body.appendChild(m);
+    // cerrar al hacer clic FUERA de la caja (en el fondo) o en la X, o con Esc
+    m.addEventListener('click',e=>{ if(e.target===m || e.target.classList.contains('cam-x')) cerrarCamara(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrarCamara(); });
+    const im=m.querySelector('#cam-img'), ld=m.querySelector('.cam-loading');
+    im.addEventListener('load',()=>{ im.style.display='block'; ld.style.display='none'; });
+    im.addEventListener('error',()=>{ ld.textContent='No se pudo cargar la imagen de la cámara.'; im.style.display='none'; ld.style.display='block'; });
+  }
+  m.querySelector('#cam-title').textContent='📷 '+nombre;
+  const im=m.querySelector('#cam-img'), ld=m.querySelector('.cam-loading');
+  im.style.display='none'; ld.style.display='block'; ld.textContent='Cargando imagen…';
+  im.src=url+'?t='+Date.now();                       // cache-buster: trae la última foto
+  m.querySelector('#cam-link').href=url;
+  m.classList.add('open');
+};
 // Ícono estación pluviométrica (gota en círculo) — color por defecto morado
 const iconLluvia=(color='#5e35b1')=>L.divIcon({className:'',iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-14],
   html:`<svg width="32" height="32" viewBox="0 0 32 32" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))">
@@ -211,7 +237,7 @@ const DEF=[
          const cam=CAMS.find(c=>c.re.test(p.nombre||''));
          if(cam){ const cm=L.marker(l.getLatLng(),{icon:iconCamara(),zIndexOffset:1100})
              .bindTooltip('📷 Ver cámara SIATA — '+p.nombre,{direction:'top'})
-             .on('click',()=>window.open(cam.url,'_blank','noopener'));
+             .on('click',()=>window.abrirCamaraSiata(cam.url,p.nombre));
            camaras.push(cm); }
        }});
      // Estación PROPIA del proyecto (P1) — NO es SIATA: clic abre el panel con la info trabajada
