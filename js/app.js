@@ -20,6 +20,9 @@ const iconNivel=(color='#2e9e57')=>L.divIcon({className:'',iconSize:[34,34],icon
     <path d="M7 24 q2.5 -3 5 0 t5 0 t5 0 t5 0" stroke="#fff" stroke-width="1.7" fill="none" stroke-linecap="round"/>
   </svg>`});
 const ICON_NIVEL=iconNivel();
+// Ícono de cámara SIATA: se coloca al lado (derecha) del sensor de nivel; clic → abre la foto SIATA
+const iconCamara=()=>L.divIcon({className:'',iconSize:[24,24],iconAnchor:[-15,10],popupAnchor:[0,-8],
+  html:'<div class="cam-ico" title="Ver cámara SIATA">📷</div>'});
 // Ícono estación pluviométrica (gota en círculo) — color por defecto morado
 const iconLluvia=(color='#5e35b1')=>L.divIcon({className:'',iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-14],
   html:`<svg width="32" height="32" viewBox="0 0 32 32" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))">
@@ -192,19 +195,31 @@ const DEF=[
      onEachFeature:(f,l)=>l.bindPopup(pop({Punto:f.properties.Punto,Prioridad:f.properties.Prioridad,Cauce:f.properties.Cauce,Score:f.properties.Score,Lead_min:f.properties.Lead_min},'Candidato AHP'))})},
  {k:'siata_nivel',label:'Sensores de nivel',sub:'Estación La Correa (propia) + red SIATA',icon:'🌊',color:'#0277bd',def:false,lazy:true,
    build:j=>{
+     // Cámaras SIATA de nivel (se relacionan con cada estación por el nombre)
+     const CAMS=[
+       {re:/holanda/i, url:'https://siata.gov.co/ultimasFotosCamaras/ultimacam_nivel_molinal_la_holanda.jpg'},
+       {re:/limonar/i, url:'https://siata.gov.co/ultimasFotosCamaras/ultimacam_nivel_el_limonar.jpg'}
+     ];
+     const camaras=[];
      // Estaciones SIATA (azul) → clic abre el geoportal SIATA
      const siata=L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconNivel('#0277bd')}),
        onEachFeature:(f,l)=>{ const p=f.properties;
          l.bindTooltip((p.codigo?p.codigo+' · ':'')+p.nombre+' (SIATA)',{direction:'top'});
          l.bindPopup(popupSiata(p),{maxWidth:270});
          l.on('click',()=>{ const c=l.getLatLng(); resaltarMicrocuenca(c.lat,c.lng); });   // clic → resalta su microcuenca
+         // Ícono de cámara al lado del sensor (solo si el nombre coincide con una cámara SIATA)
+         const cam=CAMS.find(c=>c.re.test(p.nombre||''));
+         if(cam){ const cm=L.marker(l.getLatLng(),{icon:iconCamara(),zIndexOffset:1100})
+             .bindTooltip('📷 Ver cámara SIATA — '+p.nombre,{direction:'top'})
+             .on('click',()=>window.open(cam.url,'_blank','noopener'));
+           camaras.push(cm); }
        }});
      // Estación PROPIA del proyecto (P1) — NO es SIATA: clic abre el panel con la info trabajada
      const s=(window.CONFIG&&CONFIG.SENSOR)||{lat:6.407003,lon:-75.446880,nombre:'Estación de Monitoreo La Correa'};
      const p1=L.marker([s.lat,s.lon],{icon:iconNivel('#1b7a3a'),zIndexOffset:1000})
        .bindTooltip(s.nombre+' · estación propia',{direction:'top'})
        .on('click',()=>{ resaltarMicrocuenca(s.lat,s.lon); if(window.abrirNivelesFlotante) window.abrirNivelesFlotante(); });   // P1 → microcuenca + vista flotante
-     return L.layerGroup([siata,p1]);
+     return L.layerGroup([siata,...camaras,p1]);
    }},
  {k:'siata_pluvio',label:'Red pluviométrica (SIATA)',sub:'Estaciones de lluvia · red SIATA · Girardota',icon:'🌧️',color:'#5e35b1',def:false,lazy:true,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconLluvia('#5e35b1')}),
