@@ -54,6 +54,11 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .hm-scale{display:flex;align-items:center;gap:9px;justify-content:center;margin-top:14px;font-size:11.5px;color:var(--gris);font-weight:700}
 .hm-bar{width:220px;height:13px;border-radius:7px;border:1px solid rgba(0,0,0,.06)}
 .embed .hm-cell{height:20px} .embed .hm-bar{width:150px} .embed .hm-grid{min-width:300px}
+/* ===== Gauge (velocímetro de estado actual) ===== */
+.gauge{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:4px}
+.gauge svg{width:100%;max-width:340px;height:auto}
+.g-badge{display:inline-block;padding:3px 18px;border-radius:20px;font-size:13.5px;font-weight:800}
+.embed .gauge svg{max-width:260px} .embed .g-badge{font-size:12px;padding:2px 14px}
 /* ===== Modo embebido (ventana flotante lateral) ===== */
 .embed .navbar,.embed #navbar-root{display:none!important}
 .embed .wrap{padding:8px 10px}
@@ -85,18 +90,15 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
   </div>
 
   <div class="sc-cards">
-    <div class="card sc-now"><div class="big" id="sc-now-big">—</div><span class="sc-badge" id="sc-badge">—</span><div class="sub" id="sc-now-sub">esperando lectura…</div></div>
-    <div class="card sc-kpi"><span>Mínimo (ventana)</span><b id="k-min">—</b></div>
-    <div class="card sc-kpi"><span>Máximo (ventana)</span><b id="k-max">—</b></div>
-    <div class="card sc-kpi"><span>Promedio (ventana)</span><b id="k-avg">—</b></div>
+    <div class="card sc-now"><div class="big" id="sc-now-big">—</div><div class="sub" id="sc-now-sub">esperando lectura…</div></div>
+    <div class="card sc-kpi"><span>Mínimo (72 h)</span><b id="k-min">—</b></div>
+    <div class="card sc-kpi"><span>Máximo (72 h)</span><b id="k-max">—</b></div>
+    <div class="card sc-kpi"><span>Promedio (72 h)</span><b id="k-avg">—</b></div>
   </div>
 
-  <div class="card pcard">
-    <div class="ptit" id="sc-chart-tit">Registro cada 15 minutos</div>
-    <div class="winsel"><select id="win">
-      <option value="3">3 horas</option><option value="24">24 horas</option>
-      <option value="72" selected>72 horas</option><option value="720">30 días</option></select></div>
-    <div class="chartbox"><canvas id="sc-chart"></canvas></div>
+  <div class="card pcard g-card">
+    <div class="ptit" id="sc-chart-tit">Estado actual</div>
+    <div id="sc-gauge" class="gauge"></div>
   </div>
 
   <div class="card pcard hm-card">
@@ -118,20 +120,22 @@ const C=(window.CONFIG&&CONFIG.CAMPOS)||{temp:'temperatura',humedad:'humedad'};
 // Configuración por variable (temperatura / humedad)
 const VARS={
   temp:    {campo:C.temp||'temperatura', label:'Temperatura', uni:'°C', dec:1, acc:'#ef6c47', accDark:'#b23c17',
+            vMin:-10, vMax:60, gMin:0, gMax:40,
             hmStops:[[18,'#2e9e57'],[24,'#f4d03f'],[30,'#e67e22']],
             ico:'<path d="M13 14.8V6a2 2 0 0 0-4 0v8.8a3.5 3.5 0 1 0 4 0Z" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="17.5" r="2.2" fill="#fff"/>',
-            foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: registro cada 15 min (serie) y cada 2 h (mapa de calor).'},
+            foot:'Sensor de temperatura y humedad <b>SHT30</b> (RS485 Modbus-RTU). Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'},
   humedad: {campo:C.humedad||'humedad', label:'Humedad', uni:'%', dec:0, acc:'#26a69a', accDark:'#00695c',
+            vMin:0, vMax:105, gMin:0, gMax:100,
             hmStops:[[40,'#e0c24a'],[65,'#35b18a'],[95,'#2b8fd6']],
             ico:'<path d="M12 3C8 8 6.5 11.5 6.5 14a5.5 5.5 0 0 0 11 0c0-2.5-1.5-6-5.5-11Z" fill="#fff"/>',
-            foot:'Humedad relativa del aire medida por el sensor <b>SHT30</b>. Se muestran dos vistas: registro cada 15 min (serie) y cada 2 h (mapa de calor).'}
+            foot:'Humedad relativa del aire medida por el sensor <b>SHT30</b>. Se muestran dos vistas: estado actual (gauge) y registro cada 2 h (mapa de calor). Se descartan lecturas fuera de rango físico.'}
 };
 const which=(new URLSearchParams(location.search).get('var')||'temp').toLowerCase();
 const V=VARS[which]||VARS.temp;
 document.documentElement.style.setProperty('--acc',V.acc);
 document.documentElement.style.setProperty('--acc-dark',V.accDark);
 document.getElementById('sc-title').innerHTML='Registros de lectura — '+V.label+' <small>Estación de Monitoreo La Correa</small>';
-document.getElementById('sc-chart-tit').textContent='Registro de '+V.label.toLowerCase()+' cada 15 minutos';
+document.getElementById('sc-chart-tit').textContent=V.label+' actual';
 document.getElementById('sc-hm-tit').textContent='Mapa de calor — '+V.label.toLowerCase()+' cada 2 horas';
 document.getElementById('sc-ico').innerHTML=V.ico;
 document.getElementById('sc-foot').innerHTML=V.foot;
@@ -170,40 +174,47 @@ function pintarCx(ok,fecha){ const b=document.getElementById('sc-cx'); if(!b)ret
   if(fecha){ const e=Date.now()-parse(fecha).getTime(); b.title='Última lectura: '+String(fecha).slice(0,16).replace('T',' ')+(isFinite(e)?' (hace '+relTiempo(e)+')':''); }
 }
 
-function ventana(){ const win=parseFloat(document.getElementById('win').value);
-  if(!SERIE.length) return [];
-  const tU=SERIE[SERIE.length-1].t, desde=tU-win*3600000;
+function ventana(){ if(!SERIE.length) return [];
+  const tU=SERIE[SERIE.length-1].t, desde=tU-72*3600000;      // KPIs sobre las últimas 72 h
   const v=SERIE.filter(m=>m.t>=desde && !isNaN(m.v));
   return v.length>=2?v:SERIE.filter(m=>!isNaN(m.v)).slice(-40);
 }
 
 function repintar(){
-  const ven=ventana(); const win=parseFloat(document.getElementById('win').value);
+  const ven=ventana();
   const vals=ven.map(m=>m.v).filter(v=>!isNaN(v));
-  // KPIs
   const last=SERIE.length?SERIE[SERIE.length-1]:null;
-  document.getElementById('sc-now-big').innerHTML=(last&&!isNaN(last.v)?fmt(last.v):'—')+' <small>'+V.uni+'</small>';
+  const lastV=last?last.v:NaN;
+  document.getElementById('sc-now-big').innerHTML=(!isNaN(lastV)?fmt(lastV):'—')+' <small>'+V.uni+'</small>';
   document.getElementById('sc-now-sub').textContent=last?('Última lectura: '+fechaCorta(new Date(last.t))):'sin datos';
-  const est=estadoVar(last?last.v:NaN), bd=document.getElementById('sc-badge');
-  if(bd){ bd.textContent=est.t; bd.style.background=est.bg; bd.style.color=est.fg; }
   document.getElementById('k-min').innerHTML=vals.length?fmt(Math.min(...vals))+' <small>'+V.uni+'</small>':'—';
   document.getElementById('k-max').innerHTML=vals.length?fmt(Math.max(...vals))+' <small>'+V.uni+'</small>':'—';
   document.getElementById('k-avg').innerHTML=vals.length?fmt(vals.reduce((a,b)=>a+b,0)/vals.length)+' <small>'+V.uni+'</small>':'—';
-  // gráfico
-  const fL=win>=720?(t=>fechaCorta(new Date(t)).slice(0,5))
-        :win>=48?(t=>fechaCorta(new Date(t)))
-        :(t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');});
-  const ven15=resample(ven,15);                               // registro cada 15 minutos
-  const labels=ven15.map(m=>fL(m.t)), data=ven15.map(m=>m.v);
-  const ctx=document.getElementById('sc-chart'); if(!ctx||!window.Chart)return;
-  if(chart)chart.destroy();
-  chart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:V.label,data,
-    borderColor:V.acc,backgroundColor:V.acc+'26',fill:true,tension:.3,pointRadius:data.length>60?0:2,borderWidth:2}]},
-    options:{animation:false,plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:it=>V.label+': '+fmt(it.parsed.y)+' '+V.uni}}},
-      scales:{x:{ticks:{maxTicksLimit:7,autoSkip:true}},y:{title:{display:true,text:V.uni}}},
-      responsive:true,maintainAspectRatio:false}});
-  pintarHeatmap();                                            // registro cada 2 horas
+  pintarGauge(lastV);                                         // 1ª vista: estado actual (gauge)
+  pintarHeatmap();                                            // 2ª vista: registro cada 2 horas
+}
+
+// ===== Gauge (velocímetro) del valor actual =====
+function pintarGauge(v){ const el=document.getElementById('sc-gauge'); if(!el) return;
+  const min=V.gMin, max=V.gMax, cx=100, cy=100, R=80, L=62;
+  const val=isNaN(v)?min:Math.max(min,Math.min(max,v));
+  const ang=Math.PI*(1-(val-min)/(max-min));                  // 180°(min, izq) → 0°(max, der)
+  const tx=(cx+L*Math.cos(ang)).toFixed(1), ty=(cy-L*Math.sin(ang)).toFixed(1);
+  const arc='M '+(cx-R)+' '+cy+' A '+R+' '+R+' 0 0 1 '+(cx+R)+' '+cy;
+  const st=V.hmStops, grad=st.map((s,i)=>'<stop offset="'+Math.round(i/(st.length-1)*100)+'%" stop-color="'+s[1]+'"/>').join('');
+  const est=estadoVar(v);
+  el.innerHTML='<svg viewBox="0 0 200 132">'
+    +'<defs><linearGradient id="gg-'+which+'" x1="0" y1="0" x2="1" y2="0">'+grad+'</linearGradient></defs>'
+    +'<path d="'+arc+'" fill="none" stroke="#e9edf0" stroke-width="15" stroke-linecap="round"/>'
+    +'<path d="'+arc+'" fill="none" stroke="url(#gg-'+which+')" stroke-width="15" stroke-linecap="round"/>'
+    +'<text x="'+cx+'" y="84" text-anchor="middle" font-size="30" font-weight="800" fill="'+V.accDark+'">'+(isNaN(v)?'—':fmt(v))+'</text>'
+    +'<text x="'+cx+'" y="99" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5a6b60">'+V.label+' ('+V.uni+')</text>'
+    +'<line x1="'+cx+'" y1="'+cy+'" x2="'+tx+'" y2="'+ty+'" stroke="#2b3a4a" stroke-width="4" stroke-linecap="round"/>'
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="7" fill="#2b3a4a"/>'
+    +'<text x="'+(cx-R)+'" y="124" text-anchor="middle" font-size="10" fill="#8a97a6">'+min+'</text>'
+    +'<text x="'+(cx+R)+'" y="124" text-anchor="middle" font-size="10" fill="#8a97a6">'+max+' '+V.uni+'</text>'
+    +'</svg>'
+    +'<div class="g-badge" style="background:'+est.bg+';color:'+est.fg+'">'+est.t+'</div>';
 }
 
 // ===== Mapa de calor: registro cada 2 horas (día × franja de 2 h) =====
@@ -224,8 +235,6 @@ function pintarHeatmap(){ const grid=document.getElementById('hm-grid'); if(!gri
   const sc=document.getElementById('hm-scale'); const s=V.hmStops;
   if(sc) sc.innerHTML='<span>'+s[0][0]+'</span><div class="hm-bar" style="background:linear-gradient(to right,'+s.map(x=>x[1]).join(',')+')"></div><span>'+s[s.length-1][0]+' '+V.uni+'</span>';
 }
-document.getElementById('win').addEventListener('change',repintar);
-
 // ===== Cargar datos reales (fallback demo) =====
 async function cargar(){
   let arr=null, esDemo=false;
@@ -245,6 +254,7 @@ async function cargar(){
 
   SERIE=arr.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime()))
            .map(m=>({t:parse(m.fecha_hora).getTime(), v:parseFloat(m[V.campo]), id:+(m.id_medicion||0), fecha:m.fecha_hora}))
+           .filter(m=>isNaN(m.v) || (m.v>=V.vMin && m.v<=V.vMax))   // descarta lecturas fuera de rango físico (glitches)
            .sort((a,b)=>a.t-b.t);
 
   const now=Date.now(), maxMs=((CONFIG&&CONFIG.CONEXION_MAX_MIN)||15)*60000;
