@@ -208,11 +208,19 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
 
 // ---- Monitoreo en tiempo real (dinámico, con el formato de la ventana flotante + descarga PDF) ----
 (function(){
- const C=CONFIG.CAMPOS, U=CONFIG.UMBRALES;
- const N=[{n:'N1',c:'#2e9e57',tope:U.preventivo},{n:'N2',c:'#EAB308',tope:U.prevencion},{n:'N3',c:'#EF9F27',tope:U.critico}];
+ const C=CONFIG.CAMPOS, U=CONFIG.UMBRALES, REF=(CONFIG&&CONFIG.NIVEL_REF)||170;
+ // El sensor entrega DISTANCIA; el nivel de agua = REF - lectura. Los umbrales se expresan en NIVEL
+ // (a MAYOR nivel, más grave), igual que en el geoportal: 30 / 50 / 70 cm con REF=170.
+ const T={prevencion:REF-U.critico, precaucion:REF-U.prevencion, critica:REF-U.preventivo};
+ const N=[{n:'Prevención',c:'#EAB308',tope:T.prevencion},{n:'Precaución',c:'#EF9F27',tope:T.precaucion},{n:'Crítica',c:'#c0392b',tope:T.critica}];
  const set=(id,v)=>{const e=document.getElementById(id); if(e)e.textContent=v;};
  const parse=s=>new Date(String(s).replace(' ','T'));
- const estado=nv=>isNaN(nv)?{t:'SIN DATO',c:'#9a9a92'}:nv>=U.critico?{t:'EVACUACIÓN',c:'#c0392b'}:nv>=U.prevencion?{t:'CRÍTICO',c:'#e67e22'}:nv>=U.preventivo?{t:'ADVERTENCIA',c:'#EAB308'}:{t:'NORMAL',c:'#2e9e57'};
+ // Estado coherente con el geoportal y el dashboard: Normal / Prevención / Precaución / Crítica
+ const estado=nv=>isNaN(nv)?{t:'SIN DATO',c:'#9a9a92'}
+   :nv>=T.critica   ?{t:'CRÍTICA',   c:'#c0392b'}
+   :nv>=T.precaucion?{t:'PRECAUCIÓN',c:'#e67e22'}
+   :nv>=T.prevencion?{t:'PREVENCIÓN',c:'#EAB308'}
+   :{t:'NORMAL',c:'#2e9e57'};
  let SERIE=[], VEN=[], chart=null;
  const umbralDs=len=>N.map(x=>({label:x.n,data:Array(len).fill(x.tope),borderColor:x.c,borderDash:[6,4],borderWidth:1.2,pointRadius:0,fill:false,tension:0,order:5}));
  function ventana(){ const win=+document.getElementById('sim-win').value; if(!SERIE.length) return [];
@@ -229,7 +237,7 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
    const labels=VEN.map(m=>fL(parse(m[C.fecha]))), data=VEN.map(m=>parseFloat(m[C.nivel]));
    const st=stats(); const maxI=data.findIndex(v=>v===st.mx);
    const ptR=data.map((_,i)=>i===maxI?5:0), ptC=data.map((_,i)=>i===maxI?'#c0392b':'#1f7a45');
-   const yMax=Math.max(30,Math.ceil(((isNaN(st.mx)?0:st.mx)+5)/10)*10);
+   const yMax=Math.max(T.critica+15,Math.ceil(((isNaN(st.mx)?0:st.mx)+5)/10)*10);   // siempre visible la línea de Crítica
    if(chart) chart.destroy();
    chart=new Chart(document.getElementById('cSim'),{type:'line',
      data:{labels,datasets:[{label:'Nivel (cm)',data,borderColor:'#1f7a45',backgroundColor:'rgba(47,158,87,.18)',
@@ -248,7 +256,11 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
  async function refrescar(){
    const lb=document.getElementById('live-badge'); const arr=await getReadings();
    if(!arr){ lb.textContent='API no disponible'; lb.style.background='#c0392b'; return; }
-   SERIE=arr.filter(m=>m[C.fecha]&&m[C.fecha]!=='None'&&!isNaN(parse(m[C.fecha]).getTime())).sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));
+   // El sensor entrega DISTANCIA: la convertimos UNA sola vez a NIVEL DE AGUA (= REF - lectura),
+   // así la gráfica, el resumen, el estado y el PDF trabajan con el mismo dato que el geoportal.
+   SERIE=arr.filter(m=>m[C.fecha]&&m[C.fecha]!=='None'&&!isNaN(parse(m[C.fecha]).getTime()))
+            .sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0))
+            .map(m=>{ const raw=parseFloat(m[C.nivel]); return isNaN(raw)?m:Object.assign({},m,{[C.nivel]:+(REF-raw).toFixed(2)}); });
    if(!SERIE.length){ lb.textContent='Sin datos'; lb.style.background='#c0392b'; return; }
    const d=SERIE[SERIE.length-1], nv=parseFloat(d[C.nivel]);
    set('s-nivel',isNaN(nv)?'—':nv.toFixed(1)); set('s-temp',d[C.temp]??'—'); set('s-hum',d[C.humedad]??'—');
@@ -278,7 +290,7 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
     ['Ultima lectura',ult[C.fecha]?String(ult[C.fecha]).replace('T',' ').slice(0,19):'-']].forEach(f=>{
      doc.text(f[0]+':',16,y); doc.setFont('helvetica','bold'); doc.text(f[1],72,y); doc.setFont('helvetica','normal'); y+=6; });
    y+=4; doc.setFontSize(9); doc.setTextColor(90);
-   doc.text('Umbrales (cm): N1 normal < '+U.preventivo+'  |  N2 advertencia '+U.preventivo+'-'+U.prevencion+'  |  N3 critico '+U.prevencion+'-'+U.critico+'  |  N4 evacuacion >= '+U.critico,14,y);
+   doc.text('Umbrales de nivel de agua (cm): Normal < '+T.prevencion+'  |  Prevencion '+T.prevencion+'-'+T.precaucion+'  |  Precaucion '+T.precaucion+'-'+T.critica+'  |  Critica >= '+T.critica,14,y);
    y+=5; doc.text('*Calidad de datos sin verificar exhaustivamente. Lecturas de la API del sensor P1 (Render).',14,y);
    // ---- Tabla de lecturas (fecha + nivel) de la ventana, más reciente primero ----
    y+=9;
