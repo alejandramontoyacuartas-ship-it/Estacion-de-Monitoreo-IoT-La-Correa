@@ -337,7 +337,7 @@ window.abrirLluviaFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='lluvia-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Lluvia" src="lluvia.html?embed=1&v=4"></iframe></div>';
+      +'<iframe title="Registros de lectura — Lluvia" src="lluvia.html?embed=1&v=5"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarLluviaFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarLluviaFlotante(); });
