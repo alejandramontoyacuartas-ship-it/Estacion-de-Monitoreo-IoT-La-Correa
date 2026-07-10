@@ -310,7 +310,7 @@ window.abrirNivelesFlotante=function(){
   if(!m){
     m=document.createElement('div'); m.id='niv-modal';
     m.innerHTML='<div class="niv-box"><button class="niv-x" title="Cerrar">✕</button>'
-      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=23"></iframe></div>';
+      +'<iframe title="Registros de lectura — Nivel de agua" src="niveles.html?embed=1&v=24"></iframe></div>';
     document.body.appendChild(m);
     m.querySelector('.niv-x').addEventListener('click',()=>window.cerrarNivelesFlotante());
     document.addEventListener('keydown',e=>{ if(e.key==='Escape') window.cerrarNivelesFlotante(); });
@@ -428,17 +428,18 @@ const SENSOR_INFO={
 };
 let _medCache=null,_medTime=0,_detChart=null,_corteChart=null,_serieInfo=null,_serieLista=null;
 function fmtNum(v){ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); }
-// Niveles de alerta tipo SIATA a partir de los umbrales (cm de distancia sensor→agua)
-// Igual que en estadoPorNivel: a MENOR lectura, MAYOR peligro, por eso los "tope" van
-// en orden DESCENDENTE (N1 = lectura más alta/lejana = seguro) y se compara con ">".
-function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
+// Niveles de alerta tipo SIATA en términos de NIVEL DE AGUA (= NIVEL_REF - lectura del sensor).
+// El sub-panel trabaja con el nivel ya convertido (sube con el agua), así que los "tope" van
+// en orden ASCENDENTE (N1 = nivel bajo = seguro) y se compara con ">=" (a MAYOR nivel, más grave).
+function nivelesN(){ const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
+  const REF=(CONFIG&&CONFIG.NIVEL_REF)||150;
   return [
-    {n:'N1',c:'#2e9e57',tope:U.critico,       tit:'Nivel de agua seguro'},
-    {n:'N2',c:'#EAB308',tope:U.prevencion,    tit:'Advertencia'},
-    {n:'N3',c:'#EF9F27',tope:U.preventivo,    tit:'Crítico (creciente)'},
-    {n:'N4',c:'#c0392b',tope:0,               tit:'Evacuación'}
+    {n:'N1',c:'#2e9e57',tope:0,             tit:'Nivel de agua seguro'},
+    {n:'N2',c:'#EAB308',tope:REF-U.critico,    tit:'Advertencia'},
+    {n:'N3',c:'#EF9F27',tope:REF-U.prevencion, tit:'Crítico (creciente)'},
+    {n:'N4',c:'#c0392b',tope:REF-U.preventivo, tit:'Evacuación'}
   ]; }
-function nivelActual(cm){ const N=nivelesN(); for(let i=0;i<N.length;i++){ if(cm>N[i].tope) return i; } return N.length-1; }
+function nivelActual(cm){ const N=nivelesN(); let r=0; for(let i=0;i<N.length;i++){ if(cm>=N[i].tope) r=i; } return r; }
 // Dibuja la sección transversal (corte del cauce) con la lámina de agua actual
 function renderCorte(nivelCm){
   const D=window.CORTE_P1; const cv=document.getElementById('sd-corte-chart'); if(!D||!cv) return;
@@ -548,7 +549,7 @@ function renderNiveles(cm){
   const N=nivelesN(), act=nivelActual(isNaN(cm)?0:cm);
   const cur=document.getElementById('sd-niv-cur');
   if(cur) cur.innerHTML='Lámina actual: <b>'+(isNaN(cm)?'—':cm.toFixed(1)+' cm')+'</b> · <b style="color:'+N[act].c+'">'+N[act].n+' — '+N[act].tit+'</b>';
-  const rango=['> '+N[0].tope+' cm', N[1].tope+'–'+N[0].tope+' cm', N[2].tope+'–'+N[1].tope+' cm', '≤ '+N[2].tope+' cm'];
+  const rango=['< '+N[1].tope+' cm', N[1].tope+'–'+N[2].tope+' cm', N[2].tope+'–'+N[3].tope+' cm', '≥ '+N[3].tope+' cm'];
   const desc=['No se registran cambios asociados a crecientes.','Aumento del nivel; primer estado de alerta ante posibles crecientes.',
     'Afectaciones menores a calles y estructuras cercanas al canal.','Inundación extensiva; evacuación de la población en la zona de influencia.'];
   const list=document.getElementById('sd-niv-list');
@@ -655,6 +656,10 @@ async function abrirPanelSensor(key){
   }catch(e){ p.querySelector('.sd-valor').textContent='Sin datos (API no disponible)'; return; }
   lista=lista.filter(m=>m.fecha_hora);                       // descartar registros de prueba sin fecha
   lista.sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0));   // orden cronológico por id
+  // El sensor entrega DISTANCIA; convertimos a NIVEL DE AGUA (= NIVEL_REF - lectura) una sola vez,
+  // así toda la pestaña (serie, resumen, perfil, niveles) trabaja con el nivel que sube con el agua.
+  const _REFd=(CONFIG&&CONFIG.NIVEL_REF)||150;
+  lista=lista.map(m=>{ const raw=parseFloat(m.nivel_agua); return isNaN(raw)?m:Object.assign({},m,{nivel_agua:+(_REFd-raw).toFixed(2)}); });
   const nivelCm=_pintarSerie(info, lista);                    // serie por ventana de tiempo + máximo + resumen
   renderLecturas(lista, info);
   renderNiveles(nivelCm);
@@ -668,7 +673,7 @@ function setEstado(t){const b=document.getElementById('estado-badge');t=t||'SIN 
 // El sensor mide DISTANCIA hasta el agua: a MENOR lectura, MAYOR peligro (agua más cerca
 // del sensor). Por eso el umbral "preventivo" (el número más chico) dispara la alerta
 // más grave, y "critico" (el más grande) la más leve — es intencional, no un error.
-function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
+function estadoPorNivel(nv){const U=(CONFIG&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
   if(isNaN(nv)) return {txt:'SIN DATO',col:'#888'};
   if(nv<=U.preventivo) return {txt:'EVACUACIÓN',col:'#c0392b'};
   if(nv<=U.prevencion) return {txt:'CRÍTICO',   col:'#e67e22'};
@@ -729,7 +734,9 @@ async function leerSensor(){const C=CONFIG.CAMPOS;
   if(gj&&gj.features){ let f=gj.features.map(x=>x.properties||{}).filter(m=>m[C.fecha]);
     f.sort((a,b)=>(b.id_medicion||0)-(a.id_medicion||0)); d=f[0]||{}; }   // más reciente primero
   else if(Array.isArray(gj)) d=gj[0]||{}; else d=gj||{};
-  fila('v-nivel',d[C.nivel]);fila('v-temp',d[C.temp]);fila('v-humedad',d[C.humedad]);
+  // Nivel de agua mostrado = NIVEL_REF - lectura del sensor (sube cuando la distancia baja)
+  const _REF=(CONFIG&&CONFIG.NIVEL_REF)||150; const _nivAgua=_REF-parseFloat(d[C.nivel]);
+  fila('v-nivel', isNaN(_nivAgua)?'—':_nivAgua.toFixed(2));fila('v-temp',d[C.temp]);fila('v-humedad',d[C.humedad]);
   fila('v-lluvia',d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':d[C.lluvia]);
   // Estado derivado del NIVEL real vs umbrales (el campo estado_alerta del prototipo es inconsistente)
   const est=estadoPorNivel(parseFloat(d[C.nivel]));
@@ -748,19 +755,19 @@ async function leerSensor(){const C=CONFIG.CAMPOS;
     +'<b>📡 '+CONFIG.SENSOR.nombre+'</b>'
     +'<div style="margin:4px 0;font-weight:700;color:'+cxCol+'">'+(cx.ok===true?'🟢':cx.ok===false?'🔴':'⚪')+' '+cxTxt+'</div>'
     +'<div style="margin:5px 0;font-weight:700;color:'+est.col+'">● '+est.txt+'</div>'
-    +'<div><b>Nivel del agua:</b> '+fmt(d[C.nivel])+' cm</div>'
+    +'<div><b>Nivel del agua:</b> '+(isNaN(_nivAgua)?'—':_nivAgua.toFixed(2))+' cm</div>'
     +'<div><b>Temperatura:</b> '+fmt(d[C.temp])+' °C</div>'
     +'<div><b>Humedad:</b> '+fmt(d[C.humedad])+' %</div>'
     +'<div><b>¿Lloviendo?:</b> '+(d[C.lluvia]===true?'Sí':d[C.lluvia]===false?'No':fmt(d[C.lluvia]))+'</div>'
     +'<div style="font-size:11px;color:#666;margin-top:5px">Última lectura: '+fmt(d[C.fecha])+'</div>'
     +'</div>');
-  const nv=parseFloat(d[C.nivel]);if(!isNaN(nv)){hist.labels.push(new Date().toLocaleTimeString());hist.data.push(nv);if(hist.data.length>20){hist.labels.shift();hist.data.shift();}if(chart)chart.update();}
+  if(!isNaN(_nivAgua)){hist.labels.push(new Date().toLocaleTimeString());hist.data.push(_nivAgua);if(hist.data.length>20){hist.labels.shift();hist.data.shift();}if(chart)chart.update();}
   // En vivo: si el panel del sensor (estilo SIATA) está abierto, agrega la lectura nueva a su serie.
   const sd=document.getElementById('sensor-detalle');
   if(sd && sd.style.display!=='none' && _serieInfo && _serieLista && _serieLista.length && d[C.fecha]){
     const prev=_serieLista[_serieLista.length-1];
     const esNueva = (d.id_medicion||0)>(prev.id_medicion||0) || String(d[C.fecha])!==String(prev[C.fecha]);
-    if(esNueva){ _serieLista.push(d);
+    if(esNueva){ const raw=parseFloat(d.nivel_agua); const dConv=isNaN(raw)?d:Object.assign({},d,{nivel_agua:+(((CONFIG&&CONFIG.NIVEL_REF)||150)-raw).toFixed(2)}); _serieLista.push(dConv);
       const nc=_pintarSerie(_serieInfo,_serieLista); renderNiveles(nc); renderCorte(nc); }
   }
  }catch(e){

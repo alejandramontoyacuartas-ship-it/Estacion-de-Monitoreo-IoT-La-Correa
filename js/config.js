@@ -22,18 +22,19 @@ const CONFIG = {
   // Así el panel muestra la VERDAD y no un "Conectado" falso con datos de hace días.
   CONEXION_MAX_MIN: 15,
 
-  // ---- Umbrales de alerta (cm de nivel_agua) ----
-  // El geoportal DERIVA el estado del nivel medido contra estos umbrales.
-  //   < 100 -> N1 NORMAL (verde) | 100 -> N2 ADVERTENCIA (amarillo)
-  //   130   -> N3 CRÍTICO (naranja) | 150 -> N4 EVACUACIÓN (rojo)
-  // ⚠️ Umbrales de DISEÑO del SAT (implementación real en campo): 150 / 250 / 350 cm,
-  //   derivados de la curva de gasto de Manning con el caudal Log-Pearson III (Q Tr100 = 280 m³/s).
-  //   Requieren un sensor de mayor alcance montado por encima del nivel de diseño (>~3,7 m).
+  // ---- Umbrales de alerta (cm de DISTANCIA sensor -> agua) ----
+  // El sensor mide la DISTANCIA hasta la lámina de agua: a MENOR distancia, MAYOR peligro
+  // (el agua está más cerca del sensor). El estado se deriva de la lectura contra estos umbrales:
+  //   > 140 -> N1 SEGURO (verde) | 120-140 -> N2 ADVERTENCIA (amarillo)
+  //   100-120 -> N3 CRÍTICO (naranja) | < 100 -> N4 EVACUACIÓN (rojo)
   UMBRALES: {
-    preventivo: 100,  // >= 100 cm -> N2 ADVERTENCIA (amarillo)
-    prevencion: 130,  // >= 130 cm -> N3 CRÍTICO     (naranja)
-    critico:    150   // >= 150 cm -> N4 EVACUACIÓN  (rojo)
+    preventivo: 100,  // <= 100 cm de distancia -> N4 EVACUACIÓN (agua muy cerca)
+    prevencion: 120,  // <= 120 cm -> N3 CRÍTICO
+    critico:    140   // <= 140 cm -> N2 ADVERTENCIA ; > 140 -> N1 SEGURO
   },
+  // El NIVEL DE AGUA que se muestra = NIVEL_REF - lectura del sensor (sube cuando el sensor baja).
+  // NIVEL_REF = distancia del sensor al lecho seco (referencia del MDE en P1, ~150 cm).
+  NIVEL_REF: 150,
 
   // ---- Estación de monitoreo (Producto A) ----
   SENSOR: {

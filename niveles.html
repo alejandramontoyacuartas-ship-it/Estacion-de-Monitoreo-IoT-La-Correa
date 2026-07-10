@@ -186,7 +186,12 @@ input[type=range]{width:100%;accent-color:var(--verde)}
 // Modo embebido (dentro del modal flotante del visor): oculta el menú superior.
 if(/[?&]embed=1/.test(location.search)) document.documentElement.classList.add('embed');
 // ===== Niveles de riesgo a partir de CONFIG.UMBRALES =====
-const U=(typeof CONFIG!=='undefined'&&CONFIG.UMBRALES)||{preventivo:100,prevencion:130,critico:150};
+// El sensor entrega DISTANCIA; el nivel de agua = NIVEL_REF - lectura (sube cuando el sensor baja).
+const NIVEL_REF=(typeof CONFIG!=='undefined'&&CONFIG.NIVEL_REF)||150;
+const aNivel=med=>Math.max(0, NIVEL_REF-parseFloat(med));
+// Umbrales de distancia (config) -> umbrales en NIVEL DE AGUA (N2>=10, N3>=30, N4>=50 con ref 150).
+const Ud=(typeof CONFIG!=='undefined'&&CONFIG.UMBRALES)||{preventivo:100,prevencion:120,critico:140};
+const U={preventivo:NIVEL_REF-Ud.critico, prevencion:NIVEL_REF-Ud.prevencion, critico:NIVEL_REF-Ud.preventivo};
 // nivel_agua = altura de la lámina (cm). A MAYOR nivel, MAYOR peligro (rojo arriba, verde
 // abajo) — coherente con config.js/app.js (estadoPorNivel: nivel>=critico => Evacuación).
 // tope = umbral de ENTRADA a cada estado (límite inferior del nivel).
@@ -201,7 +206,7 @@ const fmt=v=>{ v=parseFloat(v); return isNaN(v)?'—':v.toFixed(2); };
 const API=(typeof CONFIG!=='undefined'&&CONFIG.API_BASE)||'https://iot-trabajo.onrender.com';
 // Eje de nivel ajustado a los umbrales de alerta (se reescala solo si cambian los umbrales),
 // con las divisiones alineadas a los umbrales (0, N2, N3, N4, tope).
-const NIVEL_MAX=300;   // ambos ejes (nivel y altura) a 300 cm => las bandas de alerta N1-N4 coinciden en las dos gráficas
+const NIVEL_MAX=150;   // nivel de agua = 150 - lectura, así que el eje llega a 150 (con ref 150)
 function ticksNivel(scale){ const t=[]; for(let v=0;v<=NIVEL_MAX;v+=50) t.push({value:v}); if(!t.some(o=>o.value===NIVEL_MAX)) t.push({value:NIVEL_MAX}); scale.ticks=t; }
 
 // ---- Escala (tarjetas) y barras N ----
@@ -290,7 +295,7 @@ function dibujarSerie(keep){
         :win>=48?(d=>('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+' '+('0'+d.getHours()).slice(-2)+'h')
         :(d=>('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2));
   const labels=VEN.map(m=>fL(parse(m.fecha_hora)));
-  const data=VEN.map(m=>parseFloat(m.nivel_agua));
+  const data=VEN.map(m=>aNivel(m.nivel_agua));
   const mx=Math.max(30,...data.filter(v=>!isNaN(v)),N[1].tope+5);
   if(chS)chS.destroy();
   const lastVal=[...data].reverse().find(v=>!isNaN(v));
@@ -314,10 +319,9 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
   const zzRaw=perf.map(p=>(p.z-base)*100);
   const zz=zzRaw.map((_,i)=>{let s=0,n=0;for(let j=Math.max(0,i-2);j<=Math.min(zzRaw.length-1,i+2);j++){s+=zzRaw[j];n++;}return s/n;});
   const lvl=isNaN(cm)?0:cm; corteLvl=lvl;                      // lámina de agua actual (cm)
-  // Eje del perfil acotado a 200 cm: muestra el detalle del fondo del cauce y la lámina de agua
-  // (las paredes del cauce por encima de 300 cm quedan fuera de cuadro).
-  // así el perfil transversal muestra la forma real de la quebrada.
-  const yMax=300;
+  // Eje del perfil a 150 cm (= NIVEL_MAX): así las bandas de alerta N1–N4 coinciden con la
+  // gráfica de serie y la lámina de agua (nivel = 150 - lectura) se lee en la misma escala.
+  const yMax=NIVEL_MAX;
   const water=zz.map(h=>h<lvl?lvl:h);
   if(chC)chC.destroy();
   chC=new Chart(document.getElementById('cCorte'),{type:'line',
@@ -332,7 +336,7 @@ function dibujarCorte(cm){ const D=window.CORTE_P1; if(!D){return;} const perf=D
       responsive:true,maintainAspectRatio:false},plugins:[perfilAlerta]});
 }
 function actualizarInstante(i){ if(!VEN.length)return; i=Math.max(0,Math.min(i,VEN.length-1));
-  const m=VEN[i], cm=parseFloat(m.nivel_agua), act=idxNivel(isNaN(cm)?0:cm);
+  const m=VEN[i], cm=aNivel(m.nivel_agua), act=idxNivel(isNaN(cm)?0:cm);
   if(chS){chS.$cur=i;chS.update('none');}
   dibujarCorte(cm);
   pintarNbar('nbar1',act); pintarNbar('nbar2',act);
@@ -371,7 +375,8 @@ async function cargar(keep){
   if(!Array.isArray(arr)||!arr.length){                       // demo si la API no responde (CORS/dormida)
     esDemo=true; const now=Date.now(); arr=[];
     for(let i=0;i<220;i++){ const t=new Date(now-(220-i)*20*60000);
-      arr.push({id_medicion:i+1,nivel_agua:+(4+8*Math.abs(Math.sin(i/7))+ (i%17===0?7:0)).toFixed(2),fecha_hora:t.toISOString().slice(0,19).replace('T',' ')}); }
+      // demo: el sensor entrega DISTANCIA (~145 seguro … ~90 evacuación); nivel_agua = 150 - distancia
+      arr.push({id_medicion:i+1,nivel_agua:+(145-42*Math.abs(Math.sin(i/7))-(i%17===0?15:0)).toFixed(2),fecha_hora:t.toISOString().slice(0,19).replace('T',' ')}); }
     nd.style.display='block'; nd.textContent='· Mostrando datos de demostración (la API no respondió; en local usa el proxy / en producción habilita CORS).';
   } else nd.style.display='none';
   SERIE=arr.filter(m=>m.fecha_hora && m.fecha_hora!=='None' && !isNaN(parse(m.fecha_hora).getTime()))
