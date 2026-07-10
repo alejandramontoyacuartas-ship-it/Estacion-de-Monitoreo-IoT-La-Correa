@@ -59,6 +59,28 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
 .tl-res{text-align:center;font-size:11px;color:var(--gris);margin-top:6px}
 .embed .tl-badge{width:36px;height:36px} .embed .tl-ico{width:26px;height:26px}
 .embed .tl-item{width:62px} .embed .tl::before{top:24px;left:31px;right:31px}
+/* ===== Panel "Horas con lluvia por día" ===== */
+.hd-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.hd-ico{width:52px;height:52px;flex:none}
+.hd-title{font-size:21px;font-weight:800;color:#12385f;letter-spacing:.4px;text-transform:uppercase;line-height:1.1}
+.hd-sub{font-size:13.5px;color:#7089a1;font-weight:600;margin-top:2px}
+.hd-kpis{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:14px;background:#f3f7fc;border-radius:13px;padding:15px 18px;margin-bottom:16px}
+.hd-kpi{display:flex;flex-direction:column;gap:3px;justify-content:center}
+.hd-kpi.hd-hoy{border-right:1px solid #dbe6f2;padding-right:12px}
+.hd-k-lbl{font-size:12px;color:#5a6b60;font-weight:700}
+.hd-kpi b{font-size:24px;font-weight:800;color:var(--azul);line-height:1}
+.hd-hoy b{font-size:38px;color:var(--azul);letter-spacing:-.5px}
+#hd-total{color:#1c8a54}
+.hd-k-sub{font-size:11px;color:#8a97a6}
+.hd-chartwrap{height:250px;position:relative}
+.hd-foot{margin-top:12px;background:#eef4fb;border-radius:9px;padding:9px 13px;font-size:11.5px;color:#4a6785}
+.hd-foot::before{content:"ℹ️ ";}
+.embed .hd-head{gap:10px;margin-bottom:10px} .embed .hd-ico{width:40px;height:40px}
+.embed .hd-title{font-size:15px} .embed .hd-sub{font-size:11.5px}
+.embed .hd-kpis{grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 12px;margin-bottom:10px}
+.embed .hd-kpi b{font-size:16px} .embed .hd-hoy b{font-size:22px}
+.embed .hd-kpi.hd-hoy{padding-right:8px} .embed .hd-k-lbl{font-size:10px} .embed .hd-k-sub{font-size:9.5px}
+.embed .hd-chartwrap{height:200px} .embed .hd-foot{font-size:10px;padding:7px 10px}
 @media(max-width:900px){.rn-cards{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
 /* ===== Modo embebido (ventana flotante lateral del visor) ===== */
 .embed .navbar,.embed #navbar-root{display:none!important}
@@ -117,13 +139,22 @@ html,body{margin:0;padding:0;font-family:"Segoe UI",Tahoma,sans-serif;background
       <div class="tl-wrap" id="tl-lluvia"></div>
       <div class="tl-res" id="tl-res"></div>
     </div>
-    <!-- Barras: horas con lluvia por día -->
-    <div class="card">
-      <div class="ptit">Horas con lluvia por día</div>
-      <div class="chartbox"><canvas id="ch-dia"></canvas></div>
+    <!-- Panel destacado: horas con lluvia por día (mín. 15 días) -->
+    <div class="card span2 hd-card">
+      <div class="hd-head">
+        <svg viewBox="0 0 52 52" class="hd-ico"><circle cx="26" cy="26" r="26" fill="#1976d2"/><path d="M18 30.5a5 5 0 0 1 .6-10 6.6 6.6 0 0 1 12.5 1.9A4.4 4.4 0 0 1 30.7 30.5Z" fill="#fff"/><g stroke="#fff" stroke-width="2.3" stroke-linecap="round"><line x1="20.5" y1="32.8" x2="19.2" y2="37.4"/><line x1="25" y1="32.8" x2="23.7" y2="37.4"/><line x1="29.5" y1="32.8" x2="28.2" y2="37.4"/></g></svg>
+        <div><div class="hd-title">Horas con lluvia por día</div><div class="hd-sub" id="hd-mes">—</div></div>
+      </div>
+      <div class="hd-kpis">
+        <div class="hd-kpi hd-hoy"><span class="hd-k-lbl">HOY <span id="hd-fecha"></span></span><b id="hd-hoy">—</b><span class="hd-k-sub">horas con lluvia</span></div>
+        <div class="hd-kpi"><span class="hd-k-lbl">⏱️ Promedio mensual</span><b id="hd-prom">—</b></div>
+        <div class="hd-kpi"><span class="hd-k-lbl">📅 Total mes</span><b id="hd-total">—</b></div>
+      </div>
+      <div class="hd-chartwrap"><canvas id="ch-dia"></canvas></div>
+      <div class="hd-foot">Datos registrados por el sensor de lluvia cada 5 minutos.</div>
     </div>
     <!-- Dona: proporción del periodo -->
-    <div class="card">
+    <div class="card span2">
       <div class="ptit">Proporción del periodo (ventana)</div>
       <div class="chartbox sm"><canvas id="ch-dona"></canvas></div>
     </div>
@@ -176,23 +207,52 @@ function episodios(arr){ let n=0,largo=0,inEp=false,ini=null,ult=null,ultLluvia=
   return {n, largoMs:largo, ultLluvia};
 }
 
-// ---- Horas de lluvia por día (estimación por intervalos entre lecturas con lluvia) ----
-function horasPorDia(arr){ const CAP=60*60000; const byDay={};
+// ---- Horas de lluvia por día (mapa fecha->horas; estimación por intervalos entre lecturas con lluvia) ----
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MESab=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const h1=v=>((v||0).toFixed(1)).replace('.',',');           // 3.2 -> "3,2"
+function horasPorDiaMap(arr){ const CAP=60*60000, byDay={};
   for(let i=0;i<arr.length-1;i++){ if(arr[i].llov){ const dt=Math.min(arr[i+1].t-arr[i].t, CAP);
-    const d=new Date(arr[i].t); const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    byDay[k]=(byDay[k]||0)+dt; } }
-  const keys=Object.keys(byDay).sort().slice(-14);
-  return { labels:keys.map(k=>{const p=k.split('-');return p[2]+'/'+p[1];}), horas:keys.map(k=>+(byDay[k]/3600000).toFixed(2)) };
+    const k=ymd(new Date(arr[i].t)); byDay[k]=(byDay[k]||0)+dt; } }
+  Object.keys(byDay).forEach(k=>byDay[k]=byDay[k]/3600000);   // ms -> horas
+  return byDay;
 }
+// Plugin: dibuja el valor sobre cada barra (como en la imagen)
+const barLabels={id:'barLabels',afterDatasetsDraw(c){ const ctx=c.ctx, meta=c.getDatasetMeta(0);
+  ctx.save(); ctx.font='700 12px "Segoe UI",sans-serif'; ctx.fillStyle='#173049'; ctx.textAlign='center'; ctx.textBaseline='bottom';
+  meta.data.forEach((bar,i)=>{ ctx.fillText(h1(c.data.datasets[0].data[i]), bar.x, bar.y-4); }); ctx.restore(); }};
 
-function pintarDia(){ const {labels,horas}=horasPorDia(SERIE);
-  const ctx=document.getElementById('ch-dia'); if(!ctx||!window.Chart)return;
+function pintarDia(){ const ctx=document.getElementById('ch-dia'); if(!ctx||!window.Chart)return;
+  const byDay=horasPorDiaMap(SERIE);
+  const lastT=SERIE.length?SERIE[SERIE.length-1].t:Date.now();
+  const lastD=new Date(lastT); lastD.setHours(0,0,0,0);
+  const NDIAS=15;                                             // mínimo 15 días
+  const dias=[]; for(let i=NDIAS-1;i>=0;i--){ const d=new Date(lastD); d.setDate(d.getDate()-i); dias.push(d); }
+  const labels=dias.map(d=>[String(d.getDate()).padStart(2,'0'), MESab[d.getMonth()]]);
+  const horas=dias.map(d=>+(byDay[ymd(d)]||0).toFixed(1));
+  const hoyIdx=NDIAS-1;
+  const colores=dias.map((_,i)=> i===hoyIdx?'#0d3b73':'#4a9fe0');   // hoy = azul oscuro
+  const maxH=Math.max(1,...horas);
+  // KPIs del mes del último dato
+  const mesL=lastD.getMonth(), anioL=lastD.getFullYear();
+  let totalMes=0; Object.keys(byDay).forEach(k=>{ const p=k.split('-').map(Number); if(p[1]-1===mesL && p[0]===anioL) totalMes+=byDay[k]; });
+  const prom=lastD.getDate()?totalMes/lastD.getDate():0;
+  const hoyH=byDay[ymd(lastD)]||0; const p2=n=>String(n).padStart(2,'0');
+  const setT=(id,t)=>{const e=document.getElementById(id); if(e)e.textContent=t;};
+  setT('hd-mes', MESES[mesL]+' '+anioL);
+  setT('hd-fecha', p2(lastD.getDate())+'/'+p2(mesL+1)+'/'+anioL);
+  setT('hd-hoy', h1(hoyH)+' h'); setT('hd-prom', h1(prom)+' h/día'); setT('hd-total', h1(totalMes)+' h');
   if(chDia)chDia.destroy();
-  chDia=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Horas con lluvia',data:horas,
-    backgroundColor:AZUL2,borderRadius:4,maxBarThickness:34}]},
-    options:{animation:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:it=>it.parsed.y+' h con lluvia'}}},
-      scales:{y:{beginAtZero:true,title:{display:true,text:'horas'},ticks:{precision:0}}},
-      responsive:true,maintainAspectRatio:false}});
+  chDia=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Horas',data:horas,
+    backgroundColor:colores,borderRadius:5,maxBarThickness:38}]},
+    options:{animation:false,layout:{padding:{top:24}},
+      plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:12},color:'#5a6b60'}},
+        tooltip:{callbacks:{label:it=>h1(it.parsed.y)+' h con lluvia'}}},
+      scales:{x:{grid:{display:false},ticks:{color:'#5a6b60',font:{size:11}}},
+        y:{beginAtZero:true,suggestedMax:Math.max(4,Math.ceil(maxH)),title:{display:true,text:'Horas'},
+          grid:{color:'#eef2f7'},ticks:{precision:0,stepSize:1}}},
+      responsive:true,maintainAspectRatio:false},plugins:[barLabels]});
 }
 
 // Íconos SVG: sol (sin lluvia) y nube con gotas (lluvia), estilo plano como la línea de tiempo.
