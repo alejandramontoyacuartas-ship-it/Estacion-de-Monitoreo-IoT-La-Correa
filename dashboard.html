@@ -93,9 +93,9 @@ h2.sec{color:#1f5a43;font-size:19px;margin:26px 0 12px;border-bottom:2px solid #
         <b style="color:#1f5a43;font-size:14px">Comportamiento del nivel en el tiempo</b>
         <div style="display:flex;gap:8px;align-items:center">
           <select id="sim-win" style="font-size:12px;font-weight:600;color:#1f5a43;background:#eef5f0;border:1px solid #cfe3d6;border-radius:7px;padding:4px 8px;cursor:pointer">
-            <option value="3">3 horas</option><option value="6">6 horas</option>
+            <option value="3">3 horas</option><option value="6" selected>6 horas</option>
             <option value="12">12 horas</option><option value="24">24 horas</option>
-            <option value="36">36 horas</option><option value="72" selected>72 horas</option>
+            <option value="36">36 horas</option><option value="72">72 horas</option>
           </select>
           <button id="sim-pdf" title="Descargar la serie seleccionada en PDF" style="font-size:12px;font-weight:700;color:#fff;background:#1f7a45;border:none;border-radius:7px;padding:5px 12px;cursor:pointer">⭳ PDF</button>
         </div>
@@ -268,7 +268,7 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
        fill:true,tension:.35,pointRadius:ptR,pointBackgroundColor:ptC,pointBorderColor:ptC,borderWidth:2,order:1}, ...umbralDs(labels.length)]},
      options:{animation:false,plugins:{legend:{display:false},lineaActual:{lvl:lvlActual},
        tooltip:{filter:it=>it.datasetIndex===0,callbacks:{label:it=>'Nivel: '+(isNaN(it.parsed.y)?'—':it.parsed.y.toFixed(1))+' cm'}}},
-       scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{beginAtZero:true,max:yMax,title:{display:true,text:'Nivel (cm)'}}},maintainAspectRatio:false},
+       scales:{x:{ticks:{maxTicksLimit:8,autoSkip:true}},y:{min:0,max:yMax,title:{display:true,text:'Nivel (cm)'}}},maintainAspectRatio:false},
      plugins:[lineaActual]});
    const f1=v=>isNaN(v)?'—':v.toFixed(1);
    document.getElementById('sim-resumen').innerHTML=
@@ -283,12 +283,17 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
    if(!arr){ lb.textContent='API no disponible'; lb.style.background='#c0392b'; return; }
    // El sensor entrega DISTANCIA: la convertimos UNA sola vez a NIVEL DE AGUA (= REF - lectura),
    // así la gráfica, el resumen, el estado y el PDF trabajan con el mismo dato que el geoportal.
+   // Validez por sensor: el firmware envía -999 (y -1 en nivel) cuando la lectura falla.
+   // Esas lecturas se DESCARTAN (no se acotan), para no inventar máximos ni sesgar promedios.
+   const okDist=v=>!isNaN(v)&&v>=0&&v<=250, okTemp=v=>!isNaN(v)&&v>=-10&&v<=60, okHum=v=>!isNaN(v)&&v>=0&&v<=105;
    SERIE=arr.filter(m=>m[C.fecha]&&m[C.fecha]!=='None'&&!isNaN(parse(m[C.fecha]).getTime()))
             .sort((a,b)=>(a.id_medicion||0)-(b.id_medicion||0))
-            .map(m=>{ const raw=parseFloat(m[C.nivel]); if(isNaN(raw)) return m;
-              // acotado al rango físico [0, REF]: descarta el efecto de lecturas glitch (dist >REF o <0)
-              const niv=Math.max(0, Math.min(REF, REF-raw));
-              return Object.assign({},m,{[C.nivel]:+niv.toFixed(2), _dist:raw}); });
+            .filter(m=>okDist(parseFloat(m[C.nivel])))                       // fuera lecturas de error del nivel
+            .map(m=>{ const raw=parseFloat(m[C.nivel]);
+              const niv=Math.max(0, Math.min(REF, REF-raw));                 // nivel de agua dentro del rango físico
+              const t=parseFloat(m[C.temp]), h=parseFloat(m[C.humedad]);
+              return Object.assign({},m,{[C.nivel]:+niv.toFixed(2), _dist:raw,
+                [C.temp]: okTemp(t)?t:null, [C.humedad]: okHum(h)?h:null }); });
    if(!SERIE.length){ lb.textContent='Sin datos'; lb.style.background='#c0392b'; return; }
    const d=SERIE[SERIE.length-1], nv=parseFloat(d[C.nivel]);        // nv = nivel de agua (convertido)
    const dist=parseFloat(d._dist);                                    // lectura cruda del sensor (distancia)
@@ -318,6 +323,29 @@ new Chart(document.getElementById('cZona'),{type:'doughnut',
     ['Promedio',f1(st.prom)+' cm'],['N. de lecturas',String(st.n)],
     ['Ultima lectura',ult[C.fecha]?String(ult[C.fecha]).replace('T',' ').slice(0,19):'-']].forEach(f=>{
      doc.text(f[0]+':',16,y); doc.setFont('helvetica','bold'); doc.text(f[1],72,y); doc.setFont('helvetica','normal'); y+=6; });
+
+   // ---- Tabla: PROMEDIO POR SENSOR en la ventana elegida (un solo dato por sensor) ----
+   const promOf=g=>{ const v=VEN.map(g).filter(x=>!isNaN(x)); return v.length?v.reduce((a,b)=>a+b,0)/v.length:NaN; };
+   const pNivel=promOf(m=>parseFloat(m[C.nivel])), pDist=promOf(m=>parseFloat(m._dist));
+   const pTemp=promOf(m=>parseFloat(m[C.temp])),  pHum=promOf(m=>parseFloat(m[C.humedad]));
+   const nLl=VEN.filter(m=>m[C.lluvia]===true||m[C.lluvia]===1).length;
+   const pLluv=VEN.length?(nLl/VEN.length*100):NaN;
+   y+=5;
+   if(y>235){ doc.addPage(); y=22; }
+   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20,81,47);
+   doc.text('Promedio por sensor ('+win+')',14,y); y+=6;
+   doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setFillColor(31,90,67); doc.setTextColor(255);
+   doc.rect(14,y-4.5,110,6.5,'F'); doc.rect(126,y-4.5,44,6.5,'F');
+   doc.text('Sensor',17,y); doc.text('Valor promedio',129,y); y+=6;
+   doc.setFont('helvetica','normal'); doc.setTextColor(40);
+   [['Nivel de agua', f1(pNivel)+' cm'],
+    ['Distancia del nivel de agua al sensor', f1(pDist)+' cm'],
+    ['Temperatura', f1(pTemp)+' C'],
+    ['Humedad relativa', f1(pHum)+' %'],
+    ['Lluvia (% del periodo con lluvia)', isNaN(pLluv)?'-':pLluv.toFixed(1)+' %']].forEach((f,i)=>{
+     if(i%2===0){ doc.setFillColor(240,245,242); doc.rect(14,y-4.2,156,6,'F'); }
+     doc.text(f[0],17,y); doc.setFont('helvetica','bold'); doc.text(f[1],129,y); doc.setFont('helvetica','normal'); y+=6; });
+
    y+=4; doc.setFontSize(9); doc.setTextColor(90);
    doc.text('Umbrales de nivel de agua (cm): Normal < '+T.prevencion+'  |  Prevencion '+T.prevencion+'-'+T.precaucion+'  |  Precaucion '+T.precaucion+'-'+T.critica+'  |  Critica >= '+T.critica,14,y);
    y+=5; doc.text('*Calidad de datos sin verificar exhaustivamente. Lecturas de la API del sensor P1 (Render).',14,y);
