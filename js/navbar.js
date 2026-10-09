@@ -39,7 +39,7 @@
         ]},
         {t:'Tablero de lectura', h:'dashboard.html'},
       ]},
-      {t:'Obras de mitigación', h:'#'},
+      {t:'Obras de mitigación', h:'index.html?capa=obras'},
     ]},
     {label:'Manejo de desastres', items:[
       {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},

@@ -55,6 +55,75 @@ const iconLluvia=(color='#5e35b1')=>L.divIcon({className:'',iconSize:[32,32],ico
     <circle cx="16" cy="16" r="13" fill="${color}" stroke="#ffffff" stroke-width="2.4"/>
     <path d="M16 7 C12 12.5 10 15.2 10 18 a6 6 0 0 0 12 0 C22 15.2 20 12.5 16 7 Z" fill="#ffffff"/>
   </svg>`});
+// Ícono de OBRA de mitigación — señal triangular "trabajos en la vía" (triángulo amarillo, trabajador negro)
+const iconObra=(color='#F5B301')=>L.divIcon({className:'',iconSize:[44,42],iconAnchor:[22,38],popupAnchor:[0,-34],
+  html:`<svg width="44" height="42" viewBox="0 0 48 46" style="filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))">
+    <polygon points="24,4 45,41 3,41" fill="${color}" stroke="#141414" stroke-width="4.3" stroke-linejoin="round"/>
+    <g fill="#141414">
+      <!-- casco + cabeza -->
+      <path d="M16.6 19.2 a3.6 3.6 0 0 1 7.2 0 Z"/>
+      <rect x="15.7" y="18.7" width="9" height="1.9" rx=".9"/>
+      <!-- torso inclinado hacia adelante -->
+      <path d="M19 21 c2.7 0 4.9 1.4 7.2 4 l-2.2 2.3 c-1.9-2-3.3-2.9-5-2.9 Z"/>
+      <!-- pierna trasera -->
+      <path d="M18.2 23.6 l-1.8 0 -1.7 10.9 2.6 0 1.8-8 Z"/>
+      <!-- pierna delantera -->
+      <path d="M21.4 25.2 l4.9 9 2.3-1.3 -4.6-8.8 Z"/>
+      <!-- brazos + mango de la pala (baja hacia la derecha) -->
+      <path d="M23.8 23 l12.8 8.6 -1.6 2.2 -12.8-8.6 Z"/>
+      <!-- hoja de la pala -->
+      <path d="M34.6 30.4 l4.8 3.2 -2.2 3.1 -4.6-3.2 Z"/>
+      <!-- montículo donde cava -->
+      <path d="M30.5 35.4 c3-3.3 6.6-4.4 9.5-4.4 l0 4.4 Z"/>
+    </g>
+  </svg>`});
+// Ventana flotante de una OBRA de mitigación (información + fotografía georreferenciada)
+function cerrarObra(){ const m=document.getElementById('obra-modal'); if(m) m.classList.remove('open'); }
+window.abrirObraInfo=function(p){
+  let m=document.getElementById('obra-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='obra-modal'; m.className='obra-modal';
+    m.innerHTML='<div class="obra-box" role="dialog" aria-label="Obra de mitigación">'
+      +'<div class="obra-head"><span id="obra-title"></span><button class="obra-x" title="Cerrar">✕</button></div>'
+      +'<div class="obra-body">'
+      +'  <div class="obra-imgcol">'
+      +'    <div class="obra-imgwrap"><span class="obra-loading">Cargando fotografía…</span><img id="obra-img" alt="Fotografía de la obra" style="display:none"></div>'
+      +'    <div class="obra-thumbs" id="obra-thumbs"></div>'
+      +'  </div>'
+      +'  <div class="obra-info" id="obra-info"></div>'
+      +'</div>'
+      +'<div class="obra-foot"><span id="obra-fuente"></span></div>'
+      +'</div>';
+    document.body.appendChild(m);
+    m.addEventListener('click',e=>{ if(e.target===m || e.target.classList.contains('obra-x')) cerrarObra(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrarObra(); });
+    const im=m.querySelector('#obra-img'), ld=m.querySelector('.obra-loading');
+    im.addEventListener('load',()=>{ im.style.display='block'; ld.style.display='none'; });
+    im.addEventListener('error',()=>{ ld.textContent='Fotografía pendiente de cargar (img/obras/…).'; im.style.display='none'; ld.style.display='block'; });
+  }
+  const estado=p.estado||'—', obra=p.obra||'Obra de mitigación';
+  m.querySelector('#obra-title').innerHTML='🚧 '+obra+(p.sector?' · '+p.sector:'');
+  const im=m.querySelector('#obra-img'), ld=m.querySelector('.obra-loading'), th=m.querySelector('#obra-thumbs');
+  const imgs=(Array.isArray(p.images)&&p.images.length)?p.images:(p.image?[p.image]:[]);
+  th.innerHTML='';
+  const setMain=src=>{ im.style.display='none'; ld.style.display='block'; ld.textContent='Cargando fotografía…'; im.src=src; };
+  if(imgs.length){
+    setMain(imgs[0]);
+    if(imgs.length>1){ imgs.forEach((src,i)=>{ const t=document.createElement('img'); t.src=src; t.className='obra-thumb'+(i===0?' sel':''); t.alt='Foto '+(i+1); t.loading='lazy';
+        t.addEventListener('click',()=>{ setMain(src); th.querySelectorAll('.obra-thumb').forEach(x=>x.classList.remove('sel')); t.classList.add('sel'); });
+        th.appendChild(t); }); }
+  } else { im.style.display='none'; ld.style.display='block'; ld.textContent='Sin fotografía disponible.'; }
+  const lat=(p.lat!=null?p.lat:(p._lat!=null?p._lat:'')), lon=(p.lon!=null?p.lon:(p._lon!=null?p._lon:''));
+  m.querySelector('#obra-info').innerHTML=
+     `<div class="obra-estado obra-est-${(estado||'').toLowerCase().replace(/[^a-z]/g,'')}">${estado}</div>`
+    +(p.tipo_medida?`<p><b>Tipo de medida:</b> ${p.tipo_medida}</p>`:'')
+    +(p.vereda?`<p><b>Vereda:</b> ${p.vereda}${p.sector?' · '+p.sector:''}</p>`:'')
+    +(p.evento_asociado?`<p><b>Evento asociado:</b> ${p.evento_asociado}</p>`:'')
+    +(p.description?`<p class="obra-desc">${p.description}</p>`:'')
+    +((lat!==''&&lon!=='')?`<p class="obra-coords"><b>Coordenadas:</b> ${(+lat).toFixed(6)}, ${(+lon).toFixed(6)}</p>`:'');
+  m.querySelector('#obra-fuente').textContent=(p.fuente||'Alcaldía de Girardota')+(p.fecha_inspeccion?' · inspección '+p.fecha_inspeccion:'');
+  m.classList.add('open');
+};
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
 // Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
 function popupSiata(p){
@@ -213,6 +282,14 @@ const DEF=[
  {k:'bocinas',label:'Sirenas de alerta',sub:'3 · aguas abajo del sensor',icon:'🔊',color:'#ad1457',def:false,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:L.divIcon({className:'',html:'🔊',iconSize:[22,22]})}),
      onEachFeature:(f,l)=>l.bindPopup(pop({Sirena:f.properties.Sirena,Sitio:f.properties.Sitio,Rol:f.properties.Rol},'Sirena'))})},
+ // Obras y medidas de mitigación (pin amarillo); clic → ventana flotante con info + fotografía georreferenciada
+ {k:'obras',label:'Obras de mitigación',sub:'Obras del municipio · gestión del riesgo',icon:'🚧',color:'#F2B705',def:false,lazy:true,file:'obras_mitigacion',
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>{
+       const p=Object.assign({},f.properties,{_lat:ll.lat,_lon:ll.lng});
+       return L.marker(ll,{icon:iconObra('#F2B705'),zIndexOffset:900})
+         .bindTooltip((p.obra||'Obra')+(p.sector?' · '+p.sector:''),{direction:'top'})
+         .on('click',()=>{ if(window.abrirObraInfo) window.abrirObraInfo(p); });
+     }})},
  {k:'puntos_campo',label:'Puntos de campo',sub:'61 · validación KMZ (nivel de riesgo)',icon:'📋',color:'#5d4037',def:false,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:5,fillColor:C_ANTEC[f.properties.Nivel_riesgo]||'#888',color:'#222',weight:1,fillOpacity:.95}),
      onEachFeature:(f,l)=>l.bindPopup(pop({Nombre:f.properties.Nombre,Categoria:f.properties.Categoria,Nivel:f.properties.Nivel_riesgo},'Punto de campo'))})},

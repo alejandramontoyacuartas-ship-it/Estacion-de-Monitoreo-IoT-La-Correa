@@ -1,0 +1,30 @@
+{
+  "type": "FeatureCollection",
+  "name": "obras_mitigacion",
+  "descripcion": "Obras y medidas de mitigación del riesgo — Municipio de Girardota (Secretaría de Infraestructura / Gestión del Riesgo)",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-75.46602012589574, 6.399822584353387] },
+      "properties": {
+        "id": 1,
+        "obra": "Obra de contención vial — gaviones y disipador de energía",
+        "tipo_medida": "Estructural",
+        "estado": "Finalizada",
+        "vereda": "San Esteban",
+        "sector": "Los Veleros",
+        "description": "Obra de contención vial mediante gaviones y un disipador de energía, ejecutada como respuesta a la creciente torrencial del 13 de junio de 2025 —evento que afectó una vivienda y la vía enrielada rural, generando múltiples emergencias y limitaciones en la movilidad—. La intervención garantiza la estabilidad de la vía rural y controla el flujo del cauce durante eventos de alta precipitación, reduciendo los procesos de socavación y pérdida de banca, y protegiendo la movilidad y la conectividad del sector.",
+        "evento_asociado": "Creciente torrencial del 13 de junio de 2025",
+        "fecha_inspeccion": "2026-09-15",
+        "fuente": "Secretaría de Infraestructura — Alcaldía de Girardota",
+        "anio": "2026",
+        "images": [
+          "img/obras/los_veleros_gaviones.jpg",
+          "img/obras/los_veleros_disipador.jpg",
+          "img/obras/los_veleros_via.jpg"
+        ]
+      }
+    }
+  ]
+}
