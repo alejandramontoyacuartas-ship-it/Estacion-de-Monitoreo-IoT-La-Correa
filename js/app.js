@@ -109,7 +109,7 @@ window.abrirObraInfo=function(p){
   const setMain=src=>{ im.style.display='none'; ld.style.display='block'; ld.textContent='Cargando fotografía…'; im.src=src; };
   if(imgs.length){
     setMain(imgs[0]);
-    if(imgs.length>1){ imgs.forEach((src,i)=>{ const t=document.createElement('img'); t.src=src; t.className='obra-thumb'+(i===0?' sel':''); t.alt='Foto '+(i+1); t.loading='lazy';
+    if(imgs.length>1){ imgs.forEach((src,i)=>{ const t=document.createElement('img'); t.src=src; t.className='obra-thumb'+(i===0?' sel':''); t.alt='Foto '+(i+1);
         t.addEventListener('click',()=>{ setMain(src); th.querySelectorAll('.obra-thumb').forEach(x=>x.classList.remove('sel')); t.classList.add('sel'); });
         th.appendChild(t); }); }
   } else { im.style.display='none'; ld.style.display='block'; ld.textContent='Sin fotografía disponible.'; }
