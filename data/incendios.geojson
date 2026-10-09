@@ -11,7 +11,14 @@
         "fecha": "24 de agosto de 2026",
         "vereda": "San Diego",
         "sector": "Finca El Kaney",
-        "url": "incendio_24ago.html"
+        "descripcion": "El 24 de agosto de 2026 se presentó un incendio en un predio de la vereda San Diego (sector Finca El Kaney), Girardota, donde se almacenaban tambores y materiales. El fuego consumió la edificación y dejó un gran volumen de residuos —tambores metálicos, estructuras y sustancias derramadas— que exigió labores de enfriamiento, remoción y manejo de escombros. La emergencia fue atendida por el Cuerpo de Bomberos Voluntarios de Girardota, con inspección y remoción por la Secretaría de Infraestructura.",
+        "fotos": [
+          "img/emergencias/incendio_24ago_1.jpg",
+          "img/emergencias/incendio_24ago_2.jpg",
+          "img/emergencias/incendio_24ago_3.jpg"
+        ],
+        "informe": "descargas/emergencias/informe_ejecutivo_incendio_24ago.pdf",
+        "fuente": "Cuerpo de Bomberos Voluntarios de Girardota · Secretaría de Infraestructura — Alcaldía de Girardota"
       }
     }
   ]

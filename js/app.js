@@ -139,6 +139,47 @@ const iconHidrante=()=>L.divIcon({className:'',iconSize:[24,30],iconAnchor:[12,2
     </g>
     <circle cx="13" cy="15" r="2.3" fill="#ffffff"/>
   </svg>`});
+// Ventana flotante de un INCENDIO (igual estilo que la de obras): fotos + info + informe ejecutivo
+function cerrarIncendio(){ const m=document.getElementById('inc-modal'); if(m) m.classList.remove('open'); }
+window.abrirIncendioInfo=function(p){
+  let m=document.getElementById('inc-modal');
+  if(!m){
+    m=document.createElement('div'); m.id='inc-modal'; m.className='obra-modal';
+    m.innerHTML='<div class="obra-box" role="dialog" aria-label="Incendio">'
+      +'<div class="obra-head" style="border-bottom-color:#e4080a"><span id="inc-title"></span><button class="obra-x" title="Cerrar">✕</button></div>'
+      +'<div class="obra-body">'
+      +'  <div class="obra-imgcol"><div class="obra-imgwrap"><span class="obra-loading">Cargando fotografía…</span><img id="inc-img" alt="Incendio" style="display:none"></div><div class="obra-thumbs" id="inc-thumbs"></div></div>'
+      +'  <div class="obra-info" id="inc-info"></div>'
+      +'</div>'
+      +'<div class="obra-foot"><span id="inc-fuente"></span></div>'
+      +'</div>';
+    document.body.appendChild(m);
+    m.addEventListener('click',e=>{ if(e.target===m || e.target.classList.contains('obra-x')) cerrarIncendio(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') cerrarIncendio(); });
+    const im=m.querySelector('#inc-img'), ld=m.querySelector('.obra-loading');
+    im.addEventListener('load',()=>{ im.style.display='block'; ld.style.display='none'; });
+    im.addEventListener('error',()=>{ ld.textContent='Fotografía no disponible.'; im.style.display='none'; ld.style.display='block'; });
+  }
+  m.querySelector('#inc-title').innerHTML='🔥 '+(p.evento||'Incendio')+(p.fecha?' — '+p.fecha:'');
+  const im=m.querySelector('#inc-img'), ld=m.querySelector('.obra-loading'), th=m.querySelector('#inc-thumbs');
+  const imgs=(Array.isArray(p.fotos)&&p.fotos.length)?p.fotos:[];
+  th.innerHTML='';
+  const setMain=src=>{ im.style.display='none'; ld.style.display='block'; ld.textContent='Cargando fotografía…'; im.src=src; };
+  if(imgs.length){ setMain(imgs[0]);
+    if(imgs.length>1) imgs.forEach((src,i)=>{ const t=document.createElement('img'); t.src=src; t.className='obra-thumb'+(i===0?' sel':''); t.alt='Foto '+(i+1);
+      t.addEventListener('click',()=>{ setMain(src); th.querySelectorAll('.obra-thumb').forEach(x=>x.classList.remove('sel')); t.classList.add('sel'); }); th.appendChild(t); }); }
+  else { im.style.display='none'; ld.style.display='block'; ld.textContent='Sin fotografía.'; }
+  const lat=(p._lat!=null?p._lat:''), lon=(p._lon!=null?p._lon:'');
+  m.querySelector('#inc-info').innerHTML=
+     '<div class="obra-estado" style="background:#e4080a">🔥 '+(p.evento||'Incendio')+'</div>'
+    +(p.fecha?`<p><b>Fecha:</b> ${p.fecha}</p>`:'')
+    +(p.vereda?`<p><b>Vereda:</b> ${p.vereda}${p.sector?' · '+p.sector:''}</p>`:'')
+    +((lat!==''&&lon!=='')?`<p class="obra-coords"><b>Coordenadas:</b> ${(+lat).toFixed(6)}, ${(+lon).toFixed(6)}</p>`:'')
+    +(p.descripcion?`<p class="obra-desc">${p.descripcion}</p>`:'')
+    +(p.informe?`<p style="margin-top:12px"><a href="${p.informe}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;background:#106853;color:#fff;font-weight:800;font-size:13.5px;text-decoration:none;padding:11px 16px;border-radius:10px">📄 Ver informe ejecutivo</a></p>`:'');
+  m.querySelector('#inc-fuente').textContent=(p.fuente||'Alcaldía de Girardota');
+  m.classList.add('open');
+};
 // Ícono de FUEGO (incendio atendido) — llama naranja
 const iconFuego=()=>L.divIcon({className:'',iconSize:[26,30],iconAnchor:[13,27],popupAnchor:[0,-24],
   html:`<svg width="26" height="30" viewBox="0 0 26 30" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
@@ -313,15 +354,12 @@ const DEF=[
      }})},
  // Incendios atendidos (emergencias) — logo de fuego georreferenciado; clic → ventana flotante
  {k:'incendios',label:'Incendios atendidos',sub:'Emergencias · Girardota',icon:'🔥',color:'#f4511e',def:false,lazy:true,
-   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconFuego(),zIndexOffset:960}),
-     onEachFeature:(f,l)=>{ const p=f.properties||{};
-       l.bindTooltip('🔥 '+(p.evento||'Incendio')+' · '+(p.fecha||''),{direction:'top'});
-       l.bindPopup('<div style="min-width:190px;font-size:12.5px;line-height:1.5">'
-         +'<b style="color:#c62828">🔥 '+(p.evento||'Incendio')+'</b><br>'
-         +'<b>Fecha:</b> '+(p.fecha||'—')+'<br>'
-         +'<b>Vereda:</b> '+(p.vereda||'—')+(p.sector?' · '+p.sector:'')
-         +'<a href="'+(p.url||'#')+'" style="display:block;margin-top:9px;text-align:center;background:#106853;color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700">Ver detalle e informe ▸</a>'
-         +'</div>'); }})},
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>{
+       const p=Object.assign({},f.properties,{_lat:ll.lat,_lon:ll.lng});
+       return L.marker(ll,{icon:iconFuego(),zIndexOffset:960})
+         .bindTooltip('🔥 '+(p.evento||'Incendio')+' · '+(p.fecha||''),{direction:'top'})
+         .on('click',()=>{ if(window.abrirIncendioInfo) window.abrirIncendioInfo(p); });
+     }})},
  // Hidrantes de la red de acueducto (EPM) — insumo para respuesta a incendios
  {k:'hidrantes',label:'Hidrantes (EPM)',sub:'Red de acueducto · Girardota',icon:'🧯',color:'#e53935',def:false,lazy:true,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconHidrante(),zIndexOffset:850}),
