@@ -29,6 +29,11 @@
     a.esc-card{cursor:pointer;text-decoration:none}
     a.esc-card:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.16);border-color:#2e8b57}
     a.esc-card .esc-link{font-size:10px;color:#2e8b57;font-weight:700;text-transform:none;letter-spacing:0}
+    .esc-card-opts{transition:.16s}
+    .esc-card-opts:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(0,0,0,.16);border-color:#2e8b57}
+    .esc-opts{display:flex;flex-direction:column;gap:6px;margin-top:2px;width:100%;text-transform:none;letter-spacing:0}
+    .esc-opt{font-size:10.5px;color:#2e8b57;font-weight:700;text-decoration:none;padding:5px 8px;border:1px solid #cfe4d6;border-radius:8px}
+    .esc-opt:hover{background:#2e8b57;color:#fff}
     @media(max-width:1000px){.esc-grid{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:680px){.esc-grid{grid-template-columns:repeat(2,1fr)}}
   </style>
@@ -56,7 +61,7 @@ const CATS = [
  ]},
  {cat:'Hidrológicos', color:'#1e88e5', hi:'<path d="M2 7c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>', items:[
    {t:'Inundaciones', href:'ficha_escenario.html?e=inundaciones', sub:'Ficha + mapa', icon:'<path d="M15 32l17-13 17 13v7H15z" fill="currentColor" fill-opacity=".15"/><path d="M22 39v-2M42 39v-2"/><path d="M5 44q6-4 11 0t11 0 11 0 11 0"/><path d="M5 51q6-4 11 0t11 0 11 0 11 0"/>'},
-   {t:'Avenidas torrenciales', href:'index.html', sub:'SAT La Correa', icon:'<path d="M16 8l-4 9M27 8l-4 9M38 8l-4 9M49 8l-4 9"/><path d="M5 34q7-5 13 0t13 0 13 0 13 0"/><path d="M5 43q7-5 13 0t13 0 13 0 13 0"/><path d="M5 52q7-5 13 0t13 0 13 0 13 0"/>'},
+   {t:'Avenidas torrenciales', links:[{t:'SAT La Correa',h:'index.html'},{t:'Ficha del escenario',h:'ficha_escenario.html?e=avenidas-torrenciales'}], icon:'<path d="M16 8l-4 9M27 8l-4 9M38 8l-4 9M49 8l-4 9"/><path d="M5 34q7-5 13 0t13 0 13 0 13 0"/><path d="M5 43q7-5 13 0t13 0 13 0 13 0"/><path d="M5 52q7-5 13 0t13 0 13 0 13 0"/>'},
    {t:'Socavación', icon:'<path d="M6 24h26c0 9-7 13-15 13H6z" fill="currentColor" fill-opacity=".12"/><path d="M34 24h24v24"/><path d="M6 45q7-3 12 0t12 0 12 0 12 0"/>'},
  ]},
  {cat:'Climáticos', color:'#2e9e57', hi:'<circle cx="8" cy="8" r="3.2"/><path d="M8 2v1.6M8 12.4V14M2 8h1.6M12.4 8H14M4.2 4.2l1.1 1.1M11.6 11.6l-1.1-1.1M11.8 4.2l-1.1 1.1"/><path d="M10 19a4 4 0 0 1 .6-8 5 5 0 0 1 9 1.6 3.5 3.5 0 0 1-1 6.4z" fill="currentColor" fill-opacity=".15"/>', items:[
@@ -96,6 +101,13 @@ CATS.forEach(C=>{
   wrap.appendChild(h);
   const g=document.createElement('div'); g.className='esc-grid';
   C.items.forEach(it=>{
+    // Tarjeta con VARIAS opciones (el usuario elige qué visualizar)
+    if(it.links){
+      const el=document.createElement('div'); el.className='esc-card esc-card-opts';
+      el.innerHTML=`${SVG(it.icon,C.color)}<div class="esc-t">${it.t}</div>`
+        +`<div class="esc-opts">`+it.links.map(L=>`<a class="esc-opt" href="${L.h}"${L.ext?' target="_blank" rel="noopener"':''}>${L.t} ▸</a>`).join('')+`</div>`;
+      g.appendChild(el); return;
+    }
     const inner=`${SVG(it.icon,C.color)}<div class="esc-t">${it.t}</div>`+(it.href?`<div class="esc-link">${it.sub?it.sub+' · ':''}Abrir ▸</div>`:'');
     let el;
     if(it.href){ el=document.createElement('a'); el.href=it.href; el.className='esc-card'; }
