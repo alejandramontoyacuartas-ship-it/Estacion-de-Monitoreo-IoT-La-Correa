@@ -9,20 +9,40 @@
       "geometry": { "type": "Point", "coordinates": [-75.46602012589574, 6.399822584353387] },
       "properties": {
         "id": 1,
-        "obra": "Obra de contención vial — gaviones y disipador de energía",
+        "obra": "Obra de contención vial con gaviones",
         "tipo_medida": "Estructural",
         "estado": "Finalizada",
         "vereda": "San Esteban",
         "sector": "Los Veleros",
-        "description": "Obra de contención vial mediante gaviones y un disipador de energía, ejecutada como respuesta a la creciente torrencial del 13 de junio de 2025 —evento que afectó una vivienda y la vía enrielada rural, generando múltiples emergencias y limitaciones en la movilidad—. La intervención garantiza la estabilidad de la vía rural y controla el flujo del cauce durante eventos de alta precipitación, reduciendo los procesos de socavación y pérdida de banca, y protegiendo la movilidad y la conectividad del sector.",
+        "description": "Obra de contención vial mediante gaviones, ejecutada como respuesta a la creciente torrencial del 13 de junio de 2025 —evento que afectó una vivienda y la vía enrielada rural, generando múltiples emergencias y limitaciones en la movilidad—. Garantiza la estabilidad de la vía rural y controla el flujo del cauce durante eventos de alta precipitación, reduciendo los procesos de socavación y pérdida de banca, y protegiendo la movilidad y la conectividad del sector.",
         "evento_asociado": "Creciente torrencial del 13 de junio de 2025",
         "fecha_inspeccion": "2026-09-15",
         "fuente": "Secretaría de Infraestructura — Alcaldía de Girardota",
         "anio": "2026",
         "images": [
           "img/obras/los_veleros_gaviones.jpg",
-          "img/obras/los_veleros_disipador.jpg",
-          "img/obras/los_veleros_via.jpg"
+          "img/obras/los_veleros_via.jpg",
+          "img/obras/los_veleros_gaviones_2.jpg"
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-75.46738369390368, 6.397569528780878] },
+      "properties": {
+        "id": 2,
+        "obra": "Disipador de energía",
+        "tipo_medida": "Estructural",
+        "estado": "Finalizada",
+        "vereda": "San Esteban",
+        "sector": "Los Veleros",
+        "description": "Construcción del disipador de energía en el sector Los Veleros. Esta obra se ejecuta como respuesta a la creciente torrencial ocurrida el 13 de junio de 2025, evento que ocasionó la afectación de una vivienda y de la vía enrielada rural, generando múltiples emergencias y limitaciones en la movilidad.",
+        "evento_asociado": "Creciente torrencial del 13 de junio de 2025",
+        "fecha_inspeccion": "2026-09-15",
+        "fuente": "Secretaría de Infraestructura — Alcaldía de Girardota",
+        "anio": "2026",
+        "images": [
+          "img/obras/los_veleros_disipador.jpg"
         ]
       }
     }
