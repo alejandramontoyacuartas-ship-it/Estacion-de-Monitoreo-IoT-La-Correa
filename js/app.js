@@ -160,7 +160,7 @@ window.abrirIncendioInfo=function(p){
     im.addEventListener('load',()=>{ im.style.display='block'; ld.style.display='none'; });
     im.addEventListener('error',()=>{ ld.textContent='Fotografía no disponible.'; im.style.display='none'; ld.style.display='block'; });
   }
-  m.querySelector('#inc-title').innerHTML='🔥 '+(p.evento||'Incendio')+(p.fecha?' — '+p.fecha:'');
+  m.querySelector('#inc-title').innerHTML='🔥 '+(p.evento||'Incendio')+(p.fecha?' · '+p.fecha:'');
   const im=m.querySelector('#inc-img'), ld=m.querySelector('.obra-loading'), th=m.querySelector('#inc-thumbs');
   const imgs=(Array.isArray(p.fotos)&&p.fotos.length)?p.fotos:[];
   th.innerHTML='';
