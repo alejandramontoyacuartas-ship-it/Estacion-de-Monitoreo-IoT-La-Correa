@@ -124,15 +124,20 @@ window.abrirObraInfo=function(p){
   m.querySelector('#obra-fuente').textContent=(p.fuente||'Alcaldía de Girardota')+(p.fecha_inspeccion?' · inspección '+p.fecha_inspeccion:'');
   m.classList.add('open');
 };
-// Ícono de HIDRANTE (EPM) — hidrante rojo
-const iconHidrante=()=>L.divIcon({className:'',iconSize:[20,26],iconAnchor:[10,25],popupAnchor:[0,-22],
-  html:`<svg width="20" height="26" viewBox="0 0 20 26" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))">
-    <rect x="3" y="23.3" width="14" height="2.3" rx="1.1" fill="#9e1b1b"/>
-    <rect x="6.3" y="7" width="7.4" height="15.3" rx="3.3" fill="#e53935" stroke="#fff" stroke-width="1.1"/>
-    <circle cx="10" cy="5.4" r="3.1" fill="#e53935" stroke="#fff" stroke-width="1.1"/>
-    <rect x="2.1" y="11.4" width="4.4" height="4.1" rx="1.3" fill="#e53935" stroke="#fff" stroke-width=".8"/>
-    <rect x="13.5" y="11.4" width="4.4" height="4.1" rx="1.3" fill="#e53935" stroke="#fff" stroke-width=".8"/>
-    <circle cx="10" cy="13" r="1.7" fill="#fff"/>
+// Ícono de HIDRANTE (EPM) — hidrante rojo clásico (domo, boquillas y base)
+const iconHidrante=()=>L.divIcon({className:'',iconSize:[24,30],iconAnchor:[12,29],popupAnchor:[0,-26],
+  html:`<svg width="24" height="30" viewBox="0 0 26 32" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+    <g fill="#ea0a0a" stroke="#ffffff" stroke-width="0.9" stroke-linejoin="round">
+      <rect x="11" y="1.3" width="4" height="2.6" rx="0.8"/>
+      <path d="M8 6.4a5 4.4 0 0 1 10 0z"/>
+      <rect x="5.6" y="5.6" width="14.8" height="3" rx="1.3"/>
+      <rect x="8" y="8" width="10" height="17.5" rx="3"/>
+      <rect x="3.2" y="13" width="5.4" height="4.2" rx="1.3"/>
+      <rect x="17.4" y="13" width="5.4" height="4.2" rx="1.3"/>
+      <rect x="5.4" y="24.6" width="15.2" height="3" rx="1.2"/>
+      <rect x="3.8" y="27.2" width="18.4" height="3" rx="1.2"/>
+    </g>
+    <circle cx="13" cy="15" r="2.3" fill="#ffffff"/>
   </svg>`});
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
 // Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
