@@ -76,20 +76,20 @@
 // Mapas (láminas del PMGRD) por escenario
 const MAPAS = {
   'movimientos-en-masa':[
-    {src:'img/escenarios/mm_susceptibilidad.png', pdf:'descargas/escenarios/mm_susceptibilidad.pdf', cap:'<b>L-07 · Susceptibilidad por movimientos en masa</b> — EBA, suelo rural (1:25.000).'},
+    {src:'img/escenarios/mm_susceptibilidad.png', pdf:'descargas/escenarios/mm_susceptibilidad.pdf', geojson:'descargas/escenarios/mm_susceptibilidad.geojson', cap:'<b>L-07 · Susceptibilidad por movimientos en masa</b> — EBA, suelo rural (1:25.000).'},
     {src:'img/escenarios/mm_procesos_morfodinamicos.png', pdf:'descargas/escenarios/mm_procesos_morfodinamicos.pdf', cap:'<b>L-01 · Procesos morfodinámicos</b> — inventario del EBA.'}],
   'inundaciones':[
-    {src:'img/escenarios/inundacion_amenaza.png', pdf:'descargas/escenarios/inundacion_amenaza.pdf', cap:'<b>L-08 · Amenaza por inundación</b> — Estudio Básico de Amenazas.'},
+    {src:'img/escenarios/inundacion_amenaza.png', pdf:'descargas/escenarios/inundacion_amenaza.pdf', geojson:'descargas/escenarios/inundacion_amenaza.geojson', cap:'<b>L-08 · Amenaza por inundación</b> — Estudio Básico de Amenazas.'},
     {src:'img/escenarios/inundacion_rio_aburra.png', pdf:'descargas/escenarios/inundacion_rio_aburra.pdf', cap:'<b>L-11 · Inundación del río Aburrá</b> — corredor metropolitano.'}],
   'caida-de-rocas':[
-    {src:'img/escenarios/caida_rocas.png', pdf:'descargas/escenarios/caida_rocas.pdf', cap:'<b>L-06 · Caída de rocas por inestabilidad de laderas</b> — zonificación (EBA · LiDAR).'}],
+    {src:'img/escenarios/caida_rocas.png', pdf:'descargas/escenarios/caida_rocas.pdf', geojson:'descargas/escenarios/caida_rocas.geojson', cap:'<b>L-06 · Caída de rocas por inestabilidad de laderas</b> — zonificación (EBA · LiDAR).'}],
   'incendios-forestales':[
-    {src:'img/escenarios/incendios_susceptibilidad.png', pdf:'descargas/escenarios/incendios_susceptibilidad.pdf', cap:'<b>L-02 · Susceptibilidad a incendios de cobertura vegetal</b>.'},
-    {src:'img/escenarios/incendios_riesgo.png', pdf:'descargas/escenarios/incendios_riesgo.pdf', cap:'<b>L-03 · Riesgo por incendios de cobertura vegetal</b>.'}],
+    {src:'img/escenarios/incendios_susceptibilidad.png', pdf:'descargas/escenarios/incendios_susceptibilidad.pdf', geojson:'descargas/escenarios/incendios_susceptibilidad.geojson', cap:'<b>L-02 · Susceptibilidad a incendios de cobertura vegetal</b>.'},
+    {src:'img/escenarios/incendios_riesgo.png', pdf:'descargas/escenarios/incendios_riesgo.pdf', geojson:'descargas/escenarios/incendios_riesgo.geojson', cap:'<b>L-03 · Riesgo por incendios de cobertura vegetal</b>.'}],
   'contaminacion-atmosferica':[
     {src:'img/escenarios/calidad_aire.png', pdf:'descargas/escenarios/calidad_aire.pdf', cap:'<b>L-10 · Calidad del aire</b> — Girardota.'}],
   'avenidas-torrenciales':[
-    {src:'img/escenarios/avenida_torrencial.png', pdf:'descargas/escenarios/avenida_torrencial.pdf', cap:'<b>L-09 · Amenaza por avenida torrencial</b> — Estudio Básico de Amenazas.'}],
+    {src:'img/escenarios/avenida_torrencial.png', pdf:'descargas/escenarios/avenida_torrencial.pdf', geojson:'descargas/escenarios/avenida_torrencial.geojson', cap:'<b>L-09 · Amenaza por avenida torrencial</b> — Estudio Básico de Amenazas.'}],
   'natech':[
     {src:'img/escenarios/natech_corredor.png', pdf:'descargas/escenarios/natech_corredor.pdf', cap:'<b>L-04 · Corredor NATECH</b> — eventos tecnológicos detonados por amenazas naturales.'}],
 };
@@ -138,7 +138,7 @@ const esc = s => (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;
   if(maps.length){
     mapsHtml = `<div class="mm-card"><h2>Cartografía del escenario</h2>`
       + `<div class="mm-maps${maps.length===1?' one':''}">`
-      + maps.map(m=>`<figure class="mm-fig" onclick="ampliar('${m.src}')"><img src="${m.src}" alt="Mapa del escenario"><figcaption class="mm-figcap">${m.cap} <span class="z">clic para ampliar ⤢</span><div class="mm-dl">⬇ Descargar: <a href="${m.src}" download onclick="event.stopPropagation()">imagen (PNG)</a>${m.pdf?` · <a href="${m.pdf}" download onclick="event.stopPropagation()">lámina (PDF)</a>`:''}</div></figcaption></figure>`).join('')
+      + maps.map(m=>`<figure class="mm-fig" onclick="ampliar('${m.src}')"><img src="${m.src}" alt="Mapa del escenario"><figcaption class="mm-figcap">${m.cap} <span class="z">clic para ampliar ⤢</span><div class="mm-dl">⬇ Descargar: <a href="${m.src}" download onclick="event.stopPropagation()">imagen (PNG)</a>${m.pdf?` · <a href="${m.pdf}" download onclick="event.stopPropagation()">lámina (PDF)</a>`:''}${m.geojson?` · <a href="${m.geojson}" download onclick="event.stopPropagation()">capa (GeoJSON)</a>`:''}</div></figcaption></figure>`).join('')
       + `</div>`
       + `<div class="mm-fuente"><b>Fuente:</b> Plan Municipal de Gestión del Riesgo de Desastres — Girardota (2026), CMGRD. Insumos: Estudio Básico de Amenazas (EBA) 2025, PBOT 2025, AMVA.</div></div>`;
   }
