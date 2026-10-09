@@ -47,6 +47,7 @@
         {t:'Sismo 10 de agosto de 2026 — Tablero de manejo', h:'https://alejandramontoyacuartas-ship-it.github.io/tablero-emergencias-girardota/', ext:true},
       ]},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
+      {t:'Hidrantes del municipio', h:'index.html?capa=hidrantes'},
     ]},
     // Menú "Monitor Quebrada": el Dashboard (app Angular de Marcela en Netlify) y los videos del prototipo.
     {label:'Monitor Quebrada', items:[

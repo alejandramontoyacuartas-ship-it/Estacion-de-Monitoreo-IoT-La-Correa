@@ -124,6 +124,16 @@ window.abrirObraInfo=function(p){
   m.querySelector('#obra-fuente').textContent=(p.fuente||'Alcaldía de Girardota')+(p.fecha_inspeccion?' · inspección '+p.fecha_inspeccion:'');
   m.classList.add('open');
 };
+// Ícono de HIDRANTE (EPM) — hidrante rojo
+const iconHidrante=()=>L.divIcon({className:'',iconSize:[20,26],iconAnchor:[10,25],popupAnchor:[0,-22],
+  html:`<svg width="20" height="26" viewBox="0 0 20 26" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))">
+    <rect x="3" y="23.3" width="14" height="2.3" rx="1.1" fill="#9e1b1b"/>
+    <rect x="6.3" y="7" width="7.4" height="15.3" rx="3.3" fill="#e53935" stroke="#fff" stroke-width="1.1"/>
+    <circle cx="10" cy="5.4" r="3.1" fill="#e53935" stroke="#fff" stroke-width="1.1"/>
+    <rect x="2.1" y="11.4" width="4.4" height="4.1" rx="1.3" fill="#e53935" stroke="#fff" stroke-width=".8"/>
+    <rect x="13.5" y="11.4" width="4.4" height="4.1" rx="1.3" fill="#e53935" stroke="#fff" stroke-width=".8"/>
+    <circle cx="10" cy="13" r="1.7" fill="#fff"/>
+  </svg>`});
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
 // Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
 function popupSiata(p){
@@ -290,6 +300,12 @@ const DEF=[
          .bindTooltip((p.obra||'Obra')+(p.sector?' · '+p.sector:''),{direction:'top'})
          .on('click',()=>{ if(window.abrirObraInfo) window.abrirObraInfo(p); });
      }})},
+ // Hidrantes de la red de acueducto (EPM) — insumo para respuesta a incendios
+ {k:'hidrantes',label:'Hidrantes (EPM)',sub:'Red de acueducto · Girardota',icon:'🧯',color:'#e53935',def:false,lazy:true,
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconHidrante(),zIndexOffset:850}),
+     onEachFeature:(f,l)=>{ const p=f.properties||{};
+       l.bindTooltip('Hidrante'+(p.UBICACION?' · '+p.UBICACION:''),{direction:'top'});
+       l.bindPopup(pop({'Ubicación':p.UBICACION,'Diámetro':(p.DIAMETRO?p.DIAMETRO+' mm':''),'Estado':p.ESTADO,'Tipo de agua':p.TIPO_AGUA,'Circuito':p.NOMBRE_CIRCUITO,'Municipio':p.MUNICIPIO},'Hidrante · EPM')); }})},
  {k:'puntos_campo',label:'Puntos de campo',sub:'61 · validación KMZ (nivel de riesgo)',icon:'📋',color:'#5d4037',def:false,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.circleMarker(ll,{radius:5,fillColor:C_ANTEC[f.properties.Nivel_riesgo]||'#888',color:'#222',weight:1,fillOpacity:.95}),
      onEachFeature:(f,l)=>l.bindPopup(pop({Nombre:f.properties.Nombre,Categoria:f.properties.Categoria,Nivel:f.properties.Nivel_riesgo},'Punto de campo'))})},
