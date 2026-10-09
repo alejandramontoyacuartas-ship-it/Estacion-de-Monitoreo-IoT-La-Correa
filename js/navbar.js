@@ -45,7 +45,7 @@
       {t:'Emergencias atendidas', sub:[
         {t:'Registro de emergencias (CBVG)', h:'emergencias_cbvg.html'},
         {t:'Sismo 10 de agosto de 2026 — Tablero de manejo', h:'https://alejandramontoyacuartas-ship-it.github.io/tablero-emergencias-girardota/', ext:true},
-        {t:'Incendio 24 de agosto de 2026', h:'incendio_24ago.html'},
+        {t:'Incendio 24 de agosto de 2026', h:'index.html?capa=incendios'},
       ]},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
       {t:'Hidrantes del municipio', h:'index.html?capa=hidrantes'},

@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "name": "incendios",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-75.42610357515514, 6.388723226264119] },
+      "properties": {
+        "evento": "Incendio",
+        "fecha": "24 de agosto de 2026",
+        "vereda": "San Diego",
+        "sector": "Finca El Kaney",
+        "url": "incendio_24ago.html"
+      }
+    }
+  ]
+}

@@ -139,6 +139,12 @@ const iconHidrante=()=>L.divIcon({className:'',iconSize:[24,30],iconAnchor:[12,2
     </g>
     <circle cx="13" cy="15" r="2.3" fill="#ffffff"/>
   </svg>`});
+// Ícono de FUEGO (incendio atendido) — llama naranja
+const iconFuego=()=>L.divIcon({className:'',iconSize:[26,30],iconAnchor:[13,27],popupAnchor:[0,-24],
+  html:`<svg width="26" height="30" viewBox="0 0 26 30" style="filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))">
+    <path d="M13 1.5c2.6 6 9 7.6 6.5 16.2a9 9 0 0 1-13 0C4 12 9 11.5 9.5 5.5c2 2.3 2.6 4.6 3.2 7C14 9 13 5.5 13 1.5Z" fill="#f4511e" stroke="#ffffff" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M13 11c1.7 3 4 3.9 2.6 7.6a4.3 4.3 0 0 1-7-1.2C8.6 15 11 15 11.3 12.2c1 1 1.2 2 1.4 3C13.3 13.6 12.8 12.3 13 11Z" fill="#ffd23f"/>
+  </svg>`});
 const C_ANTEC={'1_Critico_emergencia':'#7e1fae','2_Alto_potencial':'#E24B4A','3_MedioAlto_estabilizado':'#EF9F27','4_Medio_no_inmediato':'#FFE13C','5_Bajo_recuperacion':'#2e9e57'};
 // Popup de una estación de nivel SIATA (con enlace al geoportal SIATA)
 function popupSiata(p){
@@ -305,6 +311,17 @@ const DEF=[
          .bindTooltip((p.obra||'Obra')+(p.sector?' · '+p.sector:''),{direction:'top'})
          .on('click',()=>{ if(window.abrirObraInfo) window.abrirObraInfo(p); });
      }})},
+ // Incendios atendidos (emergencias) — logo de fuego georreferenciado; clic → ventana flotante
+ {k:'incendios',label:'Incendios atendidos',sub:'Emergencias · Girardota',icon:'🔥',color:'#f4511e',def:false,lazy:true,
+   build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconFuego(),zIndexOffset:960}),
+     onEachFeature:(f,l)=>{ const p=f.properties||{};
+       l.bindTooltip('🔥 '+(p.evento||'Incendio')+' · '+(p.fecha||''),{direction:'top'});
+       l.bindPopup('<div style="min-width:190px;font-size:12.5px;line-height:1.5">'
+         +'<b style="color:#c62828">🔥 '+(p.evento||'Incendio')+'</b><br>'
+         +'<b>Fecha:</b> '+(p.fecha||'—')+'<br>'
+         +'<b>Vereda:</b> '+(p.vereda||'—')+(p.sector?' · '+p.sector:'')
+         +'<a href="'+(p.url||'#')+'" style="display:block;margin-top:9px;text-align:center;background:#106853;color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700">Ver detalle e informe ▸</a>'
+         +'</div>'); }})},
  // Hidrantes de la red de acueducto (EPM) — insumo para respuesta a incendios
  {k:'hidrantes',label:'Hidrantes (EPM)',sub:'Red de acueducto · Girardota',icon:'🧯',color:'#e53935',def:false,lazy:true,
    build:j=>L.geoJSON(j,{pointToLayer:(f,ll)=>L.marker(ll,{icon:iconHidrante(),zIndexOffset:850}),
