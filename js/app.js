@@ -223,9 +223,11 @@ window.limpiarMicrocuenca=function(){ if(_mcHi){ map.removeLayer(_mcHi); _mcHi=n
 const nivelDe=z=>z&&z.startsWith('ALTA')?'ALTA':z&&z.startsWith('MEDIA')?'MEDIA':'BAJA';
 // Carga una capa: primero busca los datos incrustados (window.GEO, para abrir por doble clic / file://),
 // y si no existen hace fetch http (Live Server / servidor).
+// Versión de datos: al subirla (junto con app.js) se fuerza recarga de los GeoJSON (evita caché vieja).
+const GEO_VER='2';
 async function cargar(u){
   if(window.GEO){ const m=u.match(/([^/]+)\.geojson$/); if(m && GEO[m[1]]) return GEO[m[1]]; }
-  const r=await fetch(u); if(!r.ok) throw new Error(u); return r.json();
+  const r=await fetch(u+(u.indexOf('?')>=0?'&':'?')+'gv='+GEO_VER); if(!r.ok) throw new Error(u); return r.json();
 }
 function pop(props,t){let h=`<b>${t||''}</b><br>`;for(const k in props){if(props[k]!==null&&props[k]!=='')h+=`${k}: ${props[k]}<br>`;}return h;}
 // --- Popup enriquecido para Puntos de riesgo (Evento/Vereda/Sector/Descripción + foto) ---
