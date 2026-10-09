@@ -172,19 +172,16 @@ function obtenerImage(properties = {}) {
 }
 
 function obtenerColorPorRiesgo(riesgo = "") {
-    const valor = riesgo.toLowerCase().trim();
-
-    if (valor.includes("avenida")) return "#c542b3";
-    if (valor.includes("inund")) return "#4db7ff";
-    if (valor.includes("estruct")) return "#57b85c";
-    if (valor.includes("socav") || valor.includes("hund")) return "#d9e73f";
-    if (valor.includes("movimiento") || valor.includes("masa")) return "#f04b44";
-
-    return "#2f7a57";
-}
-
-function obtenerColorPorRiesgo(riesgo = "") {
     const v = riesgo.toLowerCase().trim();
+
+    // La caída de rocas va PRIMERO y de forma deliberada. Es un fenómeno distinto
+    // del movimiento en masa: bloques que se desprenden de un escarpe o de un talud
+    // de corte y caen, rebotan o ruedan, frente a una masa de suelo que se desliza
+    // sobre una superficie de falla. Exigen medidas distintas —malla, anclaje y
+    // barrera frente a drenaje, contención y bioingeniería— y por eso el Plan las
+    // separa en el escenario 2.4.10. Si esta regla fuera después de "ladera", un
+    // registro como "caída de rocas en ladera" quedaría clasificado como lo otro.
+    if (v.includes("roca") || v.includes("bloque") || v.includes("desprendimiento")) return "#6d4c41";
 
     if (v.includes("avenida")) return "#c542b3";
     if (v.includes("movimiento") || v.includes("masa")) return "#f04b44";

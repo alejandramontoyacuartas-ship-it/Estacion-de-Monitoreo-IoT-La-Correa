@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Obras de mitigación | Girardota</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <link rel="stylesheet" href="css/puntos_riesgo.css?v=5"/>
+  <style>
+    body{overflow:auto}
+    #map{height:660px;border-radius:10px}
+  </style>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=62"></script>
+
+<div class="container">
+
+  <header class="header">
+    <h1>Obras y medidas de mitigación — Quebrada La Correa</h1>
+    <p>Reducción del riesgo · consulta de las obras y medidas por vereda y tipo</p>
+  </header>
+
+  <!-- PANEL DE FILTROS -->
+  <section class="filtros-panel">
+    <h2>Filtros de consulta</h2>
+    <div class="filtros-grid">
+      <label for="veredaSelect">Seleccione la vereda:</label>
+      <select id="veredaSelect"><option value="">Seleccione vereda</option></select>
+
+      <label for="obraSelect">Tipo de obra / medida:</label>
+      <select id="obraSelect"><option value="">Todas las obras</option></select>
+
+      <button class="btn-filtrar" onclick="filtrarDatos()">Filtrar</button>
+      <button class="btn-limpiar" onclick="limpiarFiltro()">Limpiar</button>
+    </div>
+    <p class="info-text">El mapa inicia sin mostrar obras. El registro y análisis se evidencian cuando el usuario aplica un filtro.</p>
+  </section>
+
+  <main class="main-grid">
+    <div class="left-column">
+
+      <section class="map-panel">
+        <h2>Mapa de obras de mitigación</h2>
+        <div id="map"></div>
+      </section>
+
+      <section class="table-panel">
+        <h2>Resultados de consulta</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Vereda</th><th>Sitio / Sector</th><th>Obra / Medida</th><th>Estado</th><th>Descripción</th></tr>
+            </thead>
+            <tbody id="tablaResultados">
+              <tr><td colspan="6">Aún no se ha aplicado ningún filtro.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <aside class="dashboard-panel">
+      <h2>Panel estadístico SIG</h2>
+      <div class="cards-resumen">
+        <div class="card-resumen"><h3>Total de obras</h3><p id="totalObras">—</p></div>
+        <div class="card-resumen"><h3>Total de veredas</h3><p id="totalVeredas">—</p></div>
+        <div class="card-resumen"><h3>Obra predominante</h3><p id="obraPredominante">—</p></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Obras por tipo</h3>
+        <div class="grafico-container"><canvas id="graficoObras"></canvas></div>
+      </div>
+
+      <div class="grafico-box">
+        <h3>Distribución por estado</h3>
+        <div class="grafico-container"><canvas id="graficoEstado"></canvas></div>
+      </div>
+
+      <div class="panel-estadisticas">
+        <h3>Detalle estadístico</h3>
+        <div id="estadisticasObras"></div>
+      </div>
+    </aside>
+  </main>
+
+</div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script src="js/data.js?v=8"></script>
+<script src="js/obras_mitigacion.js?v=1"></script>
+</body>
+</html>
