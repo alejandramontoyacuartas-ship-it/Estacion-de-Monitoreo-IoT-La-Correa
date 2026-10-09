@@ -42,7 +42,10 @@
       {t:'Obras de mitigación', h:'index.html?capa=obras'},
     ]},
     {label:'Manejo de desastres', items:[
-      {t:'Emergencias atendidas', h:'emergencias_cbvg.html'},
+      {t:'Emergencias atendidas', sub:[
+        {t:'Registro de emergencias (CBVG)', h:'emergencias_cbvg.html'},
+        {t:'Sismo 10 de agosto de 2026 — Tablero de manejo', h:'https://alejandramontoyacuartas-ship-it.github.io/tablero-emergencias-girardota/', ext:true},
+      ]},
       {t:'Cuerpo de Bomberos Voluntarios de Girardota (CBVG)', h:'emergencias_cbvg.html'},
     ]},
     // Menú "Monitor Quebrada": el Dashboard (app Angular de Marcela en Netlify) y los videos del prototipo.
