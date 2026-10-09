@@ -1,0 +1,1691 @@
+{
+ "movimientos-en-masa": {
+  "num": "2.4.1",
+  "titulo": "Movimientos en masa (deslizamientos)",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Socionatural / geológico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Los movimientos en masa son el fenómeno de mayor frecuencia y de mayor afectación recurrente en Girardota. El evento de referencia es la emergencia del 27 y 28 de mayo de 2023, cuando el municipio registró más de cien movimientos en masa que afectaron nueve veredas —cuatro de ellas quedaron incomunicadas— y dejaron más de un centenar de familias damnificadas. La combinación del régimen bimodal de lluvias, la fuerte pendiente de las laderas oriental, occidental y sur, la pérdida de cobertura vegetal protectora y la ocupación de laderas intervenidas y bordes de escarpe configura un escenario que se reactiva en cada temporada de lluvias y que se intensifica en los años de fenómeno de La Niña. Los eventos suelen afectar viviendas de autoconstrucción, vías y bancas veredales, con pérdidas que, aunque puntuales, son acumulativas y de costosa rehabilitación. El Estudio Básico de Amenazas de diciembre de 2025 delimita 61,71 hectáreas de áreas con condición de riesgo por movimientos en masa —zonas de amenaza alta ya ocupadas—, y las veredas con mayor población expuesta son Portachuelo, San Esteban, San Diego y El Paraíso."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "Los movimientos en masa son desplazamientos ladera abajo de masas de roca, suelo o detritos por efecto de la gravedad (Varnes, 1978; PMA-GCA, 2007). En Girardota predominan los deslizamientos —rotacionales y traslacionales—, acompañados de caídas de roca o suelo, flujos y reptación. El PBOT 2025 zonifica amenaza alta y media en los bordes oriental, occidental y sur del perímetro urbano —en colindancia con los barrios Juan XXIII, Girardota La Nueva, El Llano, La Ferrería y Santana al occidente, y El Naranjal, Guayacanes, El Paraíso y Guaduales al oriente—, en el centro de la cabecera entre las quebradas El Matadero y El Tábano, en el sector norte en cercanía de áreas industriales y predios mineros, y en los suelos urbanos aislados de Jamundí, Las Cuchillas y San Diego (Mapa 28). En el suelo rural, varias veredas de alta pendiente presentan procesos activos."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes (físicos): pendientes fuertes; formaciones superficiales areno-limosas y areno-arcillosas, fácilmente saturables; alta densidad de drenaje; coberturas vegetales degradadas."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: lluvias de alta intensidad, larga duración o alta frecuencia —principal detonante—; sismos; e intervenciones antrópicas (cortes y rellenos no técnicos, descapote, manejo inadecuado de aguas lluvias y servidas vertidas sobre los taludes)."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes futuros: expansión urbana e informal sobre laderas; modificación del terreno por minería; y aumento de la frecuencia de lluvias extremas por cambio climático."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas las viviendas de autoconstrucción sobre cortes y rellenos en los barrios de ladera y en las veredas de alta pendiente, las vías y bancas veredales, los acueductos veredales, las redes eléctricas y los predios mineros del norte. La vulnerabilidad física es alta por la baja calidad estructural de las viviendas y la ausencia de obras de contención y de manejo de aguas; la social y económica, por tratarse en buena parte de hogares de menores ingresos con escasa capacidad de recuperación autónoma; la ambiental, por la pérdida de coberturas protectoras; y la institucional, por las limitaciones de personal y movilidad del cuerpo de bomberos y por la debilidad histórica del control urbanístico."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Lesionados, atrapamientos y eventuales fallecimientos; destrucción o inhabitabilidad de viviendas y pérdida de enseres; daño a vías, acueductos, redes eléctricas y obras de contención; pérdida de cultivos e infraestructura agropecuaria; aislamiento de veredas por pérdida de banca vial; y pérdida de suelo y cobertura con aporte de sedimentos a las quebradas."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco años se espera mayor recurrencia de eventos detonados por lluvias intensas y la activación de procesos en laderas recién intervenidas y vías veredales. A diez años, mayor exposición por expansión urbana y minera si no se controla la ocupación de laderas. A veinte años, bajo escenarios de lluvias extremas más frecuentes, se prevé la ampliación territorial de la amenaza alta y una mayor probabilidad de eventos encadenados —deslizamiento, represamiento de cauce y avenida torrencial—. De no intervenir, crecen tanto la amenaza como la vulnerabilidad."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del análisis espacial",
+    "txt": "El cruce del inventario de procesos morfodinámicos del Estudio Básico de Amenazas con la división veredal arroja 1.050 procesos que ocupan 50,69 hectáreas: 442 activos con 17,11 hectáreas, 444 inactivos con 27,49 y 164 latentes con 6,01. Los procesos inactivos son de mayor tamaño individual —corresponden a cicatrices antiguas de mayor magnitud— y su reactivación bajo lluvias extremas constituye uno de los escenarios prospectivos que el Plan debe mantener bajo vigilancia. Las veredas con mayor superficie de procesos activos son La Holanda con 4,02 hectáreas, El Socorro con 3,10, Potrerito con 2,59 y San Andrés con 2,04. Conviene advertir que esta relación no coincide con la de mayor población expuesta —Portachuelo, San Esteban, San Diego y El Paraíso—, porque una y otra miden cosas distintas: la exposición cruza la amenaza con la población, mientras que el inventario registra dónde se está moviendo el terreno con independencia de quién viva allí. El Plan atiende ambas relaciones con instrumentos distintos: instrumentación y estabilización en las primeras, reducción de la vulnerabilidad en las segundas."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "estudios detallados de amenaza (1:2.000–1:5.000) en sectores priorizados; inventario de viviendas y equipamientos en amenaza alta y media; instrumentación de laderas críticas y umbrales de lluvia articulados con el SIATA; red de observadores comunitarios."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "obras de bioingeniería —trinchos vivos, fajinas, empradizado y revegetalización de taludes con especies nativas—; manejo de aguas con cunetas, filtros y drenajes; obras geotécnicas de contención combinadas con cobertura vegetal; reforzamiento o reasentamiento de viviendas según el caso."
+     ],
+     [
+      "Reducción prospectiva",
+      "prohibición de construcción en pendientes superiores al 100 %; incorporación de la amenaza alta no mitigable como suelo de protección; consolidación del Cinturón Verde como amortiguador de laderas; Pagos por Servicios Ambientales."
+     ],
+     [
+      "Manejo",
+      "protocolos del CMGRD y PMU; sistema de alerta por umbrales de lluvia; capacitación, equipamiento y entrenamiento de organismos de socorro; albergues y centros de reserva identificados."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-1. Medidas de intervención — movimientos en masa (deslizamientos)."
+   }
+  ],
+  "slug": "movimientos-en-masa"
+ },
+ "avenidas-torrenciales": {
+  "num": "2.4.2",
+  "titulo": "Avenidas torrenciales",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Socionatural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Las avenidas torrenciales son, de los fenómenos zonificados en el municipio, el de mayor superficie en condición de riesgo: el Estudio Básico de Amenazas de diciembre de 2025 delimita 67,87 hectáreas de áreas con condición de riesgo por avenida torrencial, por encima de las de movimientos en masa y de inundación. En Girardota las cuencas nacen en los escarpes y son cortas, de alto gradiente y alta velocidad, lo que las hace propensas a este tipo de eventos, especialmente cuando el aporte de sedimentos por erosión o minería es elevado. El municipio dispone además de estudios hidrológicos e hidráulicos propios en las quebradas El Paraíso y La Correa, que confirman las condiciones torrenciales de sus cuencas y han permitido verificar la capacidad hidráulica de obras de paso existentes. Aunque Girardota no registra un evento torrencial catastrófico reciente, la concurrencia de amenaza zonificada, ocupación del cauce y disponibilidad de sedimentos define un riesgo latente de consecuencia extrema; es la razón por la cual este escenario comparte con los movimientos en masa el nivel de prioridad más alto del Plan."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "Las avenidas torrenciales son mezclas de agua y sedimentos en distintas proporciones que se desplazan por un cauce con gran energía y capacidad de arrastre, originadas por lluvias intensas y de corta duración en cuencas pequeñas de alto gradiente (Borga et al., 2014). Se distinguen tres tipos: avenida súbita, flujo de escombros canalizado e inundación de escombros. El PBOT 2025 las zonifica en el sector norte y nororiental del municipio, asociadas principalmente a las quebradas Los Arenales y El Salado —esta última con afectación de instalaciones industriales sobre la vía al Hatillo—, La Sopera y El Tábano, y en los suelos urbanos aislados San Diego (quebrada Barbascal) y La Calle (quebrada El Caimito) (Mapa 29). La norma exige estudios de detalle a escala 1:2.000 con métodos determinísticos y modelos hidráulicos por periodos de retorno."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: cuencas de alto gradiente y áreas medias, con tiempos de concentración rápidos; disponibilidad de sedimentos por procesos erosivos, movimientos en masa o acumulaciones próximas a los cauces."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: precipitaciones de gran intensidad concentradas sobre la cuenca; represamientos por movimientos en masa que liberan flujos de detritos."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: ocupación de cauces y abanicos; obras hidráulicas subdimensionadas; aporte de sedimentos por minería; y lluvias extremas más frecuentes."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas las viviendas y bodegas localizadas en cauces y abanicos torrenciales, los puentes y obras hidráulicas no diseñados para flujos de alta energía, las redes de servicios y los cultivos de margen. La vulnerabilidad física es muy alta porque las estructuras rara vez resisten el arrastre de bloques; la social y económica, por la presencia de hogares de bajos ingresos y de actividad industrial expuesta; la institucional, por la dificultad de evacuar a tiempo dada la rapidez del fenómeno."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Alta probabilidad de fallecimientos y lesionados por las elevadas velocidades del flujo; destrucción total de viviendas en abanicos y márgenes; colapso de puentes, vías y obras hidráulicas; afectación de bodegas e instalaciones industriales; erosión severa y cambios morfológicos del cauce con arrastre de grandes volúmenes de sedimentos."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco años, mayor probabilidad de crecientes súbitas que escalan a flujos torrenciales por lluvias intensas. A diez años, aumento del aporte de sedimentos por minería y erosión, que incrementa la magnitud potencial. A veinte años, bajo escenarios de lluvias extremas más frecuentes, mayor probabilidad de flujos de detritos de gran energía y de eventos encadenados con movimientos en masa."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "estudios detallados (1:2.000) con modelos hidráulicos y de transporte de sedimentos; monitoreo de lluvia y niveles (SIATA); inventario de elementos expuestos en cauces y abanicos."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "reforestación de laderas y cabeceras para reducir el aporte de sedimentos; mantenimiento del lecho y retiro de obstrucciones; obras de disipación y manejo de sedimentos con criterio técnico; reasentamiento en cauces no mitigables."
+     ],
+     [
+      "Reducción prospectiva",
+      "incorporación de cauces y abanicos como suelo de protección; conservación activa de cabeceras de cuenca y del Cinturón Verde; prohibición de ocupación en abanicos."
+     ],
+     [
+      "Manejo",
+      "sistema de alerta temprana por lluvia y niveles; rutas de evacuación y puntos de encuentro señalizados; planes de ayuda mutua con la zona industrial; reforzamiento de puentes críticos."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-2. Medidas de intervención — avenidas torrenciales."
+   }
+  ],
+  "slug": "avenidas-torrenciales"
+ },
+ "inundaciones": {
+  "num": "2.4.3",
+  "titulo": "Inundaciones",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Socionatural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Girardota se localiza en la franja norte del Valle de Aburrá, donde el cauce del río Aburrá es más amplio y conserva una llanura de inundación. Los desbordamientos del río y de las quebradas en zonas de baja pendiente, sumados a la insuficiencia hidráulica de canales y drenajes durante lluvias intensas, configuran un escenario recurrente que se agrava con la ocupación de retiros y la pérdida de cobertura en las cuencas."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "La inundación es el desbordamiento o la acumulación de agua que cubre terrenos normalmente secos. En Girardota se distinguen las inundaciones lentas por desbordamiento del río Aburrá y los anegamientos súbitos urbanos por insuficiencia de drenajes. El PBOT 2025 zonifica la amenaza principalmente en el norte y noroeste, en relación directa con el corredor del río Aburrá y su zona de influencia —margen derecha en cercanía del barrio Juan XXIII y suelo de expansión—, y de manera complementaria en el extremo oriental, asociada a las quebradas El Tigre, La Sopera y El Tábano (Mapa 30). Al noroccidente se identifican predios industriales en riesgo sobre el corredor del río."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes (naturales): condiciones hidrológicas e hidráulicas del río Aburrá y sus tributarios; geomorfología de la llanura de inundación."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: concentración de lluvias y aumento de caudal; insuficiencia de la red de drenaje pluvial."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Antrópicos: ocupación de la llanura y de retiros; intervenciones y obstrucciones en cauces; vertimientos y disposición de residuos; impermeabilización del suelo; pérdida de cobertura boscosa en cuencas."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos las viviendas y predios industriales del corredor del río, los cultivos de vega, las vías, puentes y redes de servicios, y los hogares de bajos ingresos asentados en retiros. La vulnerabilidad física se asocia a la ausencia de cota mínima de protección y de obras de drenaje; la social y económica, a la limitada capacidad de recuperación; la ambiental, al deterioro de las rondas hídricas; y la institucional, a la necesidad de coordinación con EPM y con la autoridad ambiental."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Damnificados y riesgo de enfermedades de origen hídrico; daño a viviendas, enseres y vehículos; afectación de vías, redes y equipamientos; interrupción de la actividad industrial del corredor del río y pérdida de cultivos; contaminación de cuerpos de agua y deterioro de rondas hídricas."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco años, aumento de anegamientos urbanos por lluvias intensas y drenajes insuficientes. A diez años, mayor exposición por expansión sobre la llanura si no se controla la ocupación de retiros. A veinte años, bajo escenarios de incremento de lluvias extremas, crecientes mayores del río Aburrá y de las quebradas, con eventos súbitos más frecuentes."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "estudios hidrológicos e hidráulicos y modelación de manchas de inundación por periodos de retorno; inventario de expuestos; monitoreo de niveles y precipitación (SIATA)."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "restauración y reforestación de rondas hídricas; limpieza y mantenimiento de cauces; drenaje urbano sostenible (jardines de lluvia, biorretención, pavimentos permeables); adecuación de cotas y reasentamiento en zonas no mitigables."
+     ],
+     [
+      "Reducción prospectiva",
+      "incorporación de la llanura de inundación y los retiros como suelo de protección; sistemas de infiltración y recarga del acuífero en suelos de expansión; control urbanístico de la ocupación."
+     ],
+     [
+      "Manejo",
+      "alerta temprana por niveles (SIATA/EPM); planes de ayuda mutua con la zona industrial; capacitación y equipamiento de los organismos de socorro."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-3. Medidas de intervención — inundaciones."
+   }
+  ],
+  "slug": "inundaciones"
+ },
+ "crecientes-subitas": {
+  "num": "2.4.4",
+  "titulo": "Crecientes súbitas",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Socionatural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Las crecientes súbitas son el extremo de mayor recurrencia y menor magnitud de los eventos torrenciales. En Girardota se presentan con frecuencia en las quebradas urbanas y veredales durante los aguaceros intensos de las temporadas de lluvia, y como anegamientos por insuficiencia de drenajes en la cabecera. Aunque su capacidad destructiva es menor que la de una avenida torrencial plena, su rapidez las hace especialmente peligrosas para las personas y los vehículos que se encuentran en el cauce."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "La creciente súbita —o avenida súbita— es un flujo torrencial originado por precipitaciones cortas e intensas que generan una rápida concentración del flujo en la red de drenaje, dando lugar a inundaciones en corto tiempo (French & Holt, 1989). Afecta las quebradas de la cabecera y las veredas —El Matadero, El Tábano, El Tigre, La Sopera, El Salado, Los Arenales— y se manifiesta también como anegamiento urbano puntual donde los drenajes son insuficientes."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: cuencas de alto gradiente y tiempos de concentración rápidos; impermeabilización del suelo urbano."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: aguaceros convectivos de corta duración."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: obstrucción de drenajes, alcantarillas y box-coulvert por basuras y sedimentos; pérdida de cobertura en cuencas; y mayor frecuencia de lluvias intensas."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos las viviendas, el comercio y las vías en zonas bajas y márgenes de quebrada, los cruces peatonales y vehiculares sin advertencia, y los drenajes y box-coulvertsubdimensionados. La vulnerabilidad se asocia a la ocupación de zonas bajas, a la insuficiencia de la infraestructura de drenaje y al desconocimiento de la rapidez del fenómeno."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Arrastre y ahogamiento de personas o vehículos sorprendidos en el cauce; anegamiento de viviendas y locales; daño a vías, drenajes, box-coulvert y puentes con interrupción del tránsito; erosión localizada de márgenes y arrastre de sedimentos y residuos."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco años, aumento de la frecuencia de crecientes y anegamientos por aguaceros intensos. A diez años, mayor escorrentía por expansión urbana e impermeabilización si no se implementa drenaje sostenible. A veinte años, bajo escenarios de incremento de lluvias extremas, crecientes más frecuentes e intensas, con riesgo de escalar a avenidas torrenciales."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "identificación y modelación de puntos críticos de anegamiento y de la capacidad hidráulica de los drenajes; monitoreo de lluvia y niveles (SIATA); alarmas comunitarias aguas abajo."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "drenaje urbano sostenible; reforestación de rondas; limpieza y ampliación de alcantarillas y box-coulvert; señalización y barreras en cruces."
+     ],
+     [
+      "Reducción prospectiva",
+      "exigencia de manejo de aguas lluvias y suelo permeable en nuevos desarrollos; diseño de drenajes con periodos de retorno actualizados al clima futuro; control de la ocupación de retiros."
+     ],
+     [
+      "Manejo",
+      "alerta temprana por lluvia; señalización y cierre de cruces críticos; planes familiares y comunitarios de evacuación rápida."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-4. Medidas de intervención — crecientes súbitas."
+   }
+  ],
+  "slug": "crecientes-subitas"
+ },
+ "incendios-forestales": {
+  "num": "2.4.5",
+  "titulo": "Incendios forestales (de cobertura vegetal)",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Socionatural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Durante la temporada seca, intensificada por el Fenómeno del Niño, Girardota presenta una mayor ocurrencia de incendios de cobertura vegetal de tipo socionatural, asociados a prácticas culturales inadecuadas —quemas de pasto para beneficio agrícola y ganadero que pierden el control— y a la disposición y quema inadecuada de residuos. La respuesta se ha considerado oportuna, pero limitada por los escasos recursos de personal y movilidad del cuerpo de bomberos."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El incendio de cobertura vegetal es la combustión no controlada de vegetación, favorecida por la susceptibilidad del material combustible en condiciones muy secas. En Girardota se concentra en las zonas rurales con frontera agrícola activa, próximas a vegetación nativa, pastos y bosques, y a su vez cercanas a centros poblados y suelos suburbanos, lo que eleva el riesgo de propagación hacia áreas de actividad humana."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: aumento de temperatura y disminución de lluvias por el Fenómeno del Niño y el cambio climático; vegetación seca como material combustible; topografía de difícil acceso."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: quemas agropecuarias que pierden el control; disposición y quema inadecuada de residuos; eventos en horario nocturno de difícil acceso."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: deforestación y pérdida de áreas de protección de nacimientos; aumento del turismo en zonas susceptibles; limitación de recursos humanos y de acceso al agua en acueductos veredales."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos los cultivos, pastos y bosques nativos, las viviendas rurales —en su mayoría antiguas y en algunos sectores de bareque, muy vulnerables al fuego—, los acueductos veredales, las redes eléctricas y las sedes educativas rurales, además de la fauna y los suelos. La vulnerabilidad institucional es marcada por la limitación de personal y equipos del cuerpo de bomberos y por la dificultad de acceso a las zonas afectadas."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Quemaduras y, en casos graves, fallecimientos; pérdida parcial o total de viviendas, maquinaria y herramientas; afectación de acueductos veredales, caminos rurales y redes eléctricas; pérdida de extensas áreas de cultivos y pastos y de medios de producción; pérdida de biodiversidad y de servicios ecosistémicos del suelo; y deterioro de la calidad del aire para la población cercana."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco años, mayor frecuencia y extensión por temporadas secas más intensas. A diez años, aumento de los procesos erosivos y de la tendencia a movimientos en masa en las áreas quemadas, con afectación de la oferta hídrica. A veinte años, bajo escenarios de mayor severidad de las sequías, destrucción a gran escala de hectáreas por temporada y pérdida de suelos fértiles."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del análisis espacial",
+    "txt": "La modelación de la susceptibilidad a incendios de la cobertura vegetal, elaborada sobre el modelo digital de elevación LiDAR del Área Metropolitana con pendiente y orientación continuas, ordena el territorio municipal de menor a mayor susceptibilidad relativa. Ahora bien, la susceptibilidad responde a la pregunta de qué tan probable es que una cobertura arda, y para una vivienda la respuesta es ninguna: una casa no es combustible vegetal. Por esa razón las 1.121 hectáreas de tejido urbano discontinuo —la vivienda dispersa de la zona rural— aparecían íntegramente en las clases bajas, sin una sola hectárea en susceptibilidad alta. El mapa de riesgo, que cruza la carga de combustible existente en un radio de cien metros con la densidad de ocupación, corrige esa lectura: clasifica 545,7 hectáreas de esa misma vivienda dispersa en riesgo alto o muy alto. Es, precisamente, la interfase urbano-rural. En conjunto, 27.485 personas —el 44,2 % de la población municipal— habitan en condiciones de riesgo alto o muy alto, de las cuales 11.604 en la cabecera, en los bordes que colindan con pastos, y 15.881 en el ámbito rural. Las veredas con mayor proporción de su población en esa condición son Jamundí con el 91,3 %, Mercedes Abrego con el 81,9 % y San Andrés con el 77,2 %. Esta cifra debe leerse como población que vive en contacto con combustible vegetal inflamable, y no como población que perdería su vivienda: el modelo no distingue la magnitud del evento."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "estudio de amenaza, vulnerabilidad y riesgo por incendios de cobertura vegetal; inventario de hidrantes, accesos y red hídrica; sistema de observación comunitaria."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "promoción de buenas prácticas agrícolas alternativas a la quema; recuperación de áreas afectadas; conservación de zonas protectoras."
+     ],
+     [
+      "Reducción prospectiva",
+      "conservación e incentivación de zonas protectoras mediante reforestación y seguimiento; educación en manejo de residuos y conocimiento del territorio."
+     ],
+     [
+      "Manejo",
+      "aumento del personal de respuesta y mejoramiento de herramientas y equipos; planes de ayuda mutua con la zona industrial; simulacros; articulación con el hospital para la atención de quemados."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-5. Medidas de intervención — incendios forestales (de cobertura vegetal)."
+   }
+  ],
+  "slug": "incendios-forestales"
+ },
+ "contaminacion-atmosferica": {
+  "num": "2.4.6",
+  "titulo": "Contaminación atmosférica",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Humano no intencional."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "El Valle de Aburrá ha vivido episodios críticos de contaminación atmosférica —entre ellos la intrusión de partículas del Sahara en 2014 y el episodio de material particulado PM2,5 de marzo y abril de 2016—, que motivaron la adopción de un protocolo metropolitano para enfrentar episodios y la consolidación del Plan Integral de Gestión de la Calidad del Aire. Girardota no es sólo receptor de esa contaminación regional: cuenta con registro propio. La Red de Monitoreo de Calidad del Aire del Valle de Aburrá opera en el municipio la estación automática GIR-EPM, localizada en los tanques de EPM sobre la vía al sector de Juan Cojo, que desde finales de diciembre de 2020 mide material particulado PM2,5 y PM10, dióxido de azufre, óxidos de nitrógeno, monóxido de carbono y ozono. Antes de esa fecha el seguimiento se hacía en la estación urbana GIR-SOSN. El municipio dispone además de una red ciudadana de sensores de bajo costo del proyecto Ciudadanos Científicos, con once equipos en operación en 2021, uno de ellos en la vereda La Matica parte alta.  ⟦PENDIENTE — martes 15 de septiembre de 2026: incorporar las cifras de morbilidad reportadas por las IPS del municipio y consolidadas por la Secretaría, y cruzarlas con los meses críticos de febrero a abril que muestra la serie de la estación GIR-EPM.⟧"
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "Un episodio de contaminación atmosférica ocurre cuando la concentración de contaminantes —en particular el material particulado fino PM2,5— alcanza valores y tiempos de exposición que afectan la salud. La topografía de valle estrecho y semicerrado, la meteorología adversa (inversiones térmicas, capas de nubes bajas) y las emisiones de fuentes móviles y fijas favorecen la acumulación y dificultan la dispersión. Los periodos críticos coinciden con las transiciones de temporada (marzo y noviembre)."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: topografía de valle estrecho; meteorología adversa para la dispersión; ciclo anual de la precipitación."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: emisiones de fuentes móviles (transporte) y fijas (industria); combustión de biomasa e incendios; influencia del Fenómeno del Niño."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: crecimiento del parque automotor e industrial; episodios secos más intensos."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Está expuesta la población en general, con mayor sensibilidad en personas con enfermedades respiratorias o cardíacas, adultos mayores, gestantes, niñez y adolescencia. La calidad del aire es el principal bien ambiental afectado. La vulnerabilidad se asocia al desconocimiento del fenómeno y a la exposición de grupos sensibles."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Aumento de la mortalidad prematura y agravamiento de enfermedades respiratorias y cardiovasculares; incremento de la morbilidad en grupos sensibles; y pérdidas económicas en sectores afectados por las medidas restrictivas durante los episodios."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "El crecimiento del parque automotor y de la actividad industrial, junto con episodios secos más intensos por la variabilidad y el cambio climático, tienden a aumentar la exposición de la población a lo largo del horizonte del Plan, salvo que las medidas regionales de descontaminación y de movilidad sostenible se intensifiquen."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del monitoreo de la calidad del aire",
+    "txt": "Los informes anuales de calidad del aire del Área Metropolitana correspondientes a 2021 a 2025 permiten describir el escenario con datos propios. En ninguno de los cinco años se superó un nivel máximo permisible anual: la media de PM2,5 osciló entre 12,7 y 16,9 microgramos por metro cúbico frente a un límite de 25, la de PM10 entre 35,4 y 39,5 frente a un límite de 50, y la de dióxido de nitrógeno se mantuvo cerca de 19 frente a un límite de 60. El problema del municipio no está, por tanto, en el promedio anual sino en los episodios. El peor año de la serie fue 2024, con una media de PM2,5 de 16,9 microgramos por metro cúbico —3,2 por encima de 2023— y diez excedencias de la norma diaria concentradas en febrero, marzo y abril; en 2025 el indicador volvió a 13,0 sin ninguna excedencia. Del PM10 conviene retener que la media de Girardota es sensiblemente más alta que la de sus vecinos del norte —Barbosa alrededor de 23, Copacabana 24 y Bello 28— y que el Área Metropolitana atribuye las emisiones de este contaminante mayoritariamente a fuentes fijas, en particular a los sectores cerámico, vítreo y de ladrillo."
+   },
+   {
+    "t": "p",
+    "lead": "El dióxido de azufre, contaminante propio del municipio",
+    "txt": "El dióxido de azufre merece capítulo aparte porque es el contaminante propio de Girardota. Entre 2021 y 2025 la estación GIR-EPM acumuló 276 excedencias de la norma horaria de 100 microgramos por metro cúbico: 102 en 2021, 39 en 2022, 87 en 2023, 21 en 2024 y 27 en 2025. La concentración horaria máxima registrada, 281,2 microgramos por metro cúbico en 2021, casi triplica el límite. Durante varios años Girardota fue el único municipio del Valle de Aburrá con monitoreo automático de este contaminante —en 2020 la red tenía una sola estación de dióxido de azufre y estaba aquí—, lo que indica que la autoridad ambiental identificó el problema como propio de este territorio. El dióxido de azufre es trazador de la combustión de combustibles con azufre, es decir, de fuentes fijas industriales, y vincula este escenario directamente con las cincuenta y cinco instalaciones industriales y comerciales identificadas en el municipio."
+   },
+   {
+    "t": "p",
+    "lead": "Limitaciones del punto de medición",
+    "txt": "La información disponible tiene una limitación que el Plan debe declarar. En sus informes de 2024 y 2025, al analizar el monóxido de carbono, el Área Metropolitana advierte que el punto de medición «está alejado de las fuentes de emisión» o se encuentra en una condición de ventilación alta, y que «se debe analizar la pertinencia de mantener el equipo en ese sitio», recomendando medir en zonas encañonadas o de alto tráfico vehicular. La estación está sobre una ladera, en la vía a Juan Cojo, lejos del corredor vial e industrial y del casco urbano donde se concentra la población. Las cifras anteriores deben leerse, en consecuencia, como un piso y no como una medida de la exposición real: es probable que la población del corredor esté expuesta a concentraciones mayores que las que registra la única estación oficial del municipio. Debe advertirse también que la serie no es homogénea antes de 2021: el dato de 2020 —media anual de 19,8 microgramos por metro cúbico de PM2,5 y veintinueve excedencias de la norma diaria— proviene de la estación urbana GIR-SOSN y no es comparable con los años posteriores."
+   },
+   {
+    "t": "p",
+    "lead": "Vacíos de información",
+    "txt": "Persisten dos vacíos de información. El municipio no cuenta con un inventario local de fuentes fijas que permita vincular las zonas industriales identificadas con emisiones reales y verificadas, ni con estudios de impacto en salud que relacionen las concentraciones medidas con la morbilidad respiratoria de su población. Ambos vacíos justifican las medidas de conocimiento del riesgo previstas para este escenario."
+   },
+   {
+    "t": "p",
+    "lead": "Tabla 9e. Calidad del aire en la estación GIR-EPM de Girardota, 2021–2025. Concentraciones en microgramos por metro cúbico",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Año",
+      "PM2,5 media anual",
+      "PM2,5 excedencias diarias",
+      "PM10 media anual",
+      "PM10 excedencias diarias",
+      "SO2 excedencias horarias"
+     ],
+     [
+      "2021",
+      "14,5",
+      "1",
+      "35,9",
+      "0",
+      "102"
+     ],
+     [
+      "2022",
+      "12,7",
+      "2",
+      "35,4",
+      "0",
+      "39"
+     ],
+     [
+      "2023",
+      "13,7",
+      "2",
+      "39,5",
+      "1",
+      "87"
+     ],
+     [
+      "2024",
+      "16,9",
+      "10",
+      "38,4",
+      "0",
+      "21"
+     ],
+     [
+      "2025",
+      "13,0",
+      "0",
+      "36,0",
+      "0",
+      "27"
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Niveles máximos permisibles de la Resolución 2254 de 2017: PM2,5, 25 anual y 37 diario; PM10, 50 anual y 75 diario; SO2, 100 horario. Fuente: informes anuales de calidad del aire del Área Metropolitana del Valle de Aburrá. Detalle en el Anexo A6."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "articulación permanente con la Red de Monitoreo del AMVA-SIATA y uso de la serie de la estación GIR-EPM como línea base del escenario; inventario local de fuentes fijas y móviles con énfasis en las que emplean combustibles con azufre; vigilancia epidemiológica de la morbilidad respiratoria cruzada con los episodios de febrero a abril; incorporación de la red de Ciudadanos Científicos como cobertura complementaria."
+     ],
+     [
+      "Reducción (AbE)",
+      "control y seguimiento a las fuentes fijas industriales con emisiones de dióxido de azufre, en coordinación con el AMVA como autoridad ambiental urbana; exigencia de criterios de emisión en las licencias y en la localización industrial; incremento de espacios verdes y arbolado urbano; protección de zonas sensibles y de los equipamientos de salud y educación del corredor; articulación con el PIGECA y con el Plan Integral de Gestión del Cambio Climático."
+     ],
+     [
+      "Manejo",
+      "adopción del protocolo metropolitano para episodios y activación de las medidas del POECA cuando se declare estado de prevención, alerta o emergencia; plan municipal de comunicaciones con aviso anticipado en las temporadas de transición, que son los meses críticos que muestra la serie; medidas de reducción de la exposición de grupos sensibles en instituciones educativas, hogares infantiles y centros de vida."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-7. Medidas de intervención — contaminación atmosférica."
+   }
+  ],
+  "slug": "contaminacion-atmosferica"
+ },
+ "desabastecimiento-agua": {
+  "num": "2.4.7",
+  "titulo": "Desabastecimiento de agua",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Hidrometeorológico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "El escenario quedó priorizado por el CMGRD al evaluar las altas temperaturas y la prolongación de las temporadas secas. Aunque no se ha presentado una emergencia mayor por corte de suministro, los reportes del IDEAM y del SIATA advierten sobre la posibilidad de disminución sostenida del agua en las bocatomas, especialmente en las veredas que dependen de acueductos veredales."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El desabastecimiento de agua es la disminución de caudales y los posibles cortes del servicio, tanto en zonas rurales como urbanas, durante la temporada seca. Girardota presenta una morfología variada que favorece nacimientos, pero está localizado en una zona encañonada del valle del río que eleva la sensación térmica y la evapotranspiración, generando escenarios de disminución de caudales de alta probabilidad. La mayor afectación se concentra en las veredas servidas por acueductos veredales (entre ellos El Barro, Juan Cojo, Jamundí, La Matica, Encenillos, Portachuelo, San Andrés, San Diego y El Totumo); el suministro de la zona urbana central, operado por EPM, cuenta con un plan de atención de emergencias."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: morfología encañonada y alta evapotranspiración; deforestación y pérdida de áreas de protección de nacimientos."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: aumento de temperaturas y disminución de lluvias por el Fenómeno del Niño y el cambio climático; mayor demanda en temporada seca."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: malas prácticas agrícolas y de disposición de residuos; aumento de la frontera agrícola; erosión y desertificación de suelos."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos los acueductos veredales y sus bocatomas, los cultivos, la zona industrial y comercial, las instituciones educativas y el hospital, y toda la población —con mayor afectación en la zona rural por la capacidad limitada de cada acueducto—. La vulnerabilidad social y económica es alta en las veredas; la ambiental, por el estrés hídrico de los ecosistemas; y la institucional, por la necesidad de coordinación entre el municipio, EPM y las asociaciones de acueductos."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Enfermedades por vectores y por consumo de agua insegura, deshidratación; pérdida de productividad agrícola y muerte de animales por falta de agua y alimento; estrés hídrico y enfermedades del crecimiento vegetal; recortes o suspensión del servicio; y contaminación de afluentes por disminución del caudal donde se ubican las tomas."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "Los registros recientes muestran temporadas secas más prolongadas y con mayores temperaturas. A cinco y diez años se espera mayor frecuencia de episodios de disminución de caudales; a veinte años, bajo escenarios de mayor severidad de las sequías, riesgo de desertificación, aumento de procesos erosivos y de la tendencia a movimientos en masa, y caos social ante el recorte del servicio."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "análisis de oferta-demanda hídrica y de vulnerabilidad de los acueductos veredales; evaluación de los impactos por disminución de caudales; monitoreo (IDEAM, SIATA)."
+     ],
+     [
+      "Reducción correctiva (AbE)",
+      "reforestación y conservación de cuencas abastecedoras y de rondas; recuperación de zonas erosionadas; cosecha y aprovechamiento de aguas lluvias."
+     ],
+     [
+      "Reducción prospectiva",
+      "Pagos por Servicios Ambientales y adquisición de predios en cuencas; protección de nacimientos; control de la frontera agrícola."
+     ],
+     [
+      "Manejo",
+      "planes de contingencia con EPM y los acueductos veredales; educación en uso eficiente del agua; fortalecimiento del CMGRD."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-6. Medidas de intervención — desabastecimiento de agua."
+   }
+  ],
+  "slug": "desabastecimiento-agua"
+ },
+ "incendios-estructurales": {
+  "num": "2.4.8",
+  "titulo": "Incendios estructurales e industriales",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Tecnológico / antrópico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "El registro de emergencias atendidas por el Cuerpo de Bomberos Voluntarios de Girardota desmiente que el municipio carezca de antecedentes. Solo en 2024 el cuerpo atendió un incendio industrial en la vereda Loma de los Ochoa, el 30 de agosto, y un incendio estructural en el sector de El Paraíso, el 14 de diciembre; a ellos se suman dos atenciones por riesgo estructural, una en la vía a Manga Arriba, en la vereda Las Cuchillas, y otra en la calle 5B de la cabecera. Estos antecedentes concurren con las condiciones que elevan la amenaza: la concentración industrial del corredor del río, la densificación de la cabecera y un déficit cualitativo de vivienda del 31,32 % del total municipal, que se expresa en presencia de vivienda antigua y de bareque, sobre todo en la zona rural."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El incendio estructural es la combustión no controlada en una edificación —vivienda, comercio, equipamiento o industria— con potencial de propagación a estructuras vecinas. Su clasificación es predominantemente antrópica y tecnológica. La amenaza es mayor en la zona industrial del corredor del río Aburrá, en la cabecera densificada y en la vivienda antigua o de bareque de la zona rural."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Condicionantes: densificación y construcción en altura; mezcla de usos residencial-industrial; viviendas de materiales combustibles."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Desencadenantes: fallas eléctricas (cortocircuitos, sobrecargas); almacenamiento inadecuado de combustibles e inflamables; manipulación de fuego en zonas no aptas; fugas de gas."
+   },
+   {
+    "t": "li",
+    "lead": null,
+    "txt": "Agravantes: ausencia de sistemas de protección contra incendios (NSR-10, Título J) y de rutas de evacuación; capacidad limitada del cuerpo de bomberos frente a edificaciones en altura."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas las industrias y bodegas, el comercio, los equipamientos y la vivienda. La vulnerabilidad física se asocia a la falta de sistemas de detección y extinción, de compartimentación cortafuego y de rutas de evacuación; la institucional, a la capacidad y dotación limitada del cuerpo de bomberos voluntarios para edificaciones de altura o de gran carga combustible."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Quemaduras, intoxicación por gases y posibles fallecimientos; destrucción de inmuebles, vehículos y enseres; corte de servicios y suspensión de actividades escolares y de transporte; pérdida de infraestructura industrial y de empleos; y contaminación del aire por la combustión."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, aumento de eventos por densificación, conexiones irregulares y crecimiento del comercio y la industria. A veinte años, con la expansión industrial y la intensificación de las temporadas secas, mayor probabilidad de incendios con propagación y de eventos encadenados (fugas, explosiones, contaminación)."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "zonificación de amenaza por incendio estructural; catastro de edificaciones de alta carga combustible; estudio de cobertura de hidrantes."
+     ],
+     [
+      "Reducción",
+      "exigencia del Título J de la NSR-10 y de sistemas contra incendios en licencias; instalación de hidrantes y extintores; adecuación de sitios de afluencia masiva; separaciones verdes entre usos industriales y residenciales."
+     ],
+     [
+      "Manejo",
+      "fortalecimiento y dotación del cuerpo de bomberos (escaleras, equipos para altura, EPP); brigadas empresariales; planes de ayuda mutua intermunicipal e industrial; corredores de emergencia."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-8. Medidas de intervención — incendios estructurales e industriales."
+   }
+  ],
+  "slug": "incendios-estructurales"
+ },
+ "sustancias-peligrosas": {
+  "num": "2.4.9",
+  "titulo": "Sustancias y mercancías peligrosas",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Tecnológico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Girardota no registra en las fuentes consultadas un accidente mayor con sustancias peligrosas, pero la concentración industrial del corredor del río Aburrá y el transporte permanente de mercancías peligrosas por la vía al Hatillo y por el corredor vial del municipio configuran una amenaza latente y creciente. La cartografía de riesgo químico y por transporte de sustancias peligrosas modela, para las instalaciones y rutas del municipio, escenarios de radiación térmica, dispersión de nubes tóxicas, explosiones y llamaradas."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde a la liberación accidental de sustancias peligrosas durante su almacenamiento o su transporte, con efectos de radiación térmica, dispersión de nubes tóxicas, explosión o llamarada. Se diferencia del escenario NATECH en el detonante: aquí el evento iniciador es una falla operativa, de mantenimiento o de transporte, no un fenómeno natural. La amenaza se concentra en la zona industrial del corredor del río y en los corredores viales de transporte, en particular la vía al Hatillo."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "operación industrial que manipula y almacena sustancias peligrosas; corredores viales de transporte que atraviesan zonas pobladas y cruzan fuentes de agua; instalaciones y vehículos sin sistemas de contención adecuados."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "fallas operativas y de mantenimiento; accidentes de tránsito; manipulación inadecuada; incumplimiento de las normas de transporte de mercancías peligrosas (Decreto 1609 de 2002)."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "crecimiento industrial y del volumen transportado; proximidad de los corredores a población y a fuentes de agua; débil control y verificación por parte de las autoridades."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos la población y los trabajadores del entorno industrial y de los corredores de transporte, las bodegas, plantas y estaciones de servicio, los vehículos de transporte de mercancías peligrosas, y las vías, redes de servicios y fuentes de agua próximas a las rutas e instalaciones. La vulnerabilidad física se asocia a la ausencia de contención secundaria en el almacenamiento y en el transporte; la institucional, a la dotación limitada del Cuerpo de Bomberos Voluntarios para atención de materiales peligrosos; y la cultural, a un manejo y un transporte sin cultura de prevención."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Intoxicación, quemaduras y posibles fallecimientos entre personas expuestas y trabajadores; destrucción de instalaciones y de vehículos; cierre de vías y evacuación de la población del entorno; y contaminación de suelo, agua y aire, con afectación de las fuentes de abastecimiento aguas abajo."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, mayor exposición por el crecimiento industrial del corredor del río y por el aumento del volumen de mercancías peligrosas transportadas. A veinte años, la probabilidad de un evento mayor crece de forma sostenida si no se implementan corredores y horarios seguros de transporte, control efectivo del rotulado y planes de contingencia verificados."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del análisis espacial",
+    "txt": "El corredor de transporte de mercancías peligrosas —la Troncal, la Autopista Urbana y la vía Girardota-Hatillo— suma 57,8 kilómetros en el tramo analizado, de los cuales 22,4 kilómetros discurren dentro del territorio municipal; el resto corresponde a la Troncal Occidental en jurisdicción de los municipios vecinos y se conservó en el análisis porque un accidente ocurrido inmediatamente fuera del límite también afecta a Girardota. Las bandas de influencia sí se calcularon únicamente sobre el territorio municipal. Sobre ellas, el corredor concentra 6.468 personas residiendo en la banda de los primeros cien metros, que es la zona de aislamiento inmediato ante un derrame o una fuga; 20.612 personas entre cien y trescientos metros, y 16.179 entre trescientos y ochocientos. En conjunto, el 69,6 % de la población del municipio vive a menos de ochocientos metros del corredor. La cifra de los primeros cien metros es la que debe orientar la definición de rutas y horarios seguros de transporte, la localización de los puntos de encuentro del entorno industrial y el dimensionamiento de la capacidad de respuesta ante materiales peligrosos."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "inventario georreferenciado de sustancias peligrosas almacenadas y de las rutas de transporte; identificación de puntos críticos próximos a población y a fuentes de agua; registro y control del transporte y del almacenamiento, con reporte empresarial y coordinación con la Secretaría de Transporte y Tránsito."
+     ],
+     [
+      "Reducción correctiva",
+      "sistemas de contención y almacenamiento seguro en las instalaciones existentes; adecuación de las rutas de transporte; control del transporte y del rotulado; exigencia y verificación de planes de contingencia; dotación del Cuerpo de Bomberos para atención de materiales peligrosos y conformación de Comités de Ayuda Mutua."
+     ],
+     [
+      "Reducción prospectiva",
+      "definición de corredores y horarios seguros de transporte; criterios de localización segura del almacenamiento; regulación de los usos peligrosos en el PBOT y exigencia de planes de transporte en las licencias; formación continua en materiales peligrosos y señalización permanente de rutas."
+     ],
+     [
+      "Manejo",
+      "protocolos de materiales peligrosos del Cuerpo de Bomberos y activación del PMU; Comités de Ayuda Mutua; coordinación con Tránsito y con la autoridad ambiental; descontaminación, evaluación ambiental y de salud, y rehabilitación de vías y servicios en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-9. Medidas de intervención — sustancias y mercancías peligrosas."
+   }
+  ],
+  "slug": "sustancias-peligrosas"
+ },
+ "caida-de-rocas": {
+  "num": "2.4.10",
+  "titulo": "Caída de rocas por inestabilidad de laderas",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Geológico / socionatural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "La caída de rocas en Girardota no obedece al desprendimiento de bloques desde un macizo rocoso fracturado, sino a la pérdida del sostén de bloques alojados en materiales de vertiente. La geología del municipio, según el Estudio Básico de Amenazas, está dominada por el Batolito Antioqueño, que ocupa 4.126,5 hectáreas —la mitad del territorio— y cuya meteorización esferoidal deja bloques de roca sana embebidos en un saprolito areno-arcilloso. A ello se suman 1.789,1 hectáreas de depósitos de flujos de lodos y escombros, 143,1 hectáreas de depósitos de vertiente propiamente dichos y 120,1 de depósitos aluviotorrenciales: materiales heterogéneos en los que bloques de gran tamaño quedan sostenidos por una matriz fina. En unos y otros el bloque no está adherido a un escarpe; está sostenido por el material que lo rodea."
+   },
+   {
+    "t": "p",
+    "lead": "Mecanismo de desencadenamiento",
+    "txt": "El desencadenante en el municipio es la pérdida de ese sostén, y es de origen antrópico. Los cortes de talud que se abren para el terraceo de laderas y para la apertura y ampliación de vías veredales modifican la dinámica de la pendiente, concentran la escorrentía y aceleran los procesos erosivos. Cuando la erosión descalza la base de un bloque —sea un núcleo de roca sana heredado de la meteorización del batolito, sea un bloque procedente de un viejo depósito de vertiente—, el bloque queda expuesto en la cara del talud y termina desprendiéndose. La amenaza es, por tanto, inducida antes que natural: se genera donde se interviene la ladera, y se agrava con cada temporada de lluvias que profundiza la erosión en la base del corte. Esta lectura tiene una consecuencia directa sobre las medidas: el problema no se resuelve principalmente conteniendo un escarpe, sino controlando la erosión y el manejo de aguas en los taludes de corte, y exigiendo criterios técnicos en la apertura de bancas y terrazas."
+   },
+   {
+    "t": "p",
+    "lead": "Crecimiento del elemento expuesto",
+    "txt": "El elemento expuesto ha cambiado en la última década. La densificación de la vivienda en las laderas de las veredas ha llevado población y edificaciones al pie de taludes que antes solo comprometían la banca vial. El crecimiento de la ocupación en ladera es, junto con la intervención del talud, el segundo factor que explica por qué este escenario merece tratamiento propio en el Plan."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "La caída de rocas es el desprendimiento y la caída libre, rebote o rodadura de bloques desde la parte alta de un talud, por pérdida de soporte, infiltración de agua o sismo. Se diferencia de los movimientos en masa por su mecánica —bloques individuales que se separan del terreno, sin superficie de falla continua— y, en consecuencia, por sus medidas de control. En Girardota se localiza allí donde concurren los dos factores descritos: material con bloques disponibles, esto es, saprolito del batolito o depósitos de vertiente y de flujos, y una ladera intervenida por cortes de talud. Se concentra por tanto en los corredores viales veredales y en los sectores de ladera sometidos a terraceo, y no necesariamente en los escarpes de mayor pendiente del municipio."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "saprolito del Batolito Antioqueño con núcleos de roca sana producto de la meteorización esferoidal; depósitos de vertiente y de flujos de lodos y escombros con bloques sostenidos en matriz fina; alta pendiente de la ladera intervenida."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "infiltración de aguas tras lluvias intensas; sismos; falta de tratamiento de los taludes de corte."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "apertura de vías y cortes sin protección; ocupación de la base de los escarpes; lluvias extremas más frecuentes, que aceleran la meteorización y la infiltración."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas la población y las viviendas localizadas en la base de escarpes y taludes, los transeúntes y vehículos que circulan por vías bajo taludes de corte, y las bancas veredales de las que depende la movilidad rural. La vulnerabilidad física se asocia a taludes sin mallas, anclajes ni barreras, y a viviendas y vías situadas directamente en la trayectoria de caída; la cultural, a la práctica de abrir cortes para vías y lotes sin estabilización posterior."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Impacto directo sobre personas, con alta letalidad por la energía de los bloques; daño a viviendas y vehículos; bloqueo de vías y deterioro de la malla vial; interrupción de la movilidad y de la actividad económica veredal; y erosión con aporte de material a los cauces."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, más desprendimientos tras lluvias intensas y en los taludes de corte recientes. A veinte años, bajo lluvias extremas más frecuentes y ante la eventualidad de un sismo, aumenta la probabilidad de eventos en escarpes y corredores viales, con mayor exposición si continúa la ocupación de la base de los escarpes."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del análisis espacial",
+    "txt": "La zonificación de este escenario se elaboró sobre el modelo digital de elevación LiDAR del Área Metropolitana, tomando como zona fuente la concurrencia de dos condiciones: material con bloques disponibles y existencia de una cara libre desde la cual el bloque descalzado pueda desprenderse. Esa cara libre puede haberla abierto un corte de talud —pendiente superior a treinta y cinco grados a menos de quince metros de una vía vehicular— o la propia pendiente natural, por encima de cuarenta y cinco grados. El alcance se estimó con el criterio de la línea de energía a treinta y dos grados. El resultado delimita 406,7 hectáreas de zona fuente y 1.666,1 hectáreas de área susceptible en total, equivalentes al 20,2 % del municipio. De la zona fuente, 158,4 hectáreas corresponden a taludes de corte junto a vía vehicular y 273,3 a escarpes naturales, con veinticinco hectáreas en que ambas condiciones coinciden."
+   },
+   {
+    "t": "p",
+    "lead": "Naturaleza del elemento expuesto",
+    "txt": "El resultado más relevante para la intervención es la naturaleza del elemento expuesto. En la zona de alcance hay 61,1 kilómetros de vía vehicular —el 15,3 % de los 400,5 kilómetros de la red— frente a 9,42 hectáreas de huella construida. La caída de rocas es en Girardota, ante todo, un problema de infraestructura vial, y las medidas deben concentrarse en el tratamiento de taludes de corte y en la protección de corredores más que en la reubicación de vivienda. Las veredas con mayor superficie en alcance próximo o zona fuente son Juan Cojo con 139,6 hectáreas, Jamundí con 126,0, La Holanda con 100,1 y El Socorro con 89,1: allí debe iniciarse el inventario de taludes críticos previsto en el programa 1.1.2 y levantarse los primeros registros con el protocolo anexo."
+   },
+   {
+    "t": "p",
+    "lead": "Decisiones metodológicas de la zonificación",
+    "txt": "Conviene dejar constancia de dos decisiones metodológicas. La primera es que el material con bloques disponibles no constituye por sí solo un criterio de zonificación: cubre 7.668 de las 8.258 hectáreas del municipio, el 91 % del territorio, de modo que casi todo Girardota tiene bloques y el criterio no permite priorizar. Lo que discrimina es la existencia de la cara libre. La segunda es que se descartó un índice ponderado de material, intervención y pendiente, porque la proximidad a vía dominaba el resultado —con 683 kilómetros de red hay vía casi en todas partes— y dejaba el 46 % del municipio como susceptible. Se optaron por criterios conjuntivos, que además son verificables en campo. Del cálculo se excluyeron los caminos y senderos, que no llevan talud de corte construido ni exponen vehículos."
+   },
+   {
+    "t": "p",
+    "lead": "Estado de validación",
+    "txt": "La zonificación sigue sin validación de campo, y así debe citarse. El municipio no registra la caída de rocas como categoría diferenciada, de modo que no existe ningún punto con el cual contrastarla. Como referencia indirecta, de los veintisiete puntos de inestabilidad registrados en el geoportal municipal —que corresponden a movimientos de suelo y no a caídas de bloques— la zonificación anterior contenía dos y la actual contiene trece, lo que indica que el criterio corregido cubre mejor las laderas intervenidas donde el municipio observa inestabilidad. Hasta que se acumulen registros propios en las próximas temporadas de lluvia, las cifras de superficie de este escenario deben tomarse como un orden de magnitud."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "inventario y caracterización geotécnica de escarpes y taludes críticos; identificación de las trayectorias de caída; priorización de tramos viales y sectores urbanos; inspección periódica y monitoreo de grietas y bloques inestables, con alertas por umbrales de lluvia."
+     ],
+     [
+      "Reducción correctiva",
+      "mallas de protección, anclajes, barreras dinámicas, gunita y saneo de bloques inestables en los escarpes y taludes críticos; manejo de aguas de escorrentía; restricción de paso y de ocupación en las zonas de caída; reubicación de viviendas situadas en la base de escarpes no mitigables."
+     ],
+     [
+      "Reducción prospectiva",
+      "tratamiento de los taludes de corte en toda vía nueva; barreras y mallas preventivas; prohibición de ocupar la base de los escarpes; mantenimiento de cobertura protectora en las laderas, con Pagos por Servicios Ambientales; diseño vial que incorpore la protección de taludes."
+     ],
+     [
+      "Manejo",
+      "protocolos del CMGRD y activación del PMU; remoción de bloques con maquinaria; señalización y cierre de tramos; evaluación geotécnica posterior; estabilización de taludes y rehabilitación de vías en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-10. Medidas de intervención — caída de rocas por inestabilidad de laderas."
+   }
+  ],
+  "slug": "caida-de-rocas"
+ },
+ "abejas-africanizadas": {
+  "num": "2.4.11",
+  "titulo": "Abejas africanizadas",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Biológico de origen natural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "El ataque de enjambres o panales de abejas africanizadas —subespecie de comportamiento marcadamente defensivo— figura entre los servicios más recurrentes que atiende el Cuerpo de Bomberos Voluntarios de Girardota; su registro de emergencias incluye atenciones por control de abejas. El riesgo se concentra en los espacios públicos de alta afluencia —parque principal, entorno de la Catedral, instituciones educativas— y en la zona rural. Las altas temperaturas y la sequía aumentan la agresividad de los enjambres."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde al ataque coordinado de un enjambre al perturbarse un panal alojado en arbolado, postes, estructuras o viviendas. En Girardota concurren tres condiciones que lo elevan: la afluencia masiva al parque principal y a la Catedral durante la romería del Señor Caído, la presencia de instituciones educativas y de zonas rurales con vegetación, y el aumento sostenido de las temperaturas. Se prioriza la reubicación de los panales por personal especializado frente al exterminio, cuando ello es viable."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "presencia de panales en espacios públicos, arbolado, postes y viviendas; contacto entre la expansión urbana y la vegetación; espacios públicos de alta afluencia."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "perturbación de panales por manipulación inadecuada, poda o trabajos en altura; condiciones de calor y sequía que aumentan la agresividad."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "aumento de temperaturas por variabilidad y cambio climático; concentración de multitudes en fechas previsibles del calendario religioso y municipal."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Está expuesta la población que concurre a los espacios públicos de alta afluencia y la que habita viviendas rurales próximas a vegetación, con mayor riesgo para la niñez, las personas adultas mayores y quienes presentan alergia. También están expuestos los animales de granja y de compañía, y la actividad comercial y turística en torno a la Catedral. La vulnerabilidad se asocia a la exposición simultánea de multitudes y a la manipulación inadecuada de panales por parte de la comunidad."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Picaduras múltiples, reacciones alérgicas graves y posibles fallecimientos; muerte de animales; atención simultánea de numerosos lesionados; cierre de espacios públicos y alarma social; y pérdida de colmenas cuando se recurre al exterminio."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, más eventos por el aumento de las temperaturas y por la expansión urbana hacia zonas con vegetación. A veinte años, bajo escenarios de mayor calor, cabe esperar enjambres más frecuentes y más agresivos, con un riesgo creciente en los eventos de aglomeración."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "registro de los puntos recurrentes de enjambres y panales; inventario de panales en espacios públicos y en el arbolado urbano; protocolo de manejo y reubicación; línea de reporte comunitario."
+     ],
+     [
+      "Reducción correctiva",
+      "reubicación de panales por personal especializado, evitando el exterminio cuando sea viable; identificación y señalización de los puntos de riesgo; dotación y formación del Cuerpo de Bomberos para la atención de enjambres; protocolo de atención de picaduras múltiples en el Hospital San Rafael."
+     ],
+     [
+      "Reducción prospectiva",
+      "manejo del arbolado y de las estructuras que alojan panales; convenios con apicultores para la reubicación; campañas permanentes para no manipular panales y reportar a las autoridades; simulacros en los espacios de alta afluencia, en particular durante la romería."
+     ],
+     [
+      "Manejo",
+      "protocolo de atención de enjambres y de picaduras múltiples; coordinación con el Hospital San Rafael para las reacciones alérgicas graves; articulación con la Secretaría de Salud y con la Diócesis para la protección de multitudes; seguimiento de las personas afectadas y refuerzo de la vigilancia en los puntos recurrentes."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-11. Medidas de intervención — abejas africanizadas."
+   }
+  ],
+  "slug": "abejas-africanizadas"
+ },
+ "natech": {
+  "num": "2.4.12",
+  "titulo": "NATECH: eventos tecnológicos detonados por amenazas naturales",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Tecnológico de origen natural."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Los eventos NATECH son accidentes tecnológicos —derrames, fugas, incendios o explosiones— detonados por fenómenos naturales en instalaciones que manipulan o almacenan sustancias peligrosas. En Girardota, la coincidencia territorial entre la industria del corredor del río Aburrá, en particular el sector nororiental y el entorno de la quebrada El Salado, y las zonas de amenaza por avenida torrencial e inundación zonificadas en el PBOT 2025, configura de manera explícita este escenario: un fenómeno natural puede detonar un evento tecnológico de consecuencias mayores que las del fenómeno original."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario se materializa cuando una inundación, una avenida torrencial, un movimiento en masa, un sismo o una descarga eléctrica compromete una instalación con sustancias peligrosas y desencadena un evento tecnológico. La zonificación del PBOT 2025 muestra bodegas industriales localizadas en zonas de amenaza por avenida torrencial —quebrada El Salado y vía al Hatillo— y por inundación en el corredor del río Aburrá. Se distingue del escenario de sustancias peligrosas en que aquí el evento iniciador es natural."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "manipulación y almacenamiento de sustancias peligrosas en instalaciones localizadas sobre zonas de amenaza; tanques, bodegas y líneas de conducción sin diseño frente a amenazas naturales."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "inundación, avenida torrencial, movimiento en masa, sismo o rayo sobre la instalación; fallas de contención derivadas del impacto."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "expansión industrial en el corredor del río; incremento de las amenazas hidrometeorológicas por cambio climático; débil verificación del Plan de Gestión del Riesgo de Desastres de Entidades Públicas y Privadas (PGRDEPP)."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos la población y los trabajadores del entorno industrial y los barrios próximos al corredor del río; las bodegas, plantas, tanques de almacenamiento y líneas de conducción; y las redes de servicios, vías y equipamientos próximos, así como las fuentes de agua situadas aguas abajo. La vulnerabilidad más crítica es la coincidencia entre la localización industrial y la zonificación de amenaza, que el ordenamiento territorial no ha corregido."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Intoxicación, quemaduras y posibles fallecimientos; destrucción de instalaciones y pérdida de empleos; evacuación de la población y corte de servicios; y contaminación de agua, suelo y aire, con afectación prolongada del abastecimiento y de la salud pública."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, mayor probabilidad por la expansión industrial y por la intensificación de las amenazas hidrometeorológicas. A veinte años, bajo lluvias extremas más frecuentes, crece el riesgo de eventos encadenados naturales-tecnológicos, que son los de mayor potencial de daño del municipio y los que con más facilidad desbordan la capacidad local de respuesta."
+   },
+   {
+    "t": "p",
+    "lead": "Resultados del análisis espacial",
+    "txt": "El cruce de las cincuenta y cinco zonas industriales o comerciales del municipio —306,9 hectáreas— con la amenaza alta por inundación y por avenida torrencial del Estudio Básico de Amenazas cuantifica por primera vez este escenario: 82,13 hectáreas de suelo industrial, el 26,8 % del total, se localizan sobre amenaza alta, y comprometen a 35 de las 55 instalaciones del municipio. La avenida torrencial pesa casi tres veces más que la inundación —66,63 hectáreas frente a 25,67—, lo que tiene una consecuencia técnica precisa: las medidas de contención deben dimensionarse para energía de flujo y arrastre de sedimentos, y no solo para lámina de agua, porque los diques y cubetos diseñados frente a una inundación no protegen frente a un flujo torrencial. Diez coma diecisiete hectáreas están expuestas a los dos fenómenos de forma simultánea y constituyen el punto de partida natural del censo georreferenciado de establecimientos previsto en el programa 1.1.2."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "censo georreferenciado de las empresas que manipulan sustancias peligrosas y cruce con las capas de amenaza del PBOT 2025; aplicación de la metodología de índices de vulnerabilidad NATECH; vigilancia de las instalaciones situadas en zonas de amenaza, con alertas hidrometeorológicas y reporte empresarial."
+     ],
+     [
+      "Reducción correctiva",
+      "sistemas de contención —diques y cubetos—, y reubicación o protección de tanques y líneas situados en zonas de amenaza; verificación del PGRDEPP y de los análisis de riesgo empresariales; fortalecimiento del Cuerpo de Bomberos en equipos y elementos de protección para materiales peligrosos; conformación de Comités de Ayuda Mutua."
+     ],
+     [
+      "Reducción prospectiva",
+      "criterios de localización industrial fuera de las zonas de amenaza; regulación de los usos peligrosos en el PBOT y exigencia del PGRDEPP en las licencias; barreras de contención; simulacros conjuntos entre la industria y el municipio; corredores seguros para el transporte de mercancías peligrosas."
+     ],
+     [
+      "Manejo",
+      "Comités de Ayuda Mutua y protocolos de materiales peligrosos del Cuerpo de Bomberos; activación del PMU; rutas de evacuación y puntos de encuentro señalizados en el entorno industrial; coordinación con la autoridad ambiental; descontaminación de agua, suelo y aire y evaluación ambiental y de salud en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-12. Medidas de intervención — natech: eventos tecnológicos detonados por amenazas naturales."
+   }
+  ],
+  "slug": "natech"
+ },
+ "sismos": {
+  "num": "2.4.13",
+  "titulo": "Sismos",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Geológico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Girardota está expuesto a amenaza sísmica intermedia por la confluencia de las placas Nazca, Suramérica y Caribe y de la microplaca de Panamá, y por sismofuentes como Murindó, el Nido de Bucaramanga y el sistema de fallas Cauca-Romeral. El municipio está incluido en la Microzonificación Sísmica Detallada del Valle de Aburrá —actualmente en actualización—, que define los criterios de diseño y las probabilidades de ocurrencia aplicables a su territorio. El Estudio Básico de Amenazas de diciembre de 2025 modela, además, el sismo como detonante de movimientos en masa. El sismo del 10 de agosto de 2026 constituye el evento de referencia local más reciente y motivó el levantamiento de la evaluación de daños correspondiente."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde a un movimiento sísmico originado en fuentes regionales que, por efectos locales de sitio asociados a los depósitos de vertiente, puede amplificarse en el territorio municipal. Es el único escenario que afecta de manera simultánea la totalidad del municipio, y el único cuya amenaza no admite reducción: toda la intervención posible recae sobre la vulnerabilidad de las edificaciones y sobre la preparación para la respuesta."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "dinámica de placas y sismofuentes regionales; efectos locales de amplificación por depósitos de vertiente."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "liberación de energía en las sismofuentes; no son predecibles ni controlables."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "vulnerabilidad de las edificaciones antiguas, de autoconstrucción y de bareque; densificación en altura sin verificación del cumplimiento de la NSR-10; laderas inestables que amplifican el efecto cosísmico."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Está expuesta la totalidad de la población, con mayor vulnerabilidad en la vivienda antigua, de autoconstrucción y de bareque, y en las edificaciones en altura no conformes con la norma sismorresistente. Son críticos los equipamientos esenciales —Hospital San Rafael, sedes educativas y edificaciones de gobierno—, las redes y los puentes, y la industria y el comercio del corredor del río. La vulnerabilidad socioeconómica se expresa en la capacidad limitada de recuperación de los hogares de menores ingresos."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Lesionados y posibles fallecimientos; daño o colapso de viviendas; afectación de equipamientos esenciales, redes y vías justo cuando más se requieren; interrupción de la industria y el comercio; y activación simultánea de movimientos en masa cosísmicos, que aíslan veredas y dificultan la respuesta."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "El nivel de amenaza es estable, por su naturaleza geológica, pero la exposición y la vulnerabilidad crecen de forma sostenida con la densificación. A cinco y diez años, el factor determinante será el cumplimiento efectivo de la NSR-10 en las licencias y el avance del reforzamiento de las edificaciones esenciales. A veinte años, la actualización y la aplicación de la microzonificación sísmica en el ordenamiento definirán si el riesgo crece o se contiene."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "actualización y aplicación de la microzonificación sísmica; estudios de vulnerabilidad de las edificaciones esenciales; evaluación de las laderas susceptibles a efectos cosísmicos; red acelerográfica y sensor sísmico urbano articulados con la red regional."
+     ],
+     [
+      "Reducción correctiva",
+      "reforzamiento sismorresistente de las edificaciones esenciales y de la vivienda vulnerable; control efectivo del cumplimiento de la NSR-10 en las licencias de construcción. La amenaza sísmica no se reduce: la intervención recae íntegramente sobre la vulnerabilidad."
+     ],
+     [
+      "Reducción prospectiva",
+      "diseño sismorresistente conforme a la microzonificación en toda nueva edificación; incorporación de la microzonificación al PBOT; programa progresivo de reforzamiento y mejoramiento de vivienda; simulacros periódicos."
+     ],
+     [
+      "Manejo",
+      "protocolos de búsqueda y rescate en estructuras colapsadas; activación del PMU; albergues y centros de reserva identificados; coordinación regional, dada la afectación simultánea de varios municipios; evaluación de habitabilidad, rehabilitación de equipamientos y redes y apoyo psicosocial en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-13. Medidas de intervención — sismos."
+   }
+  ],
+  "slug": "sismos"
+ },
+ "dengue": {
+  "num": "2.4.14",
+  "titulo": "Enfermedades transmitidas por vectores: dengue",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Biológico / salud."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "El dengue, transmitido por el mosquito Aedes aegypti, constituye una amenaza permanente para la salud pública de Girardota. El vector se reproduce en recipientes con agua acumulada en viviendas y espacios públicos, de modo que las temporadas de lluvia y el almacenamiento de agua durante los racionamientos multiplican los criaderos. El resultado es un aumento de los casos notificados al SIVIGILA y un riesgo elevado de dengue grave en la población sensible del municipio."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "La transmisión ocurre por la picadura de la hembra del Aedes aegypti, que se reproduce en recipientes con agua en espacios interiores y peridomiciliarios. En Girardota, la acumulación de agua durante la temporada de lluvias y el almacenamiento en recipientes durante los racionamientos favorecen los criaderos en la cabecera y en los centros poblados. Este escenario se encadena de forma directa con el de desabastecimiento de agua: cada racionamiento incrementa el número de criaderos domiciliarios."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "presencia establecida del vector; urbanización y densidad de recipientes susceptibles de convertirse en criaderos."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "temporadas de lluvia; almacenamiento de agua durante racionamientos; aumento de la temperatura, que acorta el ciclo de desarrollo del vector."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "expansión altitudinal del vector por cambio climático; resistencia creciente a los insecticidas; manejo inadecuado de residuos que genera criaderos en el espacio público."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Está expuesta la población de la cabecera y de los centros poblados, con mayor riesgo de dengue grave en la niñez, las gestantes y las personas con comorbilidades. Están expuestos igualmente el Hospital San Rafael y los centros de salud, por la presión asistencial que generan los brotes, y las instituciones educativas, por el ausentismo. La vulnerabilidad cultural se expresa en el almacenamiento de agua y en el manejo inadecuado de recipientes."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Morbilidad por dengue, casos graves y posibles muertes; saturación de los servicios de salud durante los brotes; y ausentismo laboral y escolar, con la consiguiente pérdida económica y educativa."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, más casos por el aumento de la temperatura y por lluvias más intensas. A veinte años, bajo escenarios de cambio climático, cabe esperar una expansión del área de transmisión y una mayor incidencia, con riesgo de brotes de mayor magnitud que los registrados históricamente."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "análisis de la incidencia municipal a partir del SIVIGILA; identificación de zonas y viviendas con criaderos; evaluación de la resistencia del vector; vigilancia entomológica y epidemiológica con seguimiento de casos y de índices aédicos, apoyada en observación comunitaria."
+     ],
+     [
+      "Reducción correctiva",
+      "control físico de criaderos y mejora del almacenamiento de agua; fumigación focalizada y jornadas comunitarias de eliminación de criaderos; fortalecimiento de la capacidad hospitalaria para atender dengue grave; campañas de consulta temprana y contra la automedicación."
+     ],
+     [
+      "Reducción prospectiva",
+      "mejora del acceso al agua para reducir el almacenamiento en recipientes —medida que interviene simultáneamente este escenario y el de desabastecimiento—; programas de control biológico; vigilancia continua; articulación con el PGIRS para la gestión de residuos que generan criaderos."
+     ],
+     [
+      "Manejo",
+      "planes de contingencia ante brotes; capacidad hospitalaria para dengue grave; jornadas de fumigación y control de criaderos; seguimiento epidemiológico posbrote y evaluación de la respuesta."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-14. Medidas de intervención — enfermedades transmitidas por vectores: dengue."
+   }
+  ],
+  "slug": "dengue"
+ },
+ "aglomeraciones": {
+  "num": "2.4.15",
+  "titulo": "Aglomeraciones de público y eventos masivos",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Humano no intencional."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Girardota concentra multitudes de manera recurrente y previsible en tres tipos de eventos. El de mayor escala es la romería al Señor Caído, en la Catedral Nuestra Señora del Rosario, que congrega en Semana Santa —Jueves y Viernes Santo principalmente— del orden de 60.000 a 80.000 peregrinos, muchos de los cuales llegan tras largas peregrinaciones a pie, algunos de rodillas, y se agolpan en el ingreso al templo, que salva más de quince escalones. A ello se suman los eventos culturales y festivos del calendario municipal —el Festival del Chicharrón en el parque principal, las Fiestas de la Danza y el Sainete, la Feria de la Cultura, la Semana de la Juventud y el Día del Niño— y los eventos deportivos: juegos intercolegiados e intermunicipales, carreras de ciclismo y carreras atléticas de ruta."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde a la concentración de personas que supera la capacidad de los espacios y de los servicios disponibles, con riesgo de estampida, aplastamiento y emergencias médicas simultáneas. Se caracteriza en un solo escenario con tres tipologías, porque comparten amenaza, elementos expuestos y medidas de intervención: (a) religiosa y municipal, centrada en la Catedral y el parque principal; (b) cultural, festiva y recreativa, en el parque principal, su tarima, la casa de la cultura y las vías; y (c) deportiva, en el coliseo o polideportivo, la cancha o estadio municipal, la piscina, la pista de bicicross y las vías usadas para pruebas de ruta. Cada tipología añade riesgos propios: la festiva incorpora el manejo de fuego, gas y aceite —determinante en el Festival del Chicharrón, donde predominan las frituras—, las instalaciones eléctricas provisionales, la venta de licor y la pirotecnia; la deportiva incorpora el esfuerzo físico intenso, con riesgo cardiovascular y de golpe de calor, el sobrecupo o colapso de graderías y el atropello en pruebas de ruta."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "espacios e infraestructura no dimensionados para grandes aforos; accesos reducidos y con escalones; graderías y estructuras temporales; escenarios de aforo limitado."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "afluencia masiva en fechas previsibles del calendario religioso, cultural y deportivo; montaje de tarimas, carpas e instalaciones eléctricas provisionales; manipulación de fuego, gas y aceite; venta de licor y uso de pirotecnia; esfuerzo físico intenso sin control médico previo; condiciones climáticas adversas."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "crecimiento sostenido de la afluencia; ausencia de salidas de emergencia claramente señalizadas; cierres y comparticiones de vías en pruebas de ruta."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestos los peregrinos y asistentes —hasta decenas de miles en Semana Santa—, la población local durante las festividades, los participantes gastronómicos y artistas, y los deportistas, con mayor sensibilidad en la niñez, las personas adultas mayores, quienes tienen movilidad reducida y los corredores sin preparación. Están expuestos también la Catedral, el parque principal y su tarima, la casa de la cultura, los escenarios deportivos, las vías de acceso al municipio y los servicios de salud y de emergencia, que pueden saturarse. La vulnerabilidad institucional más crítica es la capacidad limitada de atención prehospitalaria simultánea."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Agotamiento, deshidratación e insolación; lesiones por aglomeración, estampida o aplastamiento; quemaduras y electrocución en los eventos festivos; paro cardiorrespiratorio y golpe de calor en los deportivos; atropellos en pruebas de ruta; saturación de los servicios de emergencia y de la movilidad; daño de tarimas, graderías, redes y mobiliario; pérdidas del comercio y de los participantes; y residuos, aceites y derrames."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "El riesgo se mantiene elevado y estable, porque depende de eventos programados y no de fenómenos naturales. Su evolución no está determinada por el clima sino por la gestión: a cinco y diez años, el factor decisivo será la existencia y la aplicación efectiva de planes de emergencia y contingencia por evento, con control real de aforo y de accesos. A veinte años, el crecimiento de la afluencia exigirá intervenir la capacidad física de los espacios, y no solo la organización de cada evento."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "plan de manejo de aglomeraciones y Plan de Emergencia y Contingencia por evento, con cálculo de aforo, accesos, salidas y puntos de atención; evaluación de la capacidad de la Catedral, del parque y de los escenarios deportivos; análisis de riesgo de las zonas de cocción, de las estructuras temporales y de los recorridos de las pruebas de ruta; conteo y monitoreo de aforo con cámaras y observadores, y monitoreo meteorológico."
+     ],
+     [
+      "Reducción correctiva",
+      "adecuación de accesos, señalización y puntos de atención; certificación y anclaje de tarimas y carpas; instalaciones eléctricas seguras, extintores e hidrantes; delimitación de las zonas de cocción y de gas; certificación y control de aforo de graderías; control de aforo, horarios, venta de licor y pirotecnia; puntos de hidratación y atención prehospitalaria con desfibrilador en carreras y competencias."
+     ],
+     [
+      "Reducción prospectiva",
+      "mejora permanente de los accesos y de los espacios destinados a grandes aforos; protocolos estandarizados para cada temporada del calendario; reglamentación de las pruebas de ruta; valoración médica previa de deportistas; fortalecimiento sostenido de la atención prehospitalaria y de la logística para eventos masivos."
+     ],
+     [
+      "Manejo",
+      "PMU por evento; puestos de atención prehospitalaria; control de aforo, accesos y salidas; plan de movilidad y de evacuación; suspensión del evento ante tormenta o calor extremo; coordinación con el Hospital San Rafael y con la Diócesis; evaluación posevento, manejo de residuos y ajuste de los planes."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-15. Medidas de intervención — aglomeraciones de público y eventos masivos."
+   }
+  ],
+  "slug": "aglomeraciones"
+ },
+ "vendavales": {
+  "num": "2.4.16",
+  "titulo": "Vendavales, tormentas eléctricas y granizadas",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Hidrometeorológico."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "Los vendavales, las granizadas y la caída de árboles son recurrentes en Girardota durante las temporadas de lluvia. El evento de referencia es el vendaval de mayo de 2023, que afectó a cerca de 20.000 personas y dejó unas 60 viviendas damnificadas —muchas de construcción artesanal—, con desconexión de las redes de energía y de telefonía; fue necesario habilitar la Institución Educativa San Andrés como albergue."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde a vientos fuertes, descargas eléctricas y granizo generados por tormentas convectivas. En Girardota afecta especialmente la zona rural y los sectores con vivienda de construcción artesanal, así como los corredores con arbolado y redes aéreas. Su manifestación característica es el destechado de viviendas, la caída de árboles y postes y la desconexión de servicios, con un tiempo de aviso muy corto."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "cubiertas livianas y estructuras vulnerables al viento; arbolado urbano sin manejo; redes de servicios aéreas; hogares de bajos ingresos con baja capacidad de recuperación."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "tormentas convectivas intensas durante las temporadas de lluvia, entre abril y junio y entre septiembre y noviembre."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "intensificación de los eventos extremos por variabilidad y cambio climático; expansión sobre zonas expuestas; construcción sin criterios de resistencia al viento."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas la población rural y la que habita vivienda de construcción artesanal, con mayor exposición de las cubiertas livianas; los cultivos, invernaderos y estructuras agropecuarias; las redes de energía y telecomunicaciones; y las sedes educativas y de salud rurales. La vulnerabilidad física se concentra en las cubiertas y en el arbolado no manejado; la socioeconómica, en hogares con escasa capacidad de reponer la vivienda tras el evento."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Lesionados y riesgo por descargas eléctricas; destechado y daño de viviendas; caída de postes y árboles con desconexión de servicios e incomunicación; pérdida de cultivos por viento y granizo; y demanda inmediata de albergue temporal y de ayudas humanitarias."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, mayor frecuencia de tormentas intensas y vendavales por variabilidad y cambio climático. A veinte años, con eventos extremos más frecuentes, la afectación crecerá de forma proporcional si no se avanza en el mejoramiento de la vivienda vulnerable y en el manejo del arbolado urbano."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "inventario de la vivienda vulnerable al viento y del arbolado y las redes expuestas; identificación de las zonas de vendaval recurrente; recepción y difusión de alertas meteorológicas y seguimiento de tormentas con observadores comunitarios."
+     ],
+     [
+      "Reducción correctiva",
+      "poda y manejo preventivo del arbolado; aseguramiento de cubiertas y redes; mejoramiento de vivienda con cubiertas resistentes al viento; difusión de alertas y protocolos de conducta ante tormentas eléctricas; educación en autoprotección y planes familiares de emergencia."
+     ],
+     [
+      "Reducción prospectiva",
+      "arbolado urbano manejado y redes protegidas o subterráneas donde sea viable; normas constructivas para cubiertas en el PBOT; mejoramiento progresivo de la vivienda vulnerable; simulacros ante tormentas."
+     ],
+     [
+      "Manejo",
+      "protocolos del CMGRD; albergues y ayudas humanitarias; coordinación con EPM y con los prestadores para el restablecimiento de energía y telecomunicaciones; evaluación de daños, rehabilitación de cubiertas, redes y arbolado y entrega de ayudas en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-16. Medidas de intervención — vendavales, tormentas eléctricas y granizadas."
+   }
+  ],
+  "slug": "vendavales"
+ },
+ "subsidencia-mineria": {
+  "num": "2.4.17",
+  "titulo": "Subsidencia y afectaciones por actividad minera",
+  "bloques": [
+   {
+    "t": "p",
+    "lead": "Clasificación de la amenaza",
+    "txt": "Antrópico / geológico inducido."
+   },
+   {
+    "t": "p",
+    "lead": "Antecedentes y situación de referencia",
+    "txt": "ADVERTENCIA: esta sección es preliminar. El escenario fue priorizado en el Plan, pero aún no cuenta con ficha de caracterización en Formularios 1 a 4. El texto que sigue se construyó a partir de las menciones a la actividad minera contenidas en las fichas de movimientos en masa y de avenidas torrenciales y en el inventario municipal de puntos críticos, y debe completarse con trabajo de campo y con información de los títulos mineros antes de su adopción."
+   },
+   {
+    "t": "p",
+    "lead": "Descripción del fenómeno y localización",
+    "txt": "El escenario corresponde al hundimiento del terreno y a la reactivación de procesos morfodinámicos inducidos por la explotación minera. En Girardota se asocia a los frentes mineros localizados al norte del perímetro urbano, donde las modificaciones recurrentes del terreno —cortes, rellenos y remoción de cobertura— pueden desestabilizar laderas, comprometer bancas viales e incrementar el aporte de sedimentos a las quebradas. El inventario municipal de puntos críticos registra pérdida de banca en el corredor Holanda Baja – Holanda Alta asociada a la actividad minera."
+   },
+   {
+    "t": "p",
+    "lead": "Factores condicionantes y desencadenantes",
+    "txt": ""
+   },
+   {
+    "t": "li",
+    "lead": "Condicionantes",
+    "txt": "presencia de frentes mineros activos y de excavaciones antiguas; formaciones superficiales susceptibles; alta pendiente en los sectores intervenidos."
+   },
+   {
+    "t": "li",
+    "lead": "Desencadenantes",
+    "txt": "remoción de material y modificación del terreno; infiltración de aguas en las zonas intervenidas; lluvias intensas sobre taludes de explotación."
+   },
+   {
+    "t": "li",
+    "lead": "Agravantes",
+    "txt": "ausencia de planes de cierre y de restauración morfológica; débil control y seguimiento de los títulos mineros; ocupación de predios vecinos a los frentes de explotación."
+   },
+   {
+    "t": "p",
+    "lead": "Elementos expuestos y vulnerabilidad",
+    "txt": "Están expuestas las viviendas y la población asentada en el entorno de los frentes mineros; las vías y bancas veredales del sector norte, en particular el corredor Holanda Baja – Holanda Alta; los acueductos veredales y las redes que atraviesan las zonas intervenidas; y las quebradas receptoras de sedimentos, con afectación de la calidad del agua aguas abajo. La vulnerabilidad institucional se asocia a la competencia compartida entre el municipio y la autoridad minera y ambiental, que dificulta el control efectivo."
+   },
+   {
+    "t": "p",
+    "lead": "Daños y pérdidas potenciales",
+    "txt": "Hundimientos y agrietamientos en viviendas y vías; pérdida de banca vial con aislamiento de veredas; reactivación de movimientos en masa en los taludes de explotación; incremento del aporte de sedimentos, con colmatación de cauces y agravamiento de la amenaza por inundación y avenida torrencial aguas abajo; y afectación de la calidad del agua de los acueductos veredales."
+   },
+   {
+    "t": "p",
+    "lead": "Análisis a futuro (5/10/20 años)",
+    "txt": "A cinco y diez años, la afectación dependerá directamente del control sobre los frentes activos y del cumplimiento de los planes de manejo ambiental. A veinte años, sin restauración morfológica ni planes de cierre verificados, las zonas intervenidas quedarán como pasivos ambientales que seguirán generando inestabilidad y sedimentos de forma indefinida."
+   },
+   {
+    "t": "p",
+    "lead": "Medidas de intervención",
+    "txt": ""
+   },
+   {
+    "t": "table",
+    "rows": [
+     [
+      "Proceso",
+      "Medidas"
+     ],
+     [
+      "Conocimiento",
+      "elaboración de la ficha de caracterización completa en Formularios 1 a 4; inventario y georreferenciación de los títulos mineros y de los frentes activos e inactivos; estudio geotécnico de las zonas intervenidas; monitoreo de hundimientos, agrietamientos y aporte de sedimentos."
+     ],
+     [
+      "Reducción correctiva",
+      "exigencia y verificación de los planes de manejo ambiental y de los planes de cierre; obras de estabilización y manejo de aguas en los taludes de explotación; control de sedimentos hacia las quebradas; evaluación de habitabilidad de las viviendas afectadas por agrietamiento."
+     ],
+     [
+      "Reducción prospectiva",
+      "restricción de nuevas explotaciones en zonas de amenaza y en cuencas abastecedoras a través del PBOT; exigencia de restauración morfológica y revegetalización progresiva; control de la ocupación en el entorno de los frentes; articulación permanente con la autoridad minera y con CORANTIOQUIA."
+     ],
+     [
+      "Manejo",
+      "protocolos del CMGRD ante hundimientos y pérdida de banca; evaluación geotécnica y cierre de tramos; rehabilitación de vías y acueductos afectados; exigencia de responsabilidad al titular minero en la recuperación."
+     ]
+    ]
+   },
+   {
+    "t": "p",
+    "lead": null,
+    "txt": "Tabla M-17. Medidas de intervención — subsidencia y afectaciones por actividad minera."
+   }
+  ],
+  "slug": "subsidencia-mineria"
+ }
+}

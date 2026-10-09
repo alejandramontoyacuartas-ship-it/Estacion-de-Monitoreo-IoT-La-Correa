@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Ficha de escenario de riesgo | Girardota</title>
+  <link rel="stylesheet" href="css/estilos.css?v=33"/>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <style>
+    body{overflow:auto;background:#fff}
+    .mm-head{background:#fff;padding:16px 26px 4px}
+    .mm-breadcrumb{font-size:13px;color:#3a6ea5}
+    .mm-breadcrumb b{color:#2e6b3f}
+    .mm-title{margin-top:8px;font-size:27px;font-weight:800;color:#2e6b3f;line-height:1.15}
+    .mm-sub{margin-top:5px;color:#5a6b60;font-size:13.5px}
+    .mm-tag{display:inline-block;margin-top:9px;background:#efe3d2;color:#6d4c41;font-weight:800;font-size:11.5px;
+      padding:4px 12px;border-radius:14px;letter-spacing:.3px}
+    .mm-wrap{background:#eef5ea;padding:24px 26px 50px}
+    .mm-inner{max-width:1120px;margin:0 auto}
+    .mm-card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:8px 26px 24px;margin-bottom:22px}
+    .mm-card h2{color:#2e6b3f;font-size:18px;margin:18px 0 6px;border-bottom:2px solid #d6e3d2;padding-bottom:7px}
+    .mm-sec{margin-top:15px}
+    .mm-sec h3{color:#3f5a48;font-size:14.5px;margin:15px 0 5px;font-weight:800}
+    .mm-sec p{color:#39433d;font-size:13.5px;line-height:1.62;text-align:justify;margin:4px 0}
+    .mm-ul{margin:6px 0 4px;padding-left:20px}
+    .mm-ul li{color:#39433d;font-size:13.5px;line-height:1.55;margin:5px 0}
+    .mm-ul li b{color:#6d4c41}
+    table.mm-tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+    table.mm-tbl th,table.mm-tbl td{border:1px solid #d9e4dc;padding:9px 12px;vertical-align:top;text-align:left}
+    table.mm-tbl th{background:#2e6b3f;color:#fff;font-size:12.5px}
+    table.mm-tbl td:first-child{width:170px;font-weight:800;color:#3f5a48;background:#f3f8f1}
+    .mm-tblcap{font-size:11.5px;color:#7a8a80;margin-top:7px;font-style:italic}
+    .mm-maps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .mm-maps.one{grid-template-columns:1fr;max-width:720px}
+    .mm-fig{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:zoom-in}
+    .mm-fig img{width:100%;display:block}
+    .mm-fig:hover img{opacity:.92}
+    .mm-figcap{padding:11px 15px;font-size:12.5px;color:#3f4b5b}
+    .mm-figcap b{color:#2e6b3f}
+    .mm-figcap .z{color:#2e8b57;font-weight:700;font-size:11px}
+    .mm-fuente{font-size:11.5px;color:#5a6b60;background:#fff;border-left:4px solid #8d6e63;border-radius:8px;
+      padding:12px 16px;margin-top:22px;line-height:1.55}
+    #mm-lb{position:fixed;inset:0;background:rgba(10,18,14,.88);display:none;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;padding:20px}
+    #mm-lb.open{display:flex}
+    #mm-lb img{max-width:97vw;max-height:94vh;border-radius:8px;box-shadow:0 10px 50px rgba(0,0,0,.6)}
+    .mm-err{max-width:700px;margin:40px auto;background:#fff;border-radius:14px;padding:30px;text-align:center;color:#5a6b60}
+    @media(max-width:900px){.mm-maps{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=61"></script>
+
+<div class="mm-head">
+  <div class="mm-breadcrumb">Conocimiento del riesgo &nbsp;›&nbsp; Escenarios de Riesgos &nbsp;›&nbsp; <b id="bc">…</b></div>
+  <h1 class="mm-title" id="titulo">Cargando ficha…</h1>
+  <div class="mm-sub">Ficha de caracterización del escenario de riesgo · Plan Municipal de Gestión del Riesgo de Desastres — Girardota 2026 · Estudio Básico de Amenazas (dic. 2025)</div>
+  <span class="mm-tag" id="tag" style="display:none"></span>
+</div>
+
+<div class="mm-wrap"><div class="mm-inner" id="inner">
+  <div class="mm-err" id="cargando">Cargando ficha del escenario…</div>
+</div></div>
+
+<div id="mm-lb" onclick="this.classList.remove('open')"><img id="mm-lb-img" src="" alt="Mapa ampliado"></div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script>
+// Mapas (láminas del PMGRD) por escenario
+const MAPAS = {
+  'movimientos-en-masa':[
+    {src:'img/escenarios/mm_susceptibilidad.png', cap:'<b>L-07 · Susceptibilidad por movimientos en masa</b> — EBA, suelo rural (1:25.000).'},
+    {src:'img/escenarios/mm_procesos_morfodinamicos.png', cap:'<b>L-01 · Procesos morfodinámicos</b> — inventario del EBA.'}],
+  'inundaciones':[
+    {src:'img/escenarios/inundacion_amenaza.png', cap:'<b>L-08 · Amenaza por inundación</b> — Estudio Básico de Amenazas.'},
+    {src:'img/escenarios/inundacion_rio_aburra.png', cap:'<b>L-11 · Inundación del río Aburrá</b> — corredor metropolitano.'}],
+  'caida-de-rocas':[
+    {src:'img/escenarios/caida_rocas.png', cap:'<b>L-06 · Caída de rocas por inestabilidad de laderas</b> — zonificación (EBA · LiDAR).'}],
+  'incendios-forestales':[
+    {src:'img/escenarios/incendios_susceptibilidad.png', cap:'<b>L-02 · Susceptibilidad a incendios de cobertura vegetal</b>.'},
+    {src:'img/escenarios/incendios_riesgo.png', cap:'<b>L-03 · Riesgo por incendios de cobertura vegetal</b>.'}],
+  'contaminacion-atmosferica':[
+    {src:'img/escenarios/calidad_aire.png', cap:'<b>L-10 · Calidad del aire</b> — Girardota.'}],
+  'avenidas-torrenciales':[
+    {src:'img/escenarios/avenida_torrencial.png', cap:'<b>L-09 · Amenaza por avenida torrencial</b> — Estudio Básico de Amenazas.'}],
+  'natech':[
+    {src:'img/escenarios/natech_corredor.png', cap:'<b>L-04 · Corredor NATECH</b> — eventos tecnológicos detonados por amenazas naturales.'}],
+};
+const esc = s => (s||'').replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+(async function(){
+  const slug=(new URLSearchParams(location.search).get('e')||'').trim();
+  let data;
+  try{ data = await fetch('data/fichas/fichas_escenarios.json').then(r=>r.json()); }
+  catch(e){ document.getElementById('cargando').textContent='No se pudo cargar la base de fichas.'; return; }
+  const f = data[slug];
+  if(!f){ document.getElementById('cargando').innerHTML='Escenario no encontrado. Vuelve a <a href="escenarios.html" style="color:#2e8b57;font-weight:700">Escenarios de Riesgos</a>.'; return; }
+
+  document.title = f.titulo + ' | Escenarios de Riesgo · Girardota';
+  document.getElementById('bc').textContent = f.titulo;
+  document.getElementById('titulo').textContent = f.titulo;
+
+  // Construir la ficha
+  let body=''; let i=0; const B=f.bloques;
+  const flushLis = arr => arr.length ? `<ul class="mm-ul">${arr.join('')}</ul>` : '';
+  while(i<B.length){
+    const b=B[i];
+    if(b.t==='table'){
+      let h='<table class="mm-tbl">';
+      b.rows.forEach((r,ri)=>{ h+='<tr>'+r.map(c=>ri===0?`<th>${esc(c)}</th>`:`<td>${esc(c)}</td>`).join('')+'</tr>'; });
+      h+='</table>'; body+=h; i++; continue;
+    }
+    if(b.t==='li'){
+      const lis=[]; while(i<B.length && B[i].t==='li'){ const x=B[i]; lis.push(`<li>${x.lead?`<b>${esc(x.lead)}:</b> `:''}${esc(x.txt)}</li>`); i++; }
+      body+=flushLis(lis); continue;
+    }
+    // párrafo
+    const lead=b.lead, txt=b.txt||'';
+    if(lead && /^Clasificaci[oó]n de la amenaza/i.test(lead)){
+      const tag=document.getElementById('tag'); tag.textContent='Clasificación: '+txt.replace(/\.$/,''); tag.style.display='inline-block'; i++; continue;
+    }
+    if(/^Tabla\s+M/i.test(txt) && !lead){ body+=`<div class="mm-tblcap">${esc(txt)}</div>`; i++; continue; }
+    if(lead){ body += `<div class="mm-sec"><h3>${esc(lead)}</h3>${txt?`<p>${esc(txt)}</p>`:''}</div>`; }
+    else { body += `<div class="mm-sec"><p>${esc(txt)}</p></div>`; }
+    i++;
+  }
+
+  // Mapas
+  const maps = MAPAS[slug]||[];
+  let mapsHtml='';
+  if(maps.length){
+    mapsHtml = `<div class="mm-card"><h2>Cartografía del escenario</h2>`
+      + `<div class="mm-maps${maps.length===1?' one':''}">`
+      + maps.map(m=>`<figure class="mm-fig" onclick="ampliar('${m.src}')"><img src="${m.src}" alt="Mapa del escenario"><figcaption class="mm-figcap">${m.cap} <span class="z">clic para ampliar ⤢</span></figcaption></figure>`).join('')
+      + `</div>`
+      + `<div class="mm-fuente"><b>Fuente:</b> Plan Municipal de Gestión del Riesgo de Desastres — Girardota (2026), CMGRD. Insumos: Estudio Básico de Amenazas (EBA) 2025, PBOT 2025, AMVA.</div></div>`;
+  }
+
+  document.getElementById('inner').innerHTML =
+      `<div class="mm-card"><h2>Ficha del escenario</h2>${body}</div>`
+    + mapsHtml
+    + (maps.length?'':`<div class="mm-fuente" style="max-width:1120px;margin:0 auto">Fuente: Plan Municipal de Gestión del Riesgo de Desastres — Girardota (2026), CMGRD · Estudio Básico de Amenazas 2025.</div>`);
+})();
+
+function ampliar(src){ const lb=document.getElementById('mm-lb'); document.getElementById('mm-lb-img').src=src; lb.classList.add('open'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.getElementById('mm-lb').classList.remove('open'); });
+</script>
+</body>
+</html>
