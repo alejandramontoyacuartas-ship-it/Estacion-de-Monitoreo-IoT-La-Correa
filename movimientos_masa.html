@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Movimientos en masa | Escenarios de Riesgo · Girardota</title>
+  <link rel="stylesheet" href="css/estilos.css?v=33"/>
+  <link rel="stylesheet" href="css/navbar.css?v=3"/>
+  <style>
+    body{overflow:auto;background:#fff}
+    .mm-head{background:#fff;padding:16px 26px 4px}
+    .mm-breadcrumb{font-size:13px;color:#3a6ea5}
+    .mm-breadcrumb b{color:#2e6b3f}
+    .mm-title{margin-top:8px;font-size:27px;font-weight:800;color:#2e6b3f;line-height:1.15}
+    .mm-sub{margin-top:5px;color:#5a6b60;font-size:13.5px}
+    .mm-tag{display:inline-block;margin-top:9px;background:#efe3d2;color:#6d4c41;font-weight:800;font-size:11.5px;
+      padding:4px 12px;border-radius:14px;letter-spacing:.3px}
+    .mm-wrap{background:#eef5ea;padding:24px 26px 50px}
+    .mm-inner{max-width:1120px;margin:0 auto}
+    /* KPIs */
+    .mm-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+    .mm-kpi{background:#fff;border-radius:14px;padding:16px 16px 14px;box-shadow:0 2px 10px rgba(0,0,0,.07);
+      border-left:5px solid #8d6e63}
+    .mm-kpi .n{font-size:23px;font-weight:800;color:#6d4c41;line-height:1.1;font-variant-numeric:tabular-nums}
+    .mm-kpi .l{font-size:11.5px;color:#5a6b60;margin-top:5px;line-height:1.3}
+    /* Secciones de la ficha */
+    .mm-card{background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.07);padding:4px 26px 22px;margin-bottom:22px}
+    .mm-card h2{color:#2e6b3f;font-size:18px;margin:22px 0 6px;border-bottom:2px solid #d6e3d2;padding-bottom:7px}
+    .mm-sec{margin-top:16px}
+    .mm-sec h3{color:#3f5a48;font-size:14.5px;margin:16px 0 5px;font-weight:800}
+    .mm-sec p{color:#39433d;font-size:13.5px;line-height:1.62;text-align:justify;margin:4px 0}
+    .mm-sec ul{margin:6px 0 4px;padding-left:20px}
+    .mm-sec li{color:#39433d;font-size:13.5px;line-height:1.55;margin:5px 0}
+    .mm-sec li b{color:#6d4c41}
+    /* Tabla de medidas */
+    table.mm-tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+    table.mm-tbl th,table.mm-tbl td{border:1px solid #d9e4dc;padding:9px 12px;vertical-align:top;text-align:left}
+    table.mm-tbl th{background:#2e6b3f;color:#fff;font-size:12.5px}
+    table.mm-tbl td:first-child{width:170px;font-weight:800;color:#3f5a48;background:#f3f8f1}
+    .mm-tblcap{font-size:11.5px;color:#7a8a80;margin-top:7px;font-style:italic}
+    /* Mapas */
+    .mm-maps{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .mm-fig{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.07);cursor:zoom-in}
+    .mm-fig img{width:100%;display:block;transition:.15s}
+    .mm-fig:hover img{opacity:.92}
+    .mm-figcap{padding:11px 15px;font-size:12.5px;color:#3f4b5b}
+    .mm-figcap b{color:#2e6b3f}
+    .mm-figcap .z{color:#2e8b57;font-weight:700;font-size:11px}
+    .mm-fuente{font-size:11.5px;color:#5a6b60;background:#fff;border-left:4px solid #8d6e63;border-radius:8px;
+      padding:12px 16px;margin-top:22px;line-height:1.55}
+    /* Lightbox */
+    #mm-lb{position:fixed;inset:0;background:rgba(10,18,14,.88);display:none;align-items:center;justify-content:center;z-index:9999;cursor:zoom-out;padding:20px}
+    #mm-lb.open{display:flex}
+    #mm-lb img{max-width:97vw;max-height:94vh;border-radius:8px;box-shadow:0 10px 50px rgba(0,0,0,.6)}
+    @media(max-width:900px){.mm-kpis{grid-template-columns:repeat(2,1fr)}.mm-maps{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="navbar-root"></div>
+<script src="js/navbar.js?v=61"></script>
+
+<div class="mm-head">
+  <div class="mm-breadcrumb">Conocimiento del riesgo &nbsp;›&nbsp; Escenarios de Riesgos &nbsp;›&nbsp; <b>Movimientos en masa</b></div>
+  <h1 class="mm-title">Movimientos en masa (deslizamientos)</h1>
+  <div class="mm-sub">Ficha de caracterización del escenario de riesgo · Plan Municipal de Gestión del Riesgo de Desastres — Girardota 2026 · Estudio Básico de Amenazas (dic. 2025)</div>
+  <span class="mm-tag">Clasificación: Socionatural / geológico</span>
+</div>
+
+<div class="mm-wrap">
+  <div class="mm-inner">
+
+    <!-- Cifras clave -->
+    <div class="mm-kpis">
+      <div class="mm-kpi"><div class="n">61,71 ha</div><div class="l">Áreas con condición de riesgo por MM (amenaza alta ya ocupada) — EBA 2025</div></div>
+      <div class="mm-kpi"><div class="n">2.191,5 ha</div><div class="l">Susceptibilidad alta · <b>26,5 %</b> del municipio (el 99 % de los procesos activos cae en alta)</div></div>
+      <div class="mm-kpi"><div class="n">1.050</div><div class="l">Procesos morfodinámicos inventariados · 50,69 ha (442 activos · 444 inactivos · 164 latentes)</div></div>
+      <div class="mm-kpi"><div class="n">27–28 may 2023</div><div class="l">Evento de referencia: +100 movimientos, 9 veredas afectadas (4 incomunicadas), +100 familias</div></div>
+    </div>
+
+    <!-- Ficha -->
+    <div class="mm-card">
+      <h2>Ficha del escenario</h2>
+
+      <div class="mm-sec">
+        <h3>Antecedentes y situación de referencia</h3>
+        <p>Los movimientos en masa son el fenómeno de mayor frecuencia y de mayor afectación recurrente en Girardota. El evento de referencia es la emergencia del 27 y 28 de mayo de 2023, cuando el municipio registró más de cien movimientos en masa que afectaron nueve veredas —cuatro de ellas quedaron incomunicadas— y dejaron más de un centenar de familias damnificadas. La combinación del régimen bimodal de lluvias, la fuerte pendiente de las laderas oriental, occidental y sur, la pérdida de cobertura vegetal protectora y la ocupación de laderas intervenidas y bordes de escarpe configura un escenario que se reactiva en cada temporada de lluvias y que se intensifica en los años de fenómeno de La Niña. Los eventos suelen afectar viviendas de autoconstrucción, vías y bancas veredales, con pérdidas que, aunque puntuales, son acumulativas y de costosa rehabilitación. El Estudio Básico de Amenazas de diciembre de 2025 delimita 61,71 hectáreas de áreas con condición de riesgo por movimientos en masa —zonas de amenaza alta ya ocupadas—, y las veredas con mayor población expuesta son Portachuelo, San Esteban, San Diego y El Paraíso.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Descripción del fenómeno y localización</h3>
+        <p>Los movimientos en masa son desplazamientos ladera abajo de masas de roca, suelo o detritos por efecto de la gravedad (Varnes, 1978; PMA-GCA, 2007). En Girardota predominan los deslizamientos —rotacionales y traslacionales—, acompañados de caídas de roca o suelo, flujos y reptación. El PBOT 2025 zonifica amenaza alta y media en los bordes oriental, occidental y sur del perímetro urbano —en colindancia con los barrios Juan XXIII, Girardota La Nueva, El Llano, La Ferrería y Santana al occidente, y El Naranjal, Guayacanes, El Paraíso y Guaduales al oriente—, en el centro de la cabecera entre las quebradas El Matadero y El Tábano, en el sector norte en cercanía de áreas industriales y predios mineros, y en los suelos urbanos aislados de Jamundí, Las Cuchillas y San Diego. En el suelo rural, varias veredas de alta pendiente presentan procesos activos.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Factores condicionantes y desencadenantes</h3>
+        <ul>
+          <li><b>Condicionantes (físicos):</b> pendientes fuertes; formaciones superficiales areno-limosas y areno-arcillosas, fácilmente saturables; alta densidad de drenaje; coberturas vegetales degradadas.</li>
+          <li><b>Desencadenantes:</b> lluvias de alta intensidad, larga duración o alta frecuencia —principal detonante—; sismos; e intervenciones antrópicas (cortes y rellenos no técnicos, descapote, manejo inadecuado de aguas lluvias y servidas vertidas sobre los taludes).</li>
+          <li><b>Agravantes futuros:</b> expansión urbana e informal sobre laderas; modificación del terreno por minería; y aumento de la frecuencia de lluvias extremas por cambio climático.</li>
+        </ul>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Elementos expuestos y vulnerabilidad</h3>
+        <p>Están expuestas las viviendas de autoconstrucción sobre cortes y rellenos en los barrios de ladera y en las veredas de alta pendiente, las vías y bancas veredales, los acueductos veredales, las redes eléctricas y los predios mineros del norte. La vulnerabilidad física es alta por la baja calidad estructural de las viviendas y la ausencia de obras de contención y de manejo de aguas; la social y económica, por tratarse en buena parte de hogares de menores ingresos con escasa capacidad de recuperación autónoma; la ambiental, por la pérdida de coberturas protectoras; y la institucional, por las limitaciones de personal y movilidad del cuerpo de bomberos y por la debilidad histórica del control urbanístico.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Daños y pérdidas potenciales</h3>
+        <p>Lesionados, atrapamientos y eventuales fallecimientos; destrucción o inhabitabilidad de viviendas y pérdida de enseres; daño a vías, acueductos, redes eléctricas y obras de contención; pérdida de cultivos e infraestructura agropecuaria; aislamiento de veredas por pérdida de banca vial; y pérdida de suelo y cobertura con aporte de sedimentos a las quebradas.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Análisis a futuro (5 / 10 / 20 años)</h3>
+        <p>A cinco años se espera mayor recurrencia de eventos detonados por lluvias intensas y la activación de procesos en laderas recién intervenidas y vías veredales. A diez años, mayor exposición por expansión urbana y minera si no se controla la ocupación de laderas. A veinte años, bajo escenarios de lluvias extremas más frecuentes, se prevé la ampliación territorial de la amenaza alta y una mayor probabilidad de eventos encadenados —deslizamiento, represamiento de cauce y avenida torrencial—. De no intervenir, crecen tanto la amenaza como la vulnerabilidad.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Resultados del análisis espacial</h3>
+        <p>El cruce del inventario de procesos morfodinámicos del Estudio Básico de Amenazas con la división veredal arroja 1.050 procesos que ocupan 50,69 hectáreas: 442 activos con 17,11 hectáreas, 444 inactivos con 27,49 y 164 latentes con 6,01. Los procesos inactivos son de mayor tamaño individual —corresponden a cicatrices antiguas de mayor magnitud— y su reactivación bajo lluvias extremas constituye uno de los escenarios prospectivos que el Plan debe mantener bajo vigilancia. Las veredas con mayor superficie de procesos activos son La Holanda con 4,02 hectáreas, El Socorro con 3,10, Potrerito con 2,59 y San Andrés con 2,04. Conviene advertir que esta relación no coincide con la de mayor población expuesta —Portachuelo, San Esteban, San Diego y El Paraíso—, porque una y otra miden cosas distintas: la exposición cruza la amenaza con la población, mientras que el inventario registra dónde se está moviendo el terreno con independencia de quién viva allí. El Plan atiende ambas relaciones con instrumentos distintos: instrumentación y estabilización en las primeras, reducción de la vulnerabilidad en las segundas.</p>
+      </div>
+
+      <div class="mm-sec">
+        <h3>Medidas de intervención</h3>
+        <table class="mm-tbl">
+          <thead><tr><th>Proceso</th><th>Medidas</th></tr></thead>
+          <tbody>
+            <tr><td>Conocimiento</td><td>Estudios detallados de amenaza (1:2.000–1:5.000) en sectores priorizados; inventario de viviendas y equipamientos en amenaza alta y media; instrumentación de laderas críticas y umbrales de lluvia articulados con el SIATA; red de observadores comunitarios.</td></tr>
+            <tr><td>Reducción correctiva (AbE)</td><td>Obras de bioingeniería —trinchos vivos, fajinas, empradizado y revegetalización de taludes con especies nativas—; manejo de aguas con cunetas, filtros y drenajes; obras geotécnicas de contención combinadas con cobertura vegetal; reforzamiento o reasentamiento de viviendas según el caso.</td></tr>
+            <tr><td>Reducción prospectiva</td><td>Prohibición de construcción en pendientes superiores al 100 %; incorporación de la amenaza alta no mitigable como suelo de protección; consolidación del Cinturón Verde como amortiguador de laderas; Pagos por Servicios Ambientales.</td></tr>
+            <tr><td>Manejo</td><td>Protocolos del CMGRD y PMU; sistema de alerta por umbrales de lluvia; capacitación, equipamiento y entrenamiento de organismos de socorro; albergues y centros de reserva identificados.</td></tr>
+          </tbody>
+        </table>
+        <div class="mm-tblcap">Tabla M-1. Medidas de intervención — movimientos en masa (deslizamientos).</div>
+      </div>
+    </div>
+
+    <!-- Mapas -->
+    <div class="mm-card">
+      <h2>Cartografía del escenario</h2>
+      <div class="mm-maps">
+        <figure class="mm-fig" onclick="ampliar('img/escenarios/mm_susceptibilidad.png')">
+          <img src="img/escenarios/mm_susceptibilidad.png" alt="Mapa de susceptibilidad por movimientos en masa — Girardota">
+          <figcaption class="mm-figcap"><b>L-07 · Susceptibilidad por movimientos en masa</b> — EBA, suelo rural (1:25.000). Alta 2.191,5 ha (26,5 %), Media y Baja. <span class="z">clic para ampliar ⤢</span></figcaption>
+        </figure>
+        <figure class="mm-fig" onclick="ampliar('img/escenarios/mm_procesos_morfodinamicos.png')">
+          <img src="img/escenarios/mm_procesos_morfodinamicos.png" alt="Mapa de procesos morfodinámicos — Girardota">
+          <figcaption class="mm-figcap"><b>L-01 · Procesos morfodinámicos</b> — inventario del EBA: 1.050 procesos (442 activos, 444 inactivos, 164 latentes). <span class="z">clic para ampliar ⤢</span></figcaption>
+        </figure>
+      </div>
+      <div class="mm-fuente"><b>Fuente:</b> Plan Municipal de Gestión del Riesgo de Desastres — Girardota (2026), Consejo Municipal de Gestión del Riesgo de Desastres (CMGRD). Insumos: Estudio Básico de Amenazas (EBA) 2025, PBOT 2025, AMVA. Marco de referencia MAGNA-SIRGAS / Origen Nacional CTM12 (EPSG:9377).</div>
+    </div>
+
+  </div>
+</div>
+
+<div id="mm-lb" onclick="this.classList.remove('open')"><img id="mm-lb-img" src="" alt="Mapa ampliado"></div>
+
+<footer id="geo-footer"><img src="img/pie_girardota.jpg" alt="Alcaldía de Girardota — girardota.gov.co"></footer>
+
+<script>
+function ampliar(src){ const lb=document.getElementById('mm-lb'); document.getElementById('mm-lb-img').src=src; lb.classList.add('open'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.getElementById('mm-lb').classList.remove('open'); });
+</script>
+</body>
+</html>
