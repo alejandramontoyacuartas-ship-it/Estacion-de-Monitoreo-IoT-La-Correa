@@ -41,10 +41,11 @@
     .mm-figcap{padding:11px 15px;font-size:12.5px;color:#3f4b5b}
     .mm-figcap b{color:#2e6b3f}
     .mm-figcap .z{color:#2e8b57;font-weight:700;font-size:11px}
-    .mm-dl{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:13px;padding-top:12px;border-top:1px dashed #dce7df}
+    .mm-dl{display:flex;flex-direction:column;gap:10px;margin-top:13px;padding-top:12px;border-top:1px dashed #dce7df}
     .mm-dl .dl-lbl{font-size:12px;color:#5a6b60;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
-    .mm-dl a{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;color:#fff;
-      text-decoration:none;padding:9px 15px;border-radius:10px;box-shadow:0 2px 7px rgba(0,0,0,.18);transition:.15s}
+    .mm-dl .dl-row{display:flex;gap:9px;width:100%}
+    .mm-dl a{flex:1 1 0;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;font-weight:800;color:#fff;
+      text-decoration:none;padding:10px 12px;border-radius:10px;box-shadow:0 2px 7px rgba(0,0,0,.18);transition:.15s;text-align:center}
     .mm-dl a svg{width:15px;height:15px;flex:none}
     .mm-dl a:hover{transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,0,0,.26);filter:brightness(1.08)}
     .mm-dl .dl-png{background:#106853}
@@ -145,7 +146,7 @@ const DLI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-w
   if(maps.length){
     mapsHtml = `<div class="mm-card"><h2>Cartografía del escenario</h2>`
       + `<div class="mm-maps${maps.length===1?' one':''}">`
-      + maps.map(m=>`<figure class="mm-fig" onclick="ampliar('${m.src}')"><img src="${m.src}" alt="Mapa del escenario"><figcaption class="mm-figcap">${m.cap} <span class="z">clic para ampliar ⤢</span><div class="mm-dl"><span class="dl-lbl">⬇ Descargar</span><a class="dl-png" href="${m.src}" download onclick="event.stopPropagation()">${DLI}Imagen PNG</a>${m.pdf?`<a class="dl-pdf" href="${m.pdf}" download onclick="event.stopPropagation()">${DLI}Lámina PDF</a>`:''}${m.geojson?`<a class="dl-geo" href="${m.geojson}" download onclick="event.stopPropagation()">${DLI}Capa GeoJSON</a>`:''}</div></figcaption></figure>`).join('')
+      + maps.map(m=>`<figure class="mm-fig" onclick="ampliar('${m.src}')"><img src="${m.src}" alt="Mapa del escenario"><figcaption class="mm-figcap">${m.cap} <span class="z">clic para ampliar ⤢</span><div class="mm-dl"><span class="dl-lbl">⬇ Descargar</span><div class="dl-row"><a class="dl-png" href="${m.src}" download onclick="event.stopPropagation()">${DLI}Imagen PNG</a>${m.pdf?`<a class="dl-pdf" href="${m.pdf}" download onclick="event.stopPropagation()">${DLI}PDF</a>`:''}${m.geojson?`<a class="dl-geo" href="${m.geojson}" download onclick="event.stopPropagation()">${DLI}Capa GeoJSON</a>`:''}</div></div></figcaption></figure>`).join('')
       + `</div>`
       + `<div class="mm-fuente"><b>Fuente:</b> Plan Municipal de Gestión del Riesgo de Desastres — Girardota (2026), CMGRD. Insumos: Estudio Básico de Amenazas (EBA) 2025, PBOT 2025, AMVA.</div></div>`;
   }
